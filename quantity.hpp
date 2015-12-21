@@ -1,6 +1,7 @@
 #include <type_traits>
 #include <ratio>
 #include <limits>
+#include "units.hpp"
 
 #define _CONSTEXPR_ constexpr
 
@@ -270,6 +271,7 @@ struct is_ratio<std::ratio<_Num, _Den>> : std::true_type{};
 template <typename UNITS, typename STORAGE, typename RATIO>
 class quantity
 {
+    static_assert(is_units<UNITS>, "quantity units must be of type si::units" );
     static_assert(!is_quantity<STORAGE>, "A quantity representation can not be a quantity");
     static_assert(is_ratio<RATIO>::value, "Second template parameter of quantity must be a std::ratio");
     static_assert(RATIO::num > 0, "quantity exponents must be positive");
