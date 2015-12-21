@@ -9,9 +9,9 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( si::is_units< si::meters >, "" );
     static_assert( si::is_units< si::seconds >, "" );
     static_assert( si::is_units< si::amperes >, "" );
-    static_assert( si::is_units< si::degreesk >, "" );
-    static_assert( si::is_units< si::candelas >, "" );
-    static_assert( si::is_units< si::radians >, "" );
+    static_assert( si::is_units< const si::degreesk >, "" );
+    static_assert( si::is_units< volatile si::candelas >, "" );
+    static_assert( si::is_units< const volatile si::radians >, "" );
 
     // multiply_units
     static_assert( std::is_same<si::units<1,1>, si::multiply_units<si::kilograms,si::meters>>::value, "" );

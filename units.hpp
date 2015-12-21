@@ -55,6 +55,78 @@ struct is_units_impl
     >
 > : std::true_type {};
 
+template
+<
+    int Mass,
+    int Length,
+    int Time,
+    int Current,
+    int Temperature,
+    int Light,
+    int Angle
+>
+struct is_units_impl
+<
+   const units
+    <
+        Mass,
+        Length,
+        Time,
+        Current,
+        Temperature,
+        Light,
+        Angle
+    >
+> : std::true_type {};
+
+template
+<
+    int Mass,
+    int Length,
+    int Time,
+    int Current,
+    int Temperature,
+    int Light,
+    int Angle
+>
+struct is_units_impl
+<
+    volatile units
+    <
+        Mass,
+        Length,
+        Time,
+        Current,
+        Temperature,
+        Light,
+        Angle
+    >
+> : std::true_type {};
+
+template
+<
+    int Mass,
+    int Length,
+    int Time,
+    int Current,
+    int Temperature,
+    int Light,
+    int Angle
+>
+struct is_units_impl
+<
+    const volatile units
+    <
+        Mass,
+        Length,
+        Time,
+        Current,
+        Temperature,
+        Light,
+        Angle
+    >
+> : std::true_type {};
+
 template <typename T>
 constexpr bool is_units = is_units_impl<T>::value;
 
