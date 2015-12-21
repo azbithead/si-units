@@ -12,7 +12,10 @@ run-test ()
 
     ${theCommand}
 
-    rm ${theUnit}
+    if [[ -e "${theUnit}" ]]
+    then
+        rm "${theUnit}"
+    fi
 }
 
 run-test units-test
