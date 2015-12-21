@@ -3,6 +3,7 @@
 namespace si
 {
 
+//------------------------------------------------------------------------------
 /// Units
 template
 <
@@ -25,6 +26,7 @@ struct units
     using angle = std::integral_constant<int, Angle>;
 };
 
+//------------------------------------------------------------------------------
 /// is_units
 template< typename T >
 struct is_units_impl : std::false_type {};
@@ -56,6 +58,8 @@ struct is_units_impl
 template <typename T>
 constexpr bool is_units = is_units_impl<T>::value;
 
+//------------------------------------------------------------------------------
+/// multiply_units
 template< typename Units1, typename Units2 >
 struct multiply_units_impl
 {
@@ -74,6 +78,8 @@ struct multiply_units_impl
 template< typename Units1, typename Units2 >
 using multiply_units = typename multiply_units_impl< Units1, Units2 >::type;
 
+//------------------------------------------------------------------------------
+/// reciprocal_units
 template< typename Units >
 struct reciprocal_units_impl
 {
@@ -92,9 +98,13 @@ struct reciprocal_units_impl
 template< typename Units >
 using reciprocal_units = typename reciprocal_units_impl< Units >::type;
 
+//------------------------------------------------------------------------------
+/// divide_units
 template< typename Units1, typename Units2 >
 using divide_units = multiply_units< Units1, reciprocal_units< Units2 > >;
 
+//------------------------------------------------------------------------------
+/// Base units
 using scalar =    units<>; // unitless
 using kilograms = units<1>;
 using meters =    units<0,1>;
