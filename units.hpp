@@ -1,5 +1,8 @@
 #include <type_traits>
 
+namespace si
+{
+
 /// Units
 template
 <
@@ -100,3 +103,5 @@ using amperes =   units<0,0,0,1>;
 using degreesk =  units<0,0,0,0,1>;
 using candelas =  units<0,0,0,0,0,1>;
 using radians =   units<0,0,0,0,0,0,1>;
+
+} // end of namespace si
