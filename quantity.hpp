@@ -36,22 +36,25 @@ constexpr bool is_quantity = is_quantity_impl<T>::value;
 /// @param _Yp an integer value
 /// @return value the greatest common divisor (GCD) of _Xp and _Yp
 template <intmax_t _Xp, intmax_t _Yp>
-struct gcd
+struct gcd_impl
 {
-    static const intmax_t value = gcd<_Yp, _Xp % _Yp>::value;
+    static const intmax_t value = gcd_impl<_Yp, _Xp % _Yp>::value;
 };
 
 template <intmax_t _Xp>
-struct gcd<_Xp, 0>
+struct gcd_impl<_Xp, 0>
 {
     static const intmax_t value = _Xp;
 };
 
 template <>
-struct gcd<0, 0>
+struct gcd_impl<0, 0>
 {
     static const intmax_t value = 1;
 };
+
+template <intmax_t _Xp, intmax_t _Yp>
+constexpr intmax_t gcd = gcd_impl<_Xp,_Yp>::value;
 
 //------------------------------------------------------------------------------
 /// @param _Xp an integer value
@@ -60,7 +63,7 @@ struct gcd<0, 0>
 template <intmax_t _Xp, intmax_t _Yp>
 struct lcm
 {
-    static const intmax_t value = _Xp / gcd<_Xp, _Yp>::value * _Yp;
+    static const intmax_t value = _Xp / gcd<_Xp, _Yp> * _Yp;
 };
 
 //------------------------------------------------------------------------------
@@ -74,7 +77,7 @@ using ratio_gcd_t = std::ratio
     <
         _R1::num,
         _R2::num
-    >::value,
+    >,
     lcm
     <
         _R1::den,
@@ -275,8 +278,8 @@ class quantity
     struct __no_overflow
     {
     private:
-        static const intmax_t __gcd_n1_n2 = gcd<_R1::num, _R2::num>::value;
-        static const intmax_t __gcd_d1_d2 = gcd<_R1::den, _R2::den>::value;
+        static const intmax_t __gcd_n1_n2 = gcd<_R1::num, _R2::num>;
+        static const intmax_t __gcd_d1_d2 = gcd<_R1::den, _R2::den>;
         static const intmax_t __n1 = _R1::num / __gcd_n1_n2;
         static const intmax_t __d1 = _R1::den / __gcd_d1_d2;
         static const intmax_t __n2 = _R2::num / __gcd_n1_n2;
