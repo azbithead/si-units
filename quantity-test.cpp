@@ -12,4 +12,10 @@ int main( int aArgCount, char* aArgs[] )
     // si::gcd
     static_assert( si::gcd<12,9> == 3, "" );
     static_assert( si::gcd<7,5> == 1, "" );
+
+    // si::lcm
+    static_assert( si::lcm<4,6> == 12, "" );
+
+    // si::ratio_gcd
+    static_assert( std::is_same<si::ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>, std::ratio<1,12>>::value, "" );
 }

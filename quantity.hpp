@@ -62,17 +62,20 @@ constexpr intmax_t gcd = gcd_impl<_Xp,_Yp>::value;
 /// @param _Yp an integer value
 /// @member value the least common multiple (LCM) of _Xp and _Yp
 template <intmax_t _Xp, intmax_t _Yp>
-struct lcm
+struct lcm_impl
 {
     static const intmax_t value = _Xp / gcd<_Xp, _Yp> * _Yp;
 };
+
+template <intmax_t _Xp, intmax_t _Yp>
+constexpr intmax_t lcm = lcm_impl<_Xp,_Yp>::value;
 
 //------------------------------------------------------------------------------
 /// @param _R1 a std::ratio
 /// @param _R2 a std::ratio
 /// @return the std::ratio that is the greatest common divisor (GCD) of _R1 and _R2
 template <typename _R1, typename _R2>
-using ratio_gcd_t = std::ratio
+using ratio_gcd = std::ratio
 <
     gcd
     <
@@ -83,7 +86,7 @@ using ratio_gcd_t = std::ratio
     <
         _R1::den,
         _R2::den
-    >::value
+    >
 >;
 
 } // end of namespace si
@@ -108,7 +111,7 @@ struct std::common_type
     <
         UNITS,
         typename std::common_type<STORAGE1, STORAGE2>::type,
-        si::ratio_gcd_t<RATIO1, RATIO2>
+        si::ratio_gcd<RATIO1, RATIO2>
     >;
 };
 
