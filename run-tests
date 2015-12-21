@@ -1,29 +1,19 @@
+#!/bin/bash
 
-theCommand="clang++ "
-theProgram=units-test
+run-test ()
+{
+    local theUnit=${1};shift
 
-if [[ $# > 0 ]]
-then
-    theProgram=${1}
-    shift
-fi
+    theCommand="clang++ \
+        -std=c++14 \
+        -stdlib=libc++ \
+        ${theUnit}.cpp \
+        -o ${theUnit}"
 
-theIncludePaths=""
+    ${theCommand}
 
-while (( $# > 0 ))
-do
-    theIncludePaths="-I ${1} ${theIncludePaths}"
-    shift
-done
+    rm ${theUnit}
+}
 
-theCommand="clang++ \
-    -std=c++14 \
-    -stdlib=libc++ \
-    ${theIncludePaths} \
-    ${theProgram}.cpp \
-    -o ${theProgram}"
-
-#echo ${theCommand}
-${theCommand}
-
-rm units-test
+run-test units-test
+run-test quantity-test
