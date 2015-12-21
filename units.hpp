@@ -1,5 +1,6 @@
-#include <iostream>
+#include <type_traits>
 
+/// Units
 template
 <
     int Mass = 0,
@@ -21,14 +22,36 @@ struct units
     using angle = std::integral_constant<int, Angle>;
 };
 
-using scalar =    units<>; // unitless
-using kilograms = units<1>;
-using meters =    units<0,1>;
-using seconds =   units<0,0,1>;
-using amperes =   units<0,0,0,1>;
-using degreesk =  units<0,0,0,0,1>;
-using candelas =  units<0,0,0,0,0,1>;
-using radians =   units<0,0,0,0,0,0,1>;
+/// is_units
+template< typename T >
+struct is_units_impl : std::false_type {};
+
+template
+<
+    int Mass,
+    int Length,
+    int Time,
+    int Current,
+    int Temperature,
+    int Light,
+    int Angle
+>
+struct is_units_impl
+<
+    units
+    <
+        Mass,
+        Length,
+        Time,
+        Current,
+        Temperature,
+        Light,
+        Angle
+    >
+> : std::true_type {};
+
+template <typename T>
+constexpr bool is_units = is_units_impl<T>::value;
 
 template< typename Units1, typename Units2 >
 struct multiply_units_impl
@@ -69,9 +92,11 @@ using reciprocal_units = typename reciprocal_units_impl< Units >::type;
 template< typename Units1, typename Units2 >
 using divide_units = multiply_units< Units1, reciprocal_units< Units2 > >;
 
-int main()
-{
-    using accel = divide_units< divide_units< scalar, seconds >, seconds >;
-
-    std::cout << accel::time::value << "\n";
-}
+using scalar =    units<>; // unitless
+using kilograms = units<1>;
+using meters =    units<0,1>;
+using seconds =   units<0,0,1>;
+using amperes =   units<0,0,0,1>;
+using degreesk =  units<0,0,0,0,1>;
+using candelas =  units<0,0,0,0,0,1>;
+using radians =   units<0,0,0,0,0,0,1>;
