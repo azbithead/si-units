@@ -1,78 +1,77 @@
-#include <type_traits>
-
-namespace si
-{
-
-// forward declaration
-template< typename TAG, std::intmax_t EXP = 1 >
-struct unit_t;
-
-// is_unit_t
-template< typename T >
-struct is_unit_t : std::false_type {};
-
-template< typename TAG, std::intmax_t EXP >
-struct is_unit_t<unit_t<TAG, EXP>> : std::true_type {};
-
-template< typename TAG, std::intmax_t EXP >
-struct is_unit_t<const unit_t<TAG, EXP>> : std::true_type {};
-
-template< typename TAG, std::intmax_t EXP >
-struct is_unit_t<volatile unit_t<TAG, EXP>> : std::true_type {};
-
-template< typename TAG, std::intmax_t EXP >
-struct is_unit_t<const volatile unit_t<TAG, EXP>> : std::true_type {};
+#include <iostream>
 
 template
 <
-    typename TAG,
-    std::intmax_t EXP
+    int Mass = 0,
+    int Length = 0,
+    int Time = 0,
+    int Current = 0,
+    int Temperature = 0,
+    int Light = 0,
+    int Angle = 0
 >
-struct unit_t
+struct units
 {
-    using type = TAG;
-    static const std::intmax_t exponent = EXP;
+    using mass = std::integral_constant<int, Mass>;
+    using length = std::integral_constant<int, Length>;
+    using time = std::integral_constant<int, Time>;
+    using current = std::integral_constant<int, Current>;
+    using temperature = std::integral_constant<int, Temperature>;
+    using light = std::integral_constant<int, Light>;
+    using angle = std::integral_constant<int, Angle>;
 };
 
-template< typename U1, typename U2 >
-struct same_tag_t : std::false_type {};
+using scalar =    units<>; // unitless
+using kilograms = units<1>;
+using meters =    units<0,1>;
+using seconds =   units<0,0,1>;
+using amperes =   units<0,0,0,1>;
+using degreesk =  units<0,0,0,0,1>;
+using candelas =  units<0,0,0,0,0,1>;
+using radians =   units<0,0,0,0,0,0,1>;
 
-template< typename TAG, std::intmax_t EXP1, std::intmax_t EXP2 >
-struct same_tag_t
-<
-    unit_t<TAG, EXP1>,
-    unit_t<TAG, EXP2>
-> : std::true_type {};
-
-template
-<
-    typename U1,
-    typename U2,
-    typename = typename std::enable_if
+template< typename Units1, typename Units2 >
+struct multiply_units_impl
+{
+    using type = units
     <
-        is_unit_t<U1>::value &&
-        is_unit_t<U2>::value &&
-        same_tag_t
-        <
-            typename std::remove_cv<U1>::type,
-            typename std::remove_cv<U2>::type
-        >::value,
-        void
-    >::type
->
-using multiply_units_t = unit_t
-<
-    typename U1::type,
-    U1::exponent + U2::exponent
->;
+        Units1::mass::value + Units2::mass::value,
+        Units1::length::value + Units2::length::value,
+        Units1::time::value + Units2::time::value,
+        Units1::current::value + Units2::current::value,
+        Units1::temperature::value + Units2::temperature::value,
+        Units1::light::value + Units2::light::value,
+        Units1::angle::value + Units2::angle::value
+    >;
+};
 
-template< typename U >
-using reciprocal_unit_t = unit_t< typename U::type, -U::exponent >;
+template< typename Units1, typename Units2 >
+using multiply_units = typename multiply_units_impl< Units1, Units2 >::type;
 
-template< typename U1, typename U2 >
-using divide_units_t = multiply_units_t< U1, reciprocal_unit_t<U2>>;
+template< typename Units >
+struct reciprocal_units_impl
+{
+    using type = units
+    <
+        -Units::mass::value,
+        -Units::length::value,
+        -Units::time::value,
+        -Units::current::value,
+        -Units::temperature::value,
+        -Units::light::value,
+        -Units::angle::value
+    >;
+};
 
-template< typename U, std::intmax_t E >
-using exponentiate_unit_t = unit_t< typename U::type, E * U::exponent >;
+template< typename Units >
+using reciprocal_units = typename reciprocal_units_impl< Units >::type;
 
-} // end of namespace si
+template< typename Units1, typename Units2 >
+using divide_units = multiply_units< Units1, reciprocal_units< Units2 > >;
+
+int main()
+{
+    using accel = divide_units< divide_units< scalar, seconds >, seconds >;
+
+    std::cout << accel::time::value << "\n";
+}
