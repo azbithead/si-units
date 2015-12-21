@@ -14,19 +14,22 @@ template <typename UNITS, typename STORAGE, typename RATIO = std::ratio<1> > cla
 /// @param _Tp a type to be tested
 /// @return value true if _Tp is quantity, false otherwise
 template <typename _Tp>
-struct is_quantity : std::false_type {};
+struct is_quantity_impl : std::false_type {};
 
 template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity<quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
+struct is_quantity_impl<quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
 
 template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity<const quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
+struct is_quantity_impl<const quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
 
 template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity<volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
+struct is_quantity_impl<volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
 
 template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity<const volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
+struct is_quantity_impl<const volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
+
+template <typename T>
+constexpr bool is_quantity = is_quantity_impl<T>::value;
 
 //------------------------------------------------------------------------------
 /// @param _Xp an integer value
@@ -231,7 +234,7 @@ inline
 _CONSTEXPR_
 typename std::enable_if
 <
-    is_quantity<ToQ>::value,
+    is_quantity<ToQ>,
     ToQ
 >::type
 quantity_cast(const quantity<UNITS, STORAGE, RATIO>& __fd)
@@ -264,7 +267,7 @@ struct is_ratio<std::ratio<_Num, _Den>> : std::true_type{};
 template <typename UNITS, typename STORAGE, typename RATIO>
 class quantity
 {
-    static_assert(!is_quantity<STORAGE>::value, "A quantity representation can not be a quantity");
+    static_assert(!is_quantity<STORAGE>, "A quantity representation can not be a quantity");
     static_assert(is_ratio<RATIO>::value, "Second template parameter of quantity must be a std::ratio");
     static_assert(RATIO::num > 0, "quantity exponents must be positive");
 
@@ -628,7 +631,7 @@ template
 <
     typename _BaseUnit,
     typename STORAGE,
-    bool = is_quantity<STORAGE>::value
+    bool = is_quantity<STORAGE>
 >
 struct __quantity_divide_result
 {
