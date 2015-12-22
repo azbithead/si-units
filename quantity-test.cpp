@@ -5,6 +5,9 @@ constexpr bool is_same_v = std::is_same<T, U>::value;
 
 int main( int aArgCount, char* aArgs[] )
 {
+    using mm_t = si::quantity<si::meters,int,std::milli>;
+    using m_t = si::quantity<si::meters,int>;
+
     // si::is_quantity
     static_assert( !si::is_quantity< int >, "" );
     static_assert( si::is_quantity< si::quantity<si::meters,int> >, "" );
@@ -23,8 +26,6 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( is_same_v<si::ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
 
     // si::quantity_cast
-    using mm_t = si::quantity<si::meters,int,std::milli>;
-    using m_t = si::quantity<si::meters,int>;
     // num == 1, den == 1
     static_assert( si::quantity_cast<mm_t>( mm_t{5} ).count() == 5, "" );
     // num == 1, den == 1000
@@ -37,4 +38,14 @@ int main( int aArgCount, char* aArgs[] )
     // si::is_ratio
     static_assert( !si::is_ratio<int>, "" );
     static_assert( si::is_ratio<std::ratio<1>>, "" );
+
+    // operator == si::quantity
+    static_assert( m_t{ 1 } == m_t{ 1 }, "" );
+    static_assert( m_t{ 1 } == mm_t{ 1000 }, "" );
+    static_assert( !(m_t{ 1 } == mm_t{ 1 }), "" );
+
+    // operator < si::quantity
+    static_assert( mm_t{ 999 } < m_t{ 1 }, "" );
+    static_assert( m_t{ 1 } < m_t{ 2 }, "" );
+    static_assert( !(m_t{ 1 } < m_t{ 1 }), "" );
 }

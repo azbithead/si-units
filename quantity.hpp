@@ -394,7 +394,7 @@ public:
 // quantity ==
 
 template <typename _LhsQ, typename _RhsQ>
-struct __quantity_eq
+struct quantity_eq_impl
 {
     constexpr
     bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
@@ -405,7 +405,7 @@ struct __quantity_eq
 };
 
 template <typename _LhsQ>
-struct __quantity_eq<_LhsQ, _LhsQ>
+struct quantity_eq_impl<_LhsQ, _LhsQ>
 {
     constexpr
     bool operator()(const _LhsQ& __lhs, const _LhsQ& __rhs) const
@@ -422,7 +422,7 @@ operator==
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs
 )
 {
-    return __quantity_eq
+    return quantity_eq_impl
     <
         quantity<UNITS, STORAGE1, RATIO1>,
         quantity<UNITS, STORAGE2, RATIO2>
@@ -447,7 +447,7 @@ operator!=
 // quantity <
 
 template <typename _LhsQ, typename _RhsQ>
-struct __quantity_lt
+struct quantity_lt_impl
 {
     constexpr
     bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
@@ -458,7 +458,7 @@ struct __quantity_lt
 };
 
 template <typename _LhsQ>
-struct __quantity_lt<_LhsQ, _LhsQ>
+struct quantity_lt_impl<_LhsQ, _LhsQ>
 {
     constexpr
     bool operator()
@@ -480,7 +480,7 @@ operator<
     const quantity<UNITS, STORAGE1, RATIO1>& __lhs,
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs)
 {
-    return __quantity_lt
+    return quantity_lt_impl
     <
         quantity<UNITS, STORAGE1, RATIO1>,
         quantity<UNITS, STORAGE2, RATIO2>
