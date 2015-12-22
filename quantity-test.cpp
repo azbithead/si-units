@@ -48,4 +48,10 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( mm_t{ 999 } < m_t{ 1 }, "" );
     static_assert( m_t{ 1 } < m_t{ 2 }, "" );
     static_assert( !(m_t{ 1 } < m_t{ 1 }), "" );
+
+    // operator + si::quantity
+    static_assert( (m_t{ 1 } + mm_t{ 1 }).count() == 1001, "" );
+
+    // operator - si::quantity
+    static_assert( (m_t{ 1 } - mm_t{ 1 }).count() == 999, "" );
 }
