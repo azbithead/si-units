@@ -265,10 +265,13 @@ public:
 
 // is_ratio
 template <typename _Tp>
-struct is_ratio : std::false_type{};
+struct is_ratio_impl : std::false_type{};
 
 template <std::intmax_t _Num, std::intmax_t _Den>
-struct is_ratio<std::ratio<_Num, _Den>> : std::true_type{};
+struct is_ratio_impl<std::ratio<_Num, _Den>> : std::true_type{};
+
+template <typename _Tp>
+constexpr bool is_ratio = is_ratio_impl<_Tp>::value;
 
 // quantity
 template <typename UNITS, typename STORAGE, typename RATIO>
@@ -276,7 +279,7 @@ class quantity
 {
     static_assert(is_units<UNITS>, "quantity units must be of type si::units" );
     static_assert(!is_quantity<STORAGE>, "A quantity representation can not be a quantity");
-    static_assert(is_ratio<RATIO>::value, "Second template parameter of quantity must be a std::ratio");
+    static_assert(is_ratio<RATIO>, "Third template parameter of quantity must be a std::ratio");
     static_assert(RATIO::num > 0, "quantity exponents must be positive");
 
     template <typename _R1, typename _R2>

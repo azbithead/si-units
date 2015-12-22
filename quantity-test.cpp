@@ -33,4 +33,8 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( si::quantity_cast<mm_t>( m_t{5} ).count() == 5000, "" );
     // num == 3, den == 2
     static_assert( si::quantity_cast<m_t>( si::quantity<si::meters, int, std::ratio<3,2>>{2} ).count() == 3, "" );
+
+    // si::is_ratio
+    static_assert( !si::is_ratio<int>, "" );
+    static_assert( si::is_ratio<std::ratio<1>>, "" );
 }
