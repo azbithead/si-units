@@ -54,4 +54,8 @@ int main( int aArgCount, char* aArgs[] )
 
     // operator - si::quantity
     static_assert( (m_t{ 1 } - mm_t{ 1 }).count() == 999, "" );
+
+    // scalar multiply si::quantity
+    static_assert( ( m_t{ 1 } * 2.1 ).count() == 2.1, "" );
+    static_assert( ( 2 * m_t{ 1 } ).count() == 2, "" );
 }
