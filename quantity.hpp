@@ -3,8 +3,6 @@
 #include <limits>
 #include "units.hpp"
 
-#define _CONSTEXPR_ constexpr
-
 namespace si
 {
 
@@ -118,8 +116,6 @@ struct std::common_type
 namespace si
 {
 
-// quantity_cast
-
 template
 <
     typename FromQ,
@@ -131,7 +127,7 @@ template
     >::type,
     bool = RATIO::num == 1,
     bool = RATIO::den == 1>
-struct quantity_cast_t;
+struct quantity_cast_impl;
 
 template
 <
@@ -139,14 +135,14 @@ template
     typename ToQ,
     typename RATIO
 >
-struct quantity_cast_t<FromQ, ToQ, RATIO, true, true>
+struct quantity_cast_impl<FromQ, ToQ, RATIO, true, true>
 {
-    _CONSTEXPR_
-    ToQ operator()(const FromQ& __fd) const
+    constexpr
+    ToQ operator()(const FromQ& __fq) const
     {
         return ToQ
         (
-            static_cast<typename ToQ::storage_t>(__fd.count())
+            static_cast<typename ToQ::storage_t>(__fq.count())
         );
     }
 };
@@ -157,10 +153,10 @@ template
     typename ToQ,
     typename RATIO
 >
-struct quantity_cast_t<FromQ, ToQ, RATIO, true, false>
+struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
 {
-    _CONSTEXPR_
-    ToQ operator()(const FromQ& __fd) const
+    constexpr
+    ToQ operator()(const FromQ& __fq) const
     {
         using _Ct = typename std::common_type
         <
@@ -172,7 +168,7 @@ struct quantity_cast_t<FromQ, ToQ, RATIO, true, false>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fd.count()) /
+                static_cast<_Ct>(__fq.count()) /
                 static_cast<_Ct>(RATIO::den)
             )
         );
@@ -185,10 +181,10 @@ template
     typename ToQ,
     typename RATIO
 >
-struct quantity_cast_t<FromQ, ToQ, RATIO, false, true>
+struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
 {
-    _CONSTEXPR_
-    ToQ operator()(const FromQ& __fd) const
+    constexpr
+    ToQ operator()(const FromQ& __fq) const
     {
         using _Ct = typename std::common_type
         <
@@ -200,7 +196,7 @@ struct quantity_cast_t<FromQ, ToQ, RATIO, false, true>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fd.count()) *
+                static_cast<_Ct>(__fq.count()) *
                 static_cast<_Ct>(RATIO::num)
             )
         );
@@ -213,10 +209,10 @@ template
     typename ToQ,
     typename RATIO
 >
-struct quantity_cast_t<FromQ, ToQ, RATIO, false, false>
+struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
 {
-    _CONSTEXPR_
-    ToQ operator()(const FromQ& __fd) const
+    constexpr
+    ToQ operator()(const FromQ& __fq) const
     {
         using _Ct = typename std::common_type
         <
@@ -228,7 +224,7 @@ struct quantity_cast_t<FromQ, ToQ, RATIO, false, false>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fd.count()) *
+                static_cast<_Ct>(__fq.count()) *
                 static_cast<_Ct>(RATIO::num) /
                 static_cast<_Ct>(RATIO::den)
             )
@@ -236,21 +232,25 @@ struct quantity_cast_t<FromQ, ToQ, RATIO, false, false>
     }
 };
 
+
+//------------------------------------------------------------------------------
+/// Cast a quantity to another quantity
+/// Both quantities must have the same unit_t type.
 template <typename ToQ, typename UNITS, typename STORAGE, typename RATIO>
 inline
-_CONSTEXPR_
+constexpr
 typename std::enable_if
 <
-    is_quantity<ToQ>,
+    is_quantity<ToQ> && std::is_same<typename ToQ::units_t,UNITS>::value,
     ToQ
 >::type
-quantity_cast(const quantity<UNITS, STORAGE, RATIO>& __fd)
+quantity_cast(const quantity<UNITS, STORAGE, RATIO>& __fq)
 {
-    return quantity_cast_t
+    return quantity_cast_impl
     <
         quantity<UNITS, STORAGE, RATIO>,
         ToQ
-    >()(__fd);
+    >()(__fq);
 }
 
 // some special quantity values
@@ -258,9 +258,9 @@ template <typename STORAGE>
 struct quantity_values
 {
 public:
-    static _CONSTEXPR_ STORAGE zero() {return STORAGE(0);}
-    static _CONSTEXPR_ STORAGE max()  {return std::numeric_limits<STORAGE>::max();}
-    static _CONSTEXPR_ STORAGE min()  {return std::numeric_limits<STORAGE>::lowest();}
+    static constexpr STORAGE zero() {return STORAGE(0);}
+    static constexpr STORAGE max()  {return std::numeric_limits<STORAGE>::max();}
+    static constexpr STORAGE min()  {return std::numeric_limits<STORAGE>::lowest();}
 };
 
 // is_ratio
@@ -317,11 +317,11 @@ private:
     storage_t mStorage;
 public:
 
-    _CONSTEXPR_
+    constexpr
     quantity() = default;
 
     template <typename STORAGE2>
-    _CONSTEXPR_
+    constexpr
     explicit
     quantity
     (
@@ -340,7 +340,7 @@ public:
 
     // conversions
     template <typename STORAGE2, typename RATIO2>
-    _CONSTEXPR_
+    constexpr
     quantity
     (
         const quantity<UNITS, STORAGE2, RATIO2>& __d,
@@ -361,13 +361,13 @@ public:
 
     // observer
 
-    _CONSTEXPR_ storage_t count() const {return mStorage;}
-    _CONSTEXPR_ ratio_t ratio() const { return ratio_t{}; }
+    constexpr storage_t count() const {return mStorage;}
+    constexpr ratio_t ratio() const { return ratio_t{}; }
 
     // arithmetic
 
-    _CONSTEXPR_ quantity  operator+() const {return *this;}
-    _CONSTEXPR_ quantity  operator-() const {return quantity(-mStorage);}
+    constexpr quantity  operator+() const {return *this;}
+    constexpr quantity  operator-() const {return quantity(-mStorage);}
     quantity& operator++()      {++mStorage; return *this;}
     quantity  operator++(int)   {return quantity(mStorage++);}
     quantity& operator--()      {--mStorage; return *this;}
@@ -383,35 +383,35 @@ public:
 
     // special values
 
-    static _CONSTEXPR_ quantity zero() {return quantity(quantity_values<storage_t>::zero());}
-    static _CONSTEXPR_ quantity min()  {return quantity(quantity_values<storage_t>::min());}
-    static _CONSTEXPR_ quantity max()  {return quantity(quantity_values<storage_t>::max());}
+    static constexpr quantity zero() {return quantity(quantity_values<storage_t>::zero());}
+    static constexpr quantity min()  {return quantity(quantity_values<storage_t>::min());}
+    static constexpr quantity max()  {return quantity(quantity_values<storage_t>::max());}
 };
 
-// BaseUnit ==
+// quantity ==
 
-template <typename _LhsBaseUnit, typename _RhsBaseUnit>
+template <typename _LhsQ, typename _RhsQ>
 struct __quantity_eq
 {
-    _CONSTEXPR_
-    bool operator()(const _LhsBaseUnit& __lhs, const _RhsBaseUnit& __rhs) const
+    constexpr
+    bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
         {
-            using _Ct = typename std::common_type<_LhsBaseUnit, _RhsBaseUnit>::type;
+            using _Ct = typename std::common_type<_LhsQ, _RhsQ>::type;
             return _Ct(__lhs).count() == _Ct(__rhs).count();
         }
 };
 
-template <typename _LhsBaseUnit>
-struct __quantity_eq<_LhsBaseUnit, _LhsBaseUnit>
+template <typename _LhsQ>
+struct __quantity_eq<_LhsQ, _LhsQ>
 {
-    _CONSTEXPR_
-    bool operator()(const _LhsBaseUnit& __lhs, const _LhsBaseUnit& __rhs) const
+    constexpr
+    bool operator()(const _LhsQ& __lhs, const _LhsQ& __rhs) const
         {return __lhs.count() == __rhs.count();}
 };
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator==
 (
@@ -426,11 +426,11 @@ operator==
     >()(__lhs, __rhs);
 }
 
-// BaseUnit !=
+// quantity !=
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator!=
 (
@@ -441,27 +441,27 @@ operator!=
     return !(__lhs == __rhs);
 }
 
-// BaseUnit <
+// quantity <
 
-template <typename _LhsBaseUnit, typename _RhsBaseUnit>
+template <typename _LhsQ, typename _RhsQ>
 struct __quantity_lt
 {
-    _CONSTEXPR_
-    bool operator()(const _LhsBaseUnit& __lhs, const _RhsBaseUnit& __rhs) const
+    constexpr
+    bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
     {
-        using _Ct = typename std::common_type<_LhsBaseUnit, _RhsBaseUnit>::type;
+        using _Ct = typename std::common_type<_LhsQ, _RhsQ>::type;
         return _Ct(__lhs).count() < _Ct(__rhs).count();
     }
 };
 
-template <typename _LhsBaseUnit>
-struct __quantity_lt<_LhsBaseUnit, _LhsBaseUnit>
+template <typename _LhsQ>
+struct __quantity_lt<_LhsQ, _LhsQ>
 {
-    _CONSTEXPR_
+    constexpr
     bool operator()
     (
-        const _LhsBaseUnit& __lhs,
-        const _LhsBaseUnit& __rhs
+        const _LhsQ& __lhs,
+        const _LhsQ& __rhs
     ) const
     {
         return __lhs.count() < __rhs.count();
@@ -470,7 +470,7 @@ struct __quantity_lt<_LhsBaseUnit, _LhsBaseUnit>
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator<
 (
@@ -484,11 +484,11 @@ operator<
     >()(__lhs, __rhs);
 }
 
-// BaseUnit >
+// quantity >
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator>
 (
@@ -499,11 +499,11 @@ operator>
     return __rhs < __lhs;
 }
 
-// BaseUnit <=
+// quantity <=
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator<=
 (
@@ -514,11 +514,11 @@ operator<=
     return !(__rhs < __lhs);
 }
 
-// BaseUnit >=
+// quantity >=
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 bool
 operator>=
 (
@@ -529,11 +529,11 @@ operator>=
     return !(__lhs < __rhs);
 }
 
-// BaseUnit +
+// quantity +
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 typename std::common_type
 <
     quantity<UNITS, STORAGE1, RATIO1>,
@@ -553,11 +553,11 @@ operator+
     return _Cd(_Cd(__lhs).count() + _Cd(__rhs).count());
 }
 
-// BaseUnit -
+// quantity -
 
 template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
 inline
-_CONSTEXPR_
+constexpr
 typename std::common_type
 <
     quantity<UNITS, STORAGE1, RATIO1>,
@@ -577,11 +577,11 @@ operator-
     return _Cd(_Cd(__lhs).count() - _Cd(__rhs).count());
 }
 
-// BaseUnit *
+// quantity *
 
 template <typename UNITS, typename STORAGE1, typename RATIO, typename STORAGE2>
 inline
-_CONSTEXPR_
+constexpr
 typename std::enable_if
 <
     std::is_convertible
@@ -609,7 +609,7 @@ operator*
 
 template <typename UNITS, typename STORAGE1, typename RATIO, typename STORAGE2>
 inline
-_CONSTEXPR_
+constexpr
 typename std::enable_if
 <
     std::is_convertible
@@ -633,11 +633,11 @@ operator*
     return __d * __s;
 }
 
-// BaseUnit /
+// quantity /
 
 template
 <
-    typename _BaseUnit,
+    typename _Q,
     typename STORAGE,
     bool = is_quantity<STORAGE>
 >
@@ -647,12 +647,12 @@ struct __quantity_divide_result
 
 template
 <
-    typename _BaseUnit,
+    typename _Q,
     typename STORAGE2,
     bool = std::is_convertible
     <
         STORAGE2,
-        typename std::common_type<typename _BaseUnit::storage_t, STORAGE2>::type
+        typename std::common_type<typename _Q::storage_t, STORAGE2>::type
     >::value
 >
 struct __quantity_divide_imp
@@ -706,7 +706,7 @@ template
     typename STORAGE2
 >
 inline
-_CONSTEXPR_
+constexpr
 typename __quantity_divide_result
 <
     quantity<UNITS, STORAGE1, RATIO>,
@@ -732,7 +732,7 @@ template
     typename RATIO2
 >
 inline
-_CONSTEXPR_
+constexpr
 typename std::common_type<STORAGE1, STORAGE2>::type
 operator/
 (
@@ -748,7 +748,7 @@ operator/
     return _Ct(__lhs).count() / _Ct(__rhs).count();
 }
 
-// BaseUnit %
+// quantity %
 
 template
 <
@@ -758,7 +758,7 @@ template
     typename STORAGE2
 >
 inline
-_CONSTEXPR_
+constexpr
 typename __quantity_divide_result<quantity<UNITS, STORAGE1, RATIO>, STORAGE2>::type
 operator%
 (
@@ -780,7 +780,7 @@ template
     typename RATIO2
 >
 inline
-_CONSTEXPR_
+constexpr
 typename std::common_type<quantity<UNITS, STORAGE1, RATIO1>, quantity<UNITS, STORAGE2, RATIO2> >::type
 operator%
 (
@@ -820,7 +820,7 @@ template
     typename RATIO2
 >
 inline
-_CONSTEXPR_
+constexpr
 multiply_result<UNITS, STORAGE1, STORAGE2, RATIO1, RATIO2>
 multiply
 (
@@ -862,7 +862,7 @@ template
     typename RATIO2
 >
 inline
-_CONSTEXPR_
+constexpr
 divide_result<UNITS, STORAGE1, STORAGE2, RATIO1, RATIO2>
 divide
 (
@@ -899,7 +899,7 @@ template
     typename RATIO
 >
 inline
-_CONSTEXPR_
+constexpr
 reciprocal_result<UNITS, STORAGE, RATIO>
 reciprocal
 (
