@@ -158,7 +158,7 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
     constexpr
     ToQ operator()(const FromQ& __fq) const
     {
-        using _Ct = typename std::common_type
+        using _Cs = typename std::common_type
         <
             typename ToQ::storage_t,
             typename FromQ::storage_t,
@@ -168,8 +168,8 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fq.count()) /
-                static_cast<_Ct>(RATIO::den)
+                static_cast<_Cs>(__fq.count()) /
+                static_cast<_Cs>(RATIO::den)
             )
         );
     }
@@ -186,7 +186,7 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
     constexpr
     ToQ operator()(const FromQ& __fq) const
     {
-        using _Ct = typename std::common_type
+        using _Cs = typename std::common_type
         <
             typename ToQ::storage_t,
             typename FromQ::storage_t,
@@ -196,8 +196,8 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fq.count()) *
-                static_cast<_Ct>(RATIO::num)
+                static_cast<_Cs>(__fq.count()) *
+                static_cast<_Cs>(RATIO::num)
             )
         );
     }
@@ -214,7 +214,7 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
     constexpr
     ToQ operator()(const FromQ& __fq) const
     {
-        using _Ct = typename std::common_type
+        using _Cs = typename std::common_type
         <
             typename ToQ::storage_t,
             typename FromQ::storage_t,
@@ -224,9 +224,9 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
         (
             static_cast<typename ToQ::storage_t>
             (
-                static_cast<_Ct>(__fq.count()) *
-                static_cast<_Ct>(RATIO::num) /
-                static_cast<_Ct>(RATIO::den)
+                static_cast<_Cs>(__fq.count()) *
+                static_cast<_Cs>(RATIO::num) /
+                static_cast<_Cs>(RATIO::den)
             )
         );
     }
@@ -328,7 +328,7 @@ public:
     explicit
     quantity
     (
-        const STORAGE2& __r,
+        const STORAGE2& __s,
         typename std::enable_if
         <
             std::is_convertible<STORAGE2, storage_t>::value &&
@@ -339,14 +339,14 @@ public:
         >::type* = 0
     )
     :
-    mStorage(__r) {}
+    mStorage(__s) {}
 
     // conversions
     template <typename STORAGE2, typename RATIO2>
     constexpr
     quantity
     (
-        const quantity<UNITS, STORAGE2, RATIO2>& __d,
+        const quantity<UNITS, STORAGE2, RATIO2>& __q,
         typename std::enable_if
         <
             __no_overflow<RATIO2, ratio_t>::value &&
@@ -360,7 +360,7 @@ public:
         >::type* = 0
     )
     :
-    mStorage(quantity_cast<quantity>(__d).count()) {}
+    mStorage(quantity_cast<quantity>(__q).count()) {}
 
     // observer
 
@@ -376,8 +376,8 @@ public:
     quantity& operator--()      {--mStorage; return *this;}
     quantity  operator--(int)   {return quantity(mStorage--);}
 
-    quantity& operator+=(const quantity& __d) {mStorage += __d.count(); return *this;}
-    quantity& operator-=(const quantity& __d) {mStorage -= __d.count(); return *this;}
+    quantity& operator+=(const quantity& __q) {mStorage += __q.count(); return *this;}
+    quantity& operator-=(const quantity& __q) {mStorage -= __q.count(); return *this;}
 
     quantity& operator*=(const storage_t& rhs) {mStorage *= rhs; return *this;}
     quantity& operator/=(const storage_t& rhs) {mStorage /= rhs; return *this;}
@@ -399,8 +399,8 @@ struct quantity_eq_impl
     constexpr
     bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
         {
-            using _Ct = typename std::common_type<_LhsQ, _RhsQ>::type;
-            return _Ct(__lhs).count() == _Ct(__rhs).count();
+            using _Cq = typename std::common_type<_LhsQ, _RhsQ>::type;
+            return _Cq(__lhs).count() == _Cq(__rhs).count();
         }
 };
 
@@ -452,8 +452,8 @@ struct quantity_lt_impl
     constexpr
     bool operator()(const _LhsQ& __lhs, const _RhsQ& __rhs) const
     {
-        using _Ct = typename std::common_type<_LhsQ, _RhsQ>::type;
-        return _Ct(__lhs).count() < _Ct(__rhs).count();
+        using _Cq = typename std::common_type<_LhsQ, _RhsQ>::type;
+        return _Cq(__lhs).count() < _Cq(__rhs).count();
     }
 };
 
@@ -548,12 +548,12 @@ operator+
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs
 )
 {
-    using _Cd = typename std::common_type
+    using _Cq = typename std::common_type
     <
         quantity<UNITS, STORAGE1, RATIO1>,
         quantity<UNITS, STORAGE2, RATIO2>
     >::type;
-    return _Cd(_Cd(__lhs).count() + _Cd(__rhs).count());
+    return _Cq(_Cq(__lhs).count() + _Cq(__rhs).count());
 }
 
 // quantity -
@@ -572,12 +572,12 @@ operator-
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs
 )
 {
-    using _Cd = typename std::common_type
+    using _Cq = typename std::common_type
     <
         quantity<UNITS, STORAGE1, RATIO1>,
         quantity<UNITS, STORAGE2, RATIO2>
     >::type;
-    return _Cd(_Cd(__lhs).count() - _Cd(__rhs).count());
+    return _Cq(_Cq(__lhs).count() - _Cq(__rhs).count());
 }
 
 // quantity *
@@ -601,13 +601,13 @@ typename std::enable_if
 >::type
 operator*
 (
-    const quantity<UNITS, STORAGE1, RATIO>& __d,
+    const quantity<UNITS, STORAGE1, RATIO>& __q,
     const STORAGE2& __s
 )
 {
-    using _Cr = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using _Cd = quantity<UNITS, _Cr, RATIO>;
-    return _Cd(_Cd(__d).count() * static_cast<_Cr>(__s));
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Cq = quantity<UNITS, _Cs, RATIO>;
+    return _Cq(_Cq(__q).count() * static_cast<_Cs>(__s));
 }
 
 template <typename UNITS, typename STORAGE1, typename RATIO, typename STORAGE2>
@@ -630,10 +630,10 @@ typename std::enable_if
 operator*
 (
     const STORAGE1& __s,
-    const quantity<UNITS, STORAGE2, RATIO>& __d
+    const quantity<UNITS, STORAGE2, RATIO>& __q
 )
 {
-    return __d * __s;
+    return __q * __s;
 }
 
 // quantity /
@@ -717,13 +717,13 @@ typename __quantity_divide_result
 >::type
 operator/
 (
-    const quantity<UNITS, STORAGE1, RATIO>& __d,
+    const quantity<UNITS, STORAGE1, RATIO>& __q,
     const STORAGE2& __s
 )
 {
-    using _Cr = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using _Cd = quantity<UNITS, _Cr, RATIO>;
-    return _Cd(_Cd(__d).count() / static_cast<_Cr>(__s));
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Cq = quantity<UNITS, _Cs, RATIO>;
+    return _Cq(_Cq(__q).count() / static_cast<_Cs>(__s));
 }
 
 template
@@ -743,12 +743,12 @@ operator/
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs
 )
 {
-    using _Ct = typename std::common_type
+    using _Cq = typename std::common_type
     <
         quantity<UNITS, STORAGE1, RATIO1>,
         quantity<UNITS, STORAGE2, RATIO2>
     >::type;
-    return _Ct(__lhs).count() / _Ct(__rhs).count();
+    return _Cq(__lhs).count() / _Cq(__rhs).count();
 }
 
 // quantity %
@@ -765,13 +765,13 @@ constexpr
 typename __quantity_divide_result<quantity<UNITS, STORAGE1, RATIO>, STORAGE2>::type
 operator%
 (
-    const quantity<STORAGE1, RATIO>& __d,
+    const quantity<STORAGE1, RATIO>& __q,
     const STORAGE2& __s
 )
 {
-    using _Cr = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using _Cd = quantity<UNITS, _Cr, RATIO>;
-    return _Cd(_Cd(__d).count() % static_cast<_Cr>(__s));
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Cq = quantity<UNITS, _Cs, RATIO>;
+    return _Cq(_Cq(__q).count() % static_cast<_Cs>(__s));
 }
 
 template
@@ -791,9 +791,9 @@ operator%
     const quantity<UNITS, STORAGE2, RATIO2>& __rhs
 )
 {
-    using _Cr = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using _Cd = typename std::common_type<quantity<UNITS, STORAGE1, RATIO1>, quantity<UNITS, STORAGE2, RATIO2> >::type;
-    return _Cd(static_cast<_Cr>(_Cd(__lhs).count()) % static_cast<_Cr>(_Cd(__rhs).count()));
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Cq = typename std::common_type<quantity<UNITS, STORAGE1, RATIO1>, quantity<UNITS, STORAGE2, RATIO2> >::type;
+    return _Cq(static_cast<_Cs>(_Cq(__lhs).count()) % static_cast<_Cs>(_Cq(__rhs).count()));
 }
 
 // multiply to derived type
