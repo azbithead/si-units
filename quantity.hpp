@@ -701,6 +701,7 @@ struct __quantity_divide_result
 {
 };
 
+// divide quantity by scalar
 template
 <
     typename UNITS,
@@ -726,6 +727,7 @@ operator/
     return _Cq(_Cq(__q).count() / static_cast<_Cs>(__s));
 }
 
+// divide quantity by quantity
 template
 <
     typename UNITS,

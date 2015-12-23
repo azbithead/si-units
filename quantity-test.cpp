@@ -58,4 +58,8 @@ int main( int aArgCount, char* aArgs[] )
     // scalar multiply si::quantity
     static_assert( ( m_t{ 1 } * 2.1 ).count() == 2.1, "" );
     static_assert( ( 2 * m_t{ 1 } ).count() == 2, "" );
+
+    // si::quantity divide by scalar
+    static_assert( ( m_t{ 2 } / 2 ).count() == 1, "" );
+    static_assert( ( m_t{ 2 } / 2.0 ).count() == 1.0, "" );
 }
