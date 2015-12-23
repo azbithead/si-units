@@ -7,6 +7,7 @@ int main( int aArgCount, char* aArgs[] )
 {
     using mm_t = si::quantity<si::meters,int,std::milli>;
     using m_t = si::quantity<si::meters,int>;
+    using s_t = si::quantity<si::seconds,int>;
 
     // si::is_quantity
     static_assert( !si::is_quantity< int >, "" );
@@ -62,4 +63,13 @@ int main( int aArgCount, char* aArgs[] )
     // si::quantity divide by scalar
     static_assert( ( m_t{ 2 } / 2 ).count() == 1, "" );
     static_assert( ( m_t{ 2 } / 2.0 ).count() == 1.0, "" );
+
+    // si::quantity divide by si::quantity, same units
+    static_assert( ( m_t{ 2 } / m_t{ 2 } ) == 1, "" );
+
+    // si::quantity divide by si::quantity, different units
+    static_assert( ( m_t{ 2 } / s_t{ 2 } ).count() == 1, "" );
+    using mpers_t = decltype( m_t{ 2 } / s_t{ 2 } );
+    static_assert( mpers_t::units_t::length::value == 1, "" );
+    static_assert( mpers_t::units_t::time::value == -1, "" );
 }

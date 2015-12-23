@@ -580,8 +580,7 @@ operator-
     return _Cq(_Cq(__lhs).count() - _Cq(__rhs).count());
 }
 
-// quantity *
-
+// quantity * scalar
 template <typename UNITS, typename STORAGE1, typename RATIO, typename STORAGE2>
 inline
 constexpr
@@ -610,6 +609,7 @@ operator*
     return _Cq(_Cq(__q).count() * static_cast<_Cs>(__s));
 }
 
+// scalar * quantity
 template <typename UNITS, typename STORAGE1, typename RATIO, typename STORAGE2>
 inline
 constexpr
@@ -727,7 +727,7 @@ operator/
     return _Cq(_Cq(__q).count() / static_cast<_Cs>(__s));
 }
 
-// divide quantity by quantity
+// divide quantity by quantity, same units
 template
 <
     typename UNITS,
@@ -751,6 +751,41 @@ operator/
         quantity<UNITS, STORAGE2, RATIO2>
     >::type;
     return _Cq(__lhs).count() / _Cq(__rhs).count();
+}
+
+// divide quantity by quantity, different units
+template
+<
+    typename UNITS1,
+    typename STORAGE1,
+    typename RATIO1,
+    typename UNITS2,
+    typename STORAGE2,
+    typename RATIO2
+>
+inline
+constexpr
+typename std::enable_if
+<
+    !std::is_same<UNITS1,UNITS2>::value,
+    quantity
+    <
+        divide_units<UNITS1, UNITS2>,
+        typename std::common_type<STORAGE1, STORAGE2>::type,
+        ratio_gcd<RATIO1, RATIO2>
+    >
+>::type
+operator/
+(
+    const quantity<UNITS1, STORAGE1, RATIO1>& __lhs,
+    const quantity<UNITS2, STORAGE2, RATIO2>& __rhs
+)
+{
+    using _Cu = divide_units<UNITS1, UNITS2>;
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Cr = ratio_gcd<RATIO1, RATIO2>;
+    using _Cq = quantity<_Cu, _Cs, _Cr>;
+    return _Cq(__lhs.count() / __rhs.count() );
 }
 
 // quantity %
