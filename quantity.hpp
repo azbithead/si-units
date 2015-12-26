@@ -18,17 +18,8 @@ struct is_quantity_impl : std::false_type {};
 template <typename UNITS, typename STORAGE, typename RATIO>
 struct is_quantity_impl<quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
 
-template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity_impl<const quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
-
-template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity_impl<volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
-
-template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity_impl<const volatile quantity<UNITS, STORAGE, RATIO> > : std::true_type {};
-
 template <typename T>
-constexpr bool is_quantity = is_quantity_impl<T>::value;
+constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<T>::type>::value;
 
 //------------------------------------------------------------------------------
 /// @param _Xp an integer value
