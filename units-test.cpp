@@ -21,4 +21,7 @@ int main( int aArgCount, char* aArgs[] )
 
     // divide_units
     static_assert( std::is_same<si::units<1,-1>, si::divide_units<si::kilograms,si::meters>>::value, "" );
+
+    // exponentiate_units
+    static_assert( std::is_same<si::units<2,-2>, si::exponentiate_units<si::units<1,-1>,2>>::value, "" );
 }
