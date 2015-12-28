@@ -1,7 +1,10 @@
 #include "quantity.hpp"
 
-template< class T, class U >
+template< typename T, typename U >
 constexpr bool is_same = std::is_same<T, U>::value;
+
+template< typename T, typename S, typename R, typename U >
+constexpr bool is_q = is_same< T, const si::quantity<S, R, U> >;
 
 int main( int aArgCount, char* aArgs[] )
 {
@@ -51,14 +54,31 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( !(m_t{ 1 } < m_t{ 1 }), "" );
 
     // add si::quantity to si::quantity
-    static_assert( (m_t{ 1 } + mm_t{ 1 }).count() == 1001, "" );
+    {
+    constexpr auto theResult = m_t{ 1 } + mm_t{ 1 };
+    static_assert( theResult.count() == 1001, "" );
+    static_assert( is_q<decltype( theResult ), int, std::milli, si::meters>, "" );
+    }
 
     // subtract si::quantity from si::quantity
-    static_assert( (m_t{ 1 } - mm_t{ 1 }).count() == 999, "" );
+    {
+    constexpr auto theResult = m_t{ 1 } - mm_t{ 1 };
+    static_assert( theResult.count() == 999, "" );
+    static_assert( is_q<decltype( theResult ), int, std::milli, si::meters>, "" );
+    }
 
     // multiply si::quantity by scalar
-    static_assert( ( m_t{ 1 } * 2.1 ).count() == 2.1, "" );
-    static_assert( ( 2 * m_t{ 1 } ).count() == 2, "" );
+    {
+    constexpr auto theResult = m_t{ 1 } * 2.1;
+    static_assert( theResult.count() == 2.1, "" );
+    static_assert( is_q<decltype( theResult ), double, std::ratio<1>, si::meters>, "" );
+    }
+
+    {
+    constexpr auto theResult = 2 * m_t{ 1 };
+    static_assert( theResult.count() == 2, "" );
+    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::meters>, "" );
+    }
 
 #if 0
     // multiply si::quantity by si::quantity
@@ -69,25 +89,27 @@ int main( int aArgCount, char* aArgs[] )
 #endif
 
     // divide si::quantity by scalar
-    static_assert( ( m_t{ 2 } / 2 ).count() == 1, "" );
-    static_assert( ( m_t{ 2 } / 2.0 ).count() == 1.0, "" );
+    {
+    constexpr auto theResult = m_t{ 2 } / 2;
+    static_assert( theResult.count() == 1, "" );
+    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::meters>, "" );
+    }
+
+    {
+    constexpr auto theResult = m_t{ 2 } / 2.0;
+    static_assert( theResult.count() == 1.0, "" );
+    static_assert( is_q<decltype( theResult ), double, std::ratio<1>, si::meters>, "" );
+    }
 
     // divide si::quantity by si::quantity, same units
     static_assert( ( m_t{ 2 } / mm_t{ 2 } ) == 1000, "" );
 
     // divide si::quantity by si::quantity, different units
-    constexpr auto theResult2 = m_t{ 2 } / s_t{ 2 };
-    static_assert( theResult2.count() == 1, "" );
-    static_assert( is_same
-    <
-        decltype( theResult2 ),
-        const si::quantity
-        <
-            int,
-            std::ratio<1,1>,
-            si::units<0,1,-1>
-        >
-    >, "" );
+    {
+    constexpr auto theResult = m_t{ 2 } / s_t{ 2 };
+    static_assert( theResult.count() == 1, "" );
+    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::units<0,1,-1>>, "" );
+    }
 
 #if 0
     // modulo si::quantity by scalar
