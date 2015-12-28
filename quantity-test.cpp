@@ -57,14 +57,14 @@ int main( int aArgCount, char* aArgs[] )
     {
     constexpr auto theResult = m_t{ 1 } + mm_t{ 1 };
     static_assert( theResult.count() == 1001, "" );
-    static_assert( is_q<decltype( theResult ), int, std::milli, si::meters>, "" );
+    static_assert( is_same<decltype( theResult ), const mm_t>, "" );
     }
 
     // subtract si::quantity from si::quantity
     {
     constexpr auto theResult = m_t{ 1 } - mm_t{ 1 };
     static_assert( theResult.count() == 999, "" );
-    static_assert( is_q<decltype( theResult ), int, std::milli, si::meters>, "" );
+    static_assert( is_same<decltype( theResult ), const mm_t>, "" );
     }
 
     // multiply si::quantity by scalar
@@ -77,7 +77,7 @@ int main( int aArgCount, char* aArgs[] )
     {
     constexpr auto theResult = 2 * m_t{ 1 };
     static_assert( theResult.count() == 2, "" );
-    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::meters>, "" );
+    static_assert( is_same<decltype( theResult ), const m_t>, "" );
     }
 
 #if 0
@@ -92,7 +92,7 @@ int main( int aArgCount, char* aArgs[] )
     {
     constexpr auto theResult = m_t{ 2 } / 2;
     static_assert( theResult.count() == 1, "" );
-    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::meters>, "" );
+    static_assert( is_same<decltype( theResult ), const m_t>, "" );
     }
 
     {
@@ -111,10 +111,10 @@ int main( int aArgCount, char* aArgs[] )
     static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::units<0,1,-1>>, "" );
     }
 
-#if 0
     // modulo si::quantity by scalar
-    constexpr theResult3 = m_t{ 3 } % 2;
-    static_assert( theResult3.count() == 1, "" );
-    using r3_t = decltype( theResult3 );
-#endif
+    {
+    constexpr auto theResult = m_t{ 3 } % 2;
+    static_assert( theResult.count() == 1, "" );
+    static_assert( is_same<decltype( theResult ), const m_t>, "" );
+    }
 }
