@@ -140,4 +140,22 @@ using degreesk =  units<0,0,0,0,1>;
 using candelas =  units<0,0,0,0,0,1>;
 using radians =   units<0,0,0,0,0,0,1>;
 
+//------------------------------------------------------------------------------
+/// Derived units
+using steradians = exponentiate_units<radians, 2>;
+using hertz =      reciprocal_units<seconds>;
+using newtons =    divide_units<multiply_units<kilograms, meters>, exponentiate_units<seconds, 2>>;
+using pascals =    divide_units<newtons, exponentiate_units<meters, 2>>;
+using joules =     multiply_units<newtons, meters>;
+using watts =      divide_units<joules, seconds>;
+using coulombs =   multiply_units<amperes, seconds>;
+using volts =      divide_units<watts, amperes>;
+using farads =     divide_units<coulombs, volts>;
+using ohms =       divide_units<volts, amperes>;
+using webers =     multiply_units<volts, seconds>;
+using teslas =     divide_units<webers, exponentiate_units<meters, 2>>;
+using henries =    divide_units<webers, amperes>;
+using lumens =     multiply_units<candelas, steradians>;
+using lux =        divide_units<candelas, exponentiate_units<meters, 2>>;
+
 } // end of namespace si
