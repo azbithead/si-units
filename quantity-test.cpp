@@ -106,9 +106,12 @@ int main( int aArgCount, char* aArgs[] )
 
     // divide si::quantity by si::quantity, different units
     {
-    constexpr auto theResult = m_t{ 2 } / s_t{ 2 };
-    static_assert( theResult.count() == 1, "" );
-    static_assert( is_q<decltype( theResult ), int, std::ratio<1>, si::units<0,1,-1>>, "" );
+    using km_t = si::quantity<int,std::kilo,si::meters>;
+    using hours_t = si::quantity<int,std::ratio<60*60>,si::seconds>;
+    using mpers_t = si::divide_units<si::meters,si::seconds>;
+    constexpr auto theResult = km_t{ 6 } / hours_t{ 2 };
+    static_assert( theResult.count() == 3, "" );
+    static_assert( is_q<decltype( theResult ), int, std::ratio<5,18>, mpers_t>, "" );
     }
 
     // modulo si::quantity by scalar
