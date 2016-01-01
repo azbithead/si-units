@@ -1,5 +1,6 @@
-#include "units.hpp"
+#pragma once
 #include <ostream>
+#include "units.hpp"
 
 namespace
 {
