@@ -1,3 +1,4 @@
+#pragma once
 #include <type_traits>
 #include <ratio>
 #include <limits>
@@ -268,10 +269,10 @@ constexpr bool is_ratio = is_ratio_impl<_Tp>::value;
 template <typename STORAGE, typename RATIO, typename UNITS>
 class quantity
 {
-    static_assert(is_units<UNITS>, "quantity units must be of type si::units" );
-    static_assert(!is_quantity<STORAGE>, "Storage for a quantity cannot be a quantity");
-    static_assert(is_ratio<RATIO>, "Third template parameter of quantity must be a std::ratio");
-    static_assert(RATIO::num > 0, "quantity exponents must be positive");
+    static_assert(std::is_arithmetic<STORAGE>::value, "First template parameter of si::quantity must be an arithmetic type");
+    static_assert(is_ratio<RATIO>, "Second template parameter of si::quantity must be of type std::ratio");
+    static_assert(RATIO::num > 0, "Second template parameter of si::quantity must have positive numerator");
+    static_assert(is_units<UNITS>, "Third template parameter of si::quantity units must be of type si::units" );
 
     template <typename _R1, typename _R2>
     struct __no_overflow
@@ -608,9 +609,10 @@ inline
 constexpr
 typename std::enable_if
 <
+    !is_quantity<STORAGE2> &&
     std::is_convertible
     <
-        STORAGE1,
+        STORAGE2,
         typename std::common_type<STORAGE1, STORAGE2>::type
     >::value,
     quantity
@@ -622,12 +624,54 @@ typename std::enable_if
 >::type
 operator*
 (
-    const STORAGE1& __s,
-    const quantity<STORAGE2, RATIO, UNITS>& __q
+    const STORAGE2& __s,
+    const quantity<STORAGE1, RATIO, UNITS>& __q
 )
 {
     return __q * __s;
 }
+
+// quantity * quantity
+#if 0
+template
+<
+    typename UNITS1,
+    typename STORAGE1,
+    typename RATIO1,
+    typename UNITS2,
+    typename STORAGE2,
+    typename RATIO2
+>
+inline
+constexpr
+quantity
+<
+    typename std::common_type<STORAGE1, STORAGE2>::type,
+    std::ratio_multiply<RATIO1, RATIO2>,
+    multiply_units<UNITS1, UNITS2>
+>
+operator*
+(
+    const quantity<STORAGE1, RATIO1, UNITS1>& __lhs,
+    const quantity<STORAGE2, RATIO2, UNITS2>& __rhs
+)
+{
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using _Result = quantity
+    <
+        multiply_units<UNITS1, UNITS2>,
+        _Cs,
+        std::ratio_multiply<RATIO1, RATIO2>
+    >;
+
+    return _Result
+    (
+        static_cast<_Cs>( __lhs.count() )
+        *
+        static_cast<_Cs>( __rhs.count() )
+    );
+}
+#endif
 
 // quantity /
 
@@ -644,11 +688,11 @@ struct __quantity_divide_result
 template
 <
     typename _Q,
-    typename STORAGE2,
+    typename STORAGE,
     bool = std::is_convertible
     <
-        STORAGE2,
-        typename std::common_type<typename _Q::storage_t, STORAGE2>::type
+        STORAGE,
+        typename std::common_type<typename _Q::storage_t, STORAGE>::type
     >::value
 >
 struct __quantity_divide_imp
@@ -657,9 +701,9 @@ struct __quantity_divide_imp
 
 template
 <
-    typename UNITS,
     typename STORAGE1,
     typename RATIO,
+    typename UNITS,
     typename STORAGE2
 >
 struct __quantity_divide_imp
@@ -679,9 +723,9 @@ struct __quantity_divide_imp
 
 template
 <
-    typename UNITS,
     typename STORAGE1,
     typename RATIO,
+    typename UNITS,
     typename STORAGE2
 >
 struct __quantity_divide_result
@@ -746,6 +790,22 @@ operator/
     return _Cq(__lhs).count() / _Cq(__rhs).count();
 }
 
+template
+<
+    typename STORAGE1,
+    typename RATIO1,
+    typename UNITS1,
+    typename STORAGE2,
+    typename RATIO2,
+    typename UNITS2
+>
+using __diff_units_result = quantity
+<
+    typename std::common_type<STORAGE1, STORAGE2>::type,
+    std::ratio_divide<RATIO1, RATIO2>,
+    divide_units<UNITS1, UNITS2>
+>;
+
 // divide quantity by quantity, different units
 template
 <
@@ -761,12 +821,7 @@ constexpr
 typename std::enable_if
 <
     !std::is_same<UNITS1,UNITS2>::value,
-    quantity
-    <
-        typename std::common_type<STORAGE1, STORAGE2>::type,
-        ratio_gcd<RATIO1, RATIO2>,
-        divide_units<UNITS1, UNITS2>
-    >
+    __diff_units_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2, UNITS2>
 >::type
 operator/
 (
@@ -774,11 +829,8 @@ operator/
     const quantity<STORAGE2, RATIO2, UNITS2>& __rhs
 )
 {
-    using _Cu = divide_units<UNITS1, UNITS2>;
-    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using _Cr = ratio_gcd<RATIO1, RATIO2>;
-    using _Cq = quantity<_Cs, _Cr, _Cu>;
-    return _Cq(__lhs.count() / __rhs.count() );
+    using _Cq = __diff_units_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2, UNITS2>;
+    return _Cq( __lhs.count() / __rhs.count() );
 }
 
 // quantity %
