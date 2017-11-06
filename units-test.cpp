@@ -1,6 +1,6 @@
 #include "units.hpp"
 
-int main( int aArgCount, char* aArgs[] )
+int main( int, char*[] )
 {
     // si::is_units
     static_assert( !si::is_units< int >, "" );

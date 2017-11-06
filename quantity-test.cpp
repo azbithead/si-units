@@ -6,7 +6,7 @@ constexpr bool is_same = std::is_same<T, U>::value;
 template< typename T, typename S, typename R, typename U >
 constexpr bool is_q = is_same< T, const si::quantity<S, R, U> >;
 
-int main( int aArgCount, char* aArgs[] )
+int main( int, char*[] )
 {
     using mm_t = si::quantity<int, std::milli, si::meters>;
     using m_t = si::quantity<int, std::ratio<1>, si::meters>;
