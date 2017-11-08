@@ -15,22 +15,24 @@ template<>
 constexpr wchar_t power_char<wchar_t> = L'^';
 
 template< typename CharT >
-void
-output_exp
+std::basic_string<CharT>
+string_from_exp
 (
-    std::basic_ostream<CharT>& aStream,
     const CharT* const aAbbreviation,
     int aExp
 )
 {
+    std::basic_string<CharT> theResult;
     if( aExp != 0 )
     {
-        aStream << aAbbreviation;
+        theResult += aAbbreviation;
         if( aExp != 1 )
         {
-            aStream << power_char<CharT> << aExp;
+            theResult += power_char<CharT> + std::to_string(aExp);
         }
     }
+
+    return theResult;
 }
 
 } // end of anonymous namespace
@@ -77,22 +79,21 @@ template
     int Li,
     int A
 >
-std::basic_ostream<CharT>&
-operator <<
+std::basic_string<CharT>
+to_string
 (
-    std::basic_ostream<CharT>& aStream,
     const si::units<M,L,T,C,Tp,Li,A>& aUnits
 )
 {
-    output_exp( aStream, mass_abbrev<CharT>, aUnits.mass_exp() );
-    output_exp( aStream, length_abbrev<CharT>, aUnits.length_exp() );
-    output_exp( aStream, time_abbrev<CharT>, aUnits.time_exp() );
-    output_exp( aStream, current_abbrev<CharT>, aUnits.current_exp() );
-    output_exp( aStream, temperature_abbrev<CharT>, aUnits.temperature_exp() );
-    output_exp( aStream, light_abbrev<CharT>, aUnits.light_exp() );
-    output_exp( aStream, angle_abbrev<CharT>, aUnits.angle_exp() );
-
-    return aStream;
+    return
+    string_from_exp( mass_abbrev<CharT>, aUnits.mass_exp() ) +
+    string_from_exp( length_abbrev<CharT>, aUnits.length_exp() ) +
+    string_from_exp( time_abbrev<CharT>, aUnits.time_exp() ) +
+    string_from_exp( current_abbrev<CharT>, aUnits.current_exp() ) +
+    string_from_exp( temperature_abbrev<CharT>, aUnits.temperature_exp() ) +
+    string_from_exp( light_abbrev<CharT>, aUnits.light_exp() ) +
+    string_from_exp( angle_abbrev<CharT>, aUnits.angle_exp() );
 }
 
+}
 } // end of namespace si
