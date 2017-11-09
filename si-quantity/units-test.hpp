@@ -1,3 +1,3 @@
 #pragma once
 
-void run_units_test();
+void run_units_tests();

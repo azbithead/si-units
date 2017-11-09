@@ -1,5 +1,5 @@
 #pragma once
-#include <ostream>
+#include <string>
 #include "units.hpp"
 
 namespace
@@ -13,27 +13,6 @@ constexpr char power_char<char> = '^';
 
 template<>
 constexpr wchar_t power_char<wchar_t> = L'^';
-
-template< typename CharT >
-std::basic_string<CharT>
-string_from_exp
-(
-    const CharT* const aAbbreviation,
-    int aExp
-)
-{
-    std::basic_string<CharT> theResult;
-    if( aExp != 0 )
-    {
-        theResult += aAbbreviation;
-        if( aExp != 1 )
-        {
-            theResult += power_char<CharT> + std::to_string(aExp);
-        }
-    }
-
-    return theResult;
-}
 
 } // end of anonymous namespace
 
@@ -68,6 +47,94 @@ template< typename CharT > constexpr CharT angle_abbrev[4] = {0,0,0,0};
 template<> constexpr char angle_abbrev<char>[4] = "rad";
 template<> constexpr wchar_t angle_abbrev<wchar_t>[4] = L"rad";
 
+template< typename CharT, typename ValueT >
+std::basic_string<CharT>
+string_from_scalar
+(
+    ValueT aValue
+);
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, int>
+(
+    int aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, int>
+(
+    int aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, std::intmax_t>
+(
+    std::intmax_t aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, std::intmax_t>
+(
+    std::intmax_t aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, double>
+(
+    double aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, double>
+(
+    double aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
+template< typename CharT >
+std::basic_string<CharT>
+string_from_exp
+(
+    const CharT* const aAbbreviation,
+    int aExp
+)
+{
+    std::basic_string<CharT> theResult;
+    if( aExp != 0 )
+    {
+        theResult += aAbbreviation;
+        if( aExp != 1 )
+        {
+            theResult += power_char<CharT> + string_from_scalar<CharT,int>(aExp);
+        }
+    }
+
+    return theResult;
+}
+
 template
 <
     typename CharT,
@@ -80,7 +147,7 @@ template
     int A
 >
 std::basic_string<CharT>
-to_string
+string_from_units
 (
     const si::units<M,L,T,C,Tp,Li,A>& aUnits
 )
@@ -95,5 +162,4 @@ to_string
     string_from_exp( angle_abbrev<CharT>, aUnits.angle_exp() );
 }
 
-}
 } // end of namespace si

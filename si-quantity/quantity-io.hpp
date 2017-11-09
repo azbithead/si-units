@@ -1,5 +1,5 @@
 #pragma once
-#include <ostream>
+#include <string>
 #include "quantity.hpp"
 #include "units-io.hpp"
 
@@ -35,14 +35,13 @@ template
     std::intmax_t Num,
     std::intmax_t Den
 >
-std::basic_ostream<CharT>&
-operator <<
+std::basic_string<CharT>
+string_from_ratio
 (
-    std::basic_ostream<CharT>& aStream,
-    const std::ratio<Num, Den>& aRatio
+    std::ratio<Num, Den> aRatio
 )
 {
-    return aStream << aRatio.num << divide_char<CharT> << aRatio.den;
+    return string_from_scalar<CharT,std::intmax_t>(aRatio.num) + divide_char<CharT> + string_from_scalar<CharT,std::intmax_t>(aRatio.den);
 }
 
 template
@@ -52,23 +51,22 @@ template
     typename Ratio,
     typename Units
 >
-std::basic_ostream<CharT>&
-operator <<
+std::basic_string<CharT>
+string_from_quantity
 (
-    std::basic_ostream<CharT>& aStream,
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    aStream << aQuantity.count();
+    auto theResult = string_from_scalar<CharT,Storage>(aQuantity.count());
 
     if( !(aQuantity.ratio().num == 1 && aQuantity.ratio().den == 1) )
     {
-        aStream << multiply_char<CharT> << aQuantity.ratio();
+        theResult += multiply_char<CharT> + string_from_ratio<CharT>(aQuantity.ratio());
     }
 
-    aStream << aQuantity.units();
+    theResult += string_from_units<CharT>(aQuantity.units());
 
-    return aStream;
+    return theResult;
 }
 
 } // end of namespace si

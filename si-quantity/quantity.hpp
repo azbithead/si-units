@@ -632,7 +632,6 @@ operator*
 }
 
 // quantity * quantity
-#if 0
 template
 <
     typename UNITS1,
@@ -659,9 +658,9 @@ operator*
     using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
     using _Result = quantity
     <
-        multiply_units<UNITS1, UNITS2>,
         _Cs,
-        std::ratio_multiply<RATIO1, RATIO2>
+        std::ratio_multiply<RATIO1, RATIO2>,
+        multiply_units<UNITS1, UNITS2>
     >;
 
     return _Result
@@ -671,7 +670,6 @@ operator*
         static_cast<_Cs>( __rhs.count() )
     );
 }
-#endif
 
 // quantity /
 
@@ -833,6 +831,32 @@ operator/
     return _Cq( __lhs.count() / __rhs.count() );
 }
 
+// divide scalar by quantity
+template
+<
+    typename STORAGE1,
+    typename RATIO,
+    typename UNITS,
+    typename STORAGE2
+>
+inline
+constexpr
+quantity
+<
+    typename std::common_type<STORAGE1, STORAGE2>::type,
+    std::ratio_divide<std::ratio<1>, RATIO>,
+    reciprocal_units<UNITS>
+>
+operator/
+(
+    const STORAGE2& __s,
+    const quantity<STORAGE1, RATIO, UNITS>& __q
+)
+{
+    using _Cs = typename std::common_type<STORAGE1, STORAGE2>::type;
+    return quantity<_Cs, std::ratio<1>, scalar>{__s} / __q;
+}
+
 // quantity %
 
 template
@@ -965,9 +989,9 @@ divide
 // reciprocal to derived type
 template
 <
-    typename UNITS,
     typename STORAGE,
-    typename RATIO
+    typename RATIO,
+    typename UNITS
 >
 using reciprocal_result = quantity
 <
@@ -978,20 +1002,19 @@ using reciprocal_result = quantity
 
 template
 <
-    typename UNITS,
-    typename UNITS1,
     typename STORAGE,
-    typename RATIO
+    typename RATIO,
+    typename UNITS
 >
 inline
 constexpr
-reciprocal_result<UNITS, STORAGE, RATIO>
+reciprocal_result<STORAGE, RATIO, UNITS>
 reciprocal
 (
-    const quantity<STORAGE, RATIO, UNITS1>& input
+    const quantity<STORAGE, RATIO, UNITS>& input
 )
 {
-    using RT = reciprocal_result<UNITS, STORAGE, RATIO>;
+    using RT = reciprocal_result<STORAGE, RATIO, UNITS>;
 
     using CS = typename RT::storage_t;
 
