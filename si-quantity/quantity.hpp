@@ -269,10 +269,10 @@ constexpr bool is_ratio = is_ratio_impl<_Tp>::value;
 template <typename STORAGE, typename RATIO, typename UNITS>
 class quantity
 {
-    static_assert(std::is_arithmetic<STORAGE>::value, "First template parameter of si::quantity must be an arithmetic type");
-    static_assert(is_ratio<RATIO>, "Second template parameter of si::quantity must be of type std::ratio");
-    static_assert(RATIO::num > 0, "Second template parameter of si::quantity must have positive numerator");
-    static_assert(is_units<UNITS>, "Third template parameter of si::quantity units must be of type si::units" );
+    static_assert(std::is_arithmetic<STORAGE>::value, "STORAGE template parameter of si::quantity must be an arithmetic type");
+    static_assert(is_ratio<RATIO>, "RATIO template parameter of si::quantity must be of type std::ratio");
+    static_assert(RATIO::num > 0, "RATIO template parameter of si::quantity must have positive numerator");
+    static_assert(is_units<UNITS>, "UNITS template parameter of si::quantity units must be of type si::units" );
 
     template <typename _R1, typename _R2>
     struct __no_overflow
