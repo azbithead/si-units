@@ -162,7 +162,7 @@ static_assert( m_t::min().count() == std::numeric_limits<m_t::storage_t>::min(),
 // max()
 static_assert( m_t::max().count() == std::numeric_limits<m_t::storage_t>::max(), "" );
 
-void assertf( bool aInvariant, int aLineNumber )
+constexpr inline void assertf( bool aInvariant, int aLineNumber )
 {
     if( !aInvariant )
     {

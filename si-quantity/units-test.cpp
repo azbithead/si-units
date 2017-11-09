@@ -6,6 +6,12 @@ namespace
 
 using namespace si;
 
+// equality
+static_assert( radians{} == units<0,0,0,0,0,0,1>{}, "" );
+
+// inequality
+static_assert( radians{} != henries{}, "" );
+
 // is_units
 static_assert( !is_units< int >, "" );
 static_assert( is_units< scalar >, "" );
