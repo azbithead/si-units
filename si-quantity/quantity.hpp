@@ -857,8 +857,7 @@ operator/
     return quantity<_Cs, std::ratio<1>, scalar>{__s} / __q;
 }
 
-// quantity %
-
+// modulo quantity by scalar
 template
 <
     typename UNITS,
@@ -880,6 +879,7 @@ operator%
     return _Cq(_Cq(__q).count() % static_cast<_Cs>(__s));
 }
 
+// modulo quantity by quantity
 template
 <
     typename UNITS,

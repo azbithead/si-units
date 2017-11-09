@@ -35,6 +35,65 @@ struct units
     static constexpr int angle_exp() { return angle::value; }
 };
 
+template
+<
+    int Mass1,
+    int Length1,
+    int Time1,
+    int Current1,
+    int Temperature1,
+    int Light1,
+    int Angle1,
+    int Mass2,
+    int Length2,
+    int Time2,
+    int Current2,
+    int Temperature2,
+    int Light2,
+    int Angle2
+>
+constexpr bool operator ==
+(
+    units<Mass1,Length1,Time1,Current1,Temperature1,Light1,Angle1> u1,
+    units<Mass2,Length2,Time2,Current2,Temperature2,Light2,Angle2> u2
+)
+{
+    return
+        u1.mass_exp() == u2.mass_exp() &&
+        u1.length_exp() == u2.length_exp() &&
+        u1.time_exp() == u2.time_exp() &&
+        u1.current_exp() == u2.current_exp() &&
+        u1.temperature_exp() == u2.temperature_exp() &&
+        u1.light_exp() == u2.light_exp() &&
+        u1.angle_exp() == u2.angle_exp();
+}
+
+template
+<
+    int Mass1,
+    int Length1,
+    int Time1,
+    int Current1,
+    int Temperature1,
+    int Light1,
+    int Angle1,
+    int Mass2,
+    int Length2,
+    int Time2,
+    int Current2,
+    int Temperature2,
+    int Light2,
+    int Angle2
+>
+constexpr bool operator !=
+(
+    units<Mass1,Length1,Time1,Current1,Temperature1,Light1,Angle1> u1,
+    units<Mass2,Length2,Time2,Current2,Temperature2,Light2,Angle2> u2
+)
+{
+    return !(u1 == u2);
+}
+
 template< typename T >
 struct is_units_impl : std::false_type {};
 
