@@ -102,19 +102,18 @@ struct exponentiate_units_impl
 
 //------------------------------------------------------------------------------
 /// Raise an si::units type to a power.
-/// @param Units an si::units type that is the base
-/// @param Num the numerator of the power
-/// @param Den the denominator of the power
-/// @return the si::units type that is the exponentiation of Units by std::ratio<Num,Den>
-template< typename aUnits, std::intmax_t Num, std::intmax_t Den = 1 >
-using exponentiate_units = typename exponentiate_units_impl< aUnits, std::ratio<Num,Den> >::type;
+/// @param aUnits an si::units type
+/// @param aPower the power to which aUnits is raised
+/// @return the si::units type that is aUnits raised to aPower
+template< typename aUnits, std::intmax_t aPower >
+using power_units = typename exponentiate_units_impl<aUnits, std::ratio<aPower,1>>::type;
 
 //------------------------------------------------------------------------------
 /// The reciprocal of an si::units type.
 /// @param aUnits an si::units type
 /// @return the si::units type that is the reciprocal of aUnits
 template< typename aUnits >
-using reciprocal_units = exponentiate_units< aUnits, -1>;
+using reciprocal_units = typename exponentiate_units_impl<aUnits, std::ratio<-1,1>>::type;
 
 //------------------------------------------------------------------------------
 /// The quotient of two si::units types.
@@ -125,19 +124,12 @@ template< typename aDividend, typename aDivisor >
 using divide_units = multiply_units< aDividend, reciprocal_units< aDivisor > >;
 
 //------------------------------------------------------------------------------
-/// The modulo of two si::units types.
-/// @param aDividend an si::units type
-/// @param aDivisor an si::units type
-/// @return the si::units type that is the remainder of dividing aDividend by aDivisor
-template< typename aDividend, typename aDivisor >
-using modulo_units = aDividend;
-
-//------------------------------------------------------------------------------
-/// The square of an si::units type.
+/// Get the root an si::units type.
 /// @param aUnits an si::units type
-/// @return the si::units type that is the square of aUnits
-template< typename aUnits >
-using square_units = exponentiate_units<aUnits, 2>;
+/// @param aRoot the root to be gotten
+/// @return the si::units type that is the root aRoot of aUnits
+template< typename aUnits, std::intmax_t aRoot >
+using root_units = typename exponentiate_units_impl<aUnits, std::ratio<1,aRoot>>::type;
 
 //------------------------------------------------------------------------------
 /// Base units

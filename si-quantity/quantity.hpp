@@ -827,6 +827,24 @@ operator%
     return Result_t(Result_t(aQuantity).value() % static_cast<ResultStorage_t>(aScalar));
 }
 
+#if 0
+template
+<
+    typename STORAGE1,
+    typename RATIO1,
+    typename UNITS1,
+    typename STORAGE2,
+    typename RATIO2
+>
+using mod_result = quantity
+<
+    typename std::common_type<STORAGE1, STORAGE2>::type,
+    std::ratio_divide<RATIO1, RATIO2>,
+    UNITS1
+>;
+
+//------------------------------------------------------------------------------
+// modulo quantity by quantity
 template
 <
     typename STORAGE1,
@@ -836,38 +854,21 @@ template
     typename RATIO2,
     typename UNITS2
 >
-using mod_result = quantity
-<
-    typename std::common_type<STORAGE1, STORAGE2>::type,
-    std::ratio_divide<RATIO1, RATIO2>,
-    modulo_units<UNITS1, UNITS2>
->;
-
-//------------------------------------------------------------------------------
-// modulo quantity by quantity
-//template
-//<
-//    typename STORAGE1,
-//    typename RATIO1,
-//    typename UNITS1,
-//    typename STORAGE2,
-//    typename RATIO2,
-//    typename UNITS2
-//>
-//inline
-//constexpr
-//mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>
-//operator%
-//(
-//    const quantity<STORAGE1, RATIO1, UNITS1>& aLHS,
-//    const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
-//)
-//{
-//    using Result_t = mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>;
-//    using ResultStorage_t = typename Result_t::storage_t;
-//    auto x =
-//    return Result_t(static_cast<ResultStorage_t>(Result_t{aLHS.value()}.value % static_cast<ResultStorage_t>(Result_t(aRHS).value()));
-//}
+inline
+constexpr
+mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>
+operator%
+(
+    const quantity<STORAGE1, RATIO1, UNITS1>& aLHS,
+    const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
+)
+{
+    using Result_t = mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>;
+    using ResultStorage_t = typename Result_t::storage_t;
+    auto x =
+    return Result_t(static_cast<ResultStorage_t>(Result_t{aLHS.value()}.value % static_cast<ResultStorage_t>(Result_t(aRHS).value()));
+}
+#endif
 
 template
 <
@@ -883,7 +884,7 @@ using sqrt_result_t = typename std::enable_if
     <
         STORAGE,
         typename ratio_sqrt<RATIO, EPSILON>::type,
-        exponentiate_units<UNITS, 1, 2>
+        root_units<UNITS, 2>
     >
 >::type;
 
@@ -930,22 +931,22 @@ template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using radians = quantity<STORAGE, RATIO, angle>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using steradians = quantity<STORAGE, RATIO, square_units<angle>>;
+using steradians = quantity<STORAGE, RATIO, power_units<angle,2>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using hertz = quantity<STORAGE, RATIO, reciprocal_units<time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, distance>, square_units<time>>>;
+using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, distance>, power_units<time,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using coulombs = quantity<STORAGE, RATIO, multiply_units<current, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lux = quantity<STORAGE, RATIO, divide_units<luminance, square_units<distance>>>;
+using lux = quantity<STORAGE, RATIO, divide_units<luminance, power_units<distance,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, square_units<distance>>>;
+using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, power_units<distance,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using joules = quantity<STORAGE, RATIO, multiply_units<typename newtons<>::units_t, distance>>;
@@ -966,7 +967,7 @@ template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using webers = quantity<STORAGE, RATIO, multiply_units<typename volts<>::units_t, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, square_units<distance>>>;
+using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, power_units<distance,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using henries = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, current>>;
