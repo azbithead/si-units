@@ -23,9 +23,9 @@ template< typename CharT > constexpr CharT mass_abbrev[3] = {0,0,0};
 template<> constexpr char mass_abbrev<char>[3] = "kg";
 template<> constexpr wchar_t mass_abbrev<wchar_t>[3] = L"kg";
 
-template< typename CharT > constexpr CharT length_abbrev[2] = {0,0};
-template<> constexpr char length_abbrev<char>[2] = "m";
-template<> constexpr wchar_t length_abbrev<wchar_t>[2] = L"m";
+template< typename CharT > constexpr CharT distance_abbrev[2] = {0,0};
+template<> constexpr char distance_abbrev<char>[2] = "m";
+template<> constexpr wchar_t distance_abbrev<wchar_t>[2] = L"m";
 
 template< typename CharT > constexpr CharT time_abbrev[2] = {0,0};
 template<> constexpr char time_abbrev<char>[2] = "s";
@@ -116,19 +116,40 @@ string_from_scalar<wchar_t, double>
 
 template< typename CharT >
 std::basic_string<CharT>
-string_from_exp
+string_from_exp_num
 (
     const CharT* const aAbbreviation,
     int aExp
 )
 {
     std::basic_string<CharT> theResult;
-    if( aExp != 0 )
+    if( aExp > 0 )
     {
         theResult += aAbbreviation;
-        if( aExp != 1 )
+        if( aExp > 1 )
         {
             theResult += power_char<CharT> + string_from_scalar<CharT,int>(aExp);
+        }
+    }
+
+    return theResult;
+}
+
+template< typename CharT >
+std::basic_string<CharT>
+string_from_exp_den
+(
+    const CharT* const aAbbreviation,
+    int aExp
+)
+{
+    std::basic_string<CharT> theResult;
+    if( aExp < 0 )
+    {
+        theResult += aAbbreviation;
+        if( aExp < -1 )
+        {
+            theResult += power_char<CharT> + string_from_scalar<CharT,int>(-aExp);
         }
     }
 
@@ -138,28 +159,39 @@ string_from_exp
 template
 <
     typename CharT,
-    int M,
-    int L,
-    int T,
-    int C,
-    int Tp,
-    int Li,
-    int A
+    typename Units
 >
 std::basic_string<CharT>
 string_from_units
 (
-    const si::units<M,L,T,C,Tp,Li,A>& aUnits
 )
 {
-    return
-    string_from_exp( mass_abbrev<CharT>, aUnits.mass_exp() ) +
-    string_from_exp( length_abbrev<CharT>, aUnits.length_exp() ) +
-    string_from_exp( time_abbrev<CharT>, aUnits.time_exp() ) +
-    string_from_exp( current_abbrev<CharT>, aUnits.current_exp() ) +
-    string_from_exp( temperature_abbrev<CharT>, aUnits.temperature_exp() ) +
-    string_from_exp( light_abbrev<CharT>, aUnits.light_exp() ) +
-    string_from_exp( angle_abbrev<CharT>, aUnits.angle_exp() );
+    auto theNum =
+    string_from_exp_num( mass_abbrev<CharT>, Units::mass::value ) +
+    string_from_exp_num( distance_abbrev<CharT>, Units::distance::value ) +
+    string_from_exp_num( time_abbrev<CharT>, Units::time::value ) +
+    string_from_exp_num( current_abbrev<CharT>, Units::current::value ) +
+    string_from_exp_num( temperature_abbrev<CharT>, Units::temperature::value ) +
+    string_from_exp_num( light_abbrev<CharT>, Units::light::value ) +
+    string_from_exp_num( angle_abbrev<CharT>, Units::angle::value );
+    if( theNum.empty() )
+    {
+        theNum = "1";
+    }
+    auto theDen =
+    string_from_exp_den( mass_abbrev<CharT>, Units::mass::value ) +
+    string_from_exp_den( distance_abbrev<CharT>, Units::distance::value ) +
+    string_from_exp_den( time_abbrev<CharT>, Units::time::value ) +
+    string_from_exp_den( current_abbrev<CharT>, Units::current::value ) +
+    string_from_exp_den( temperature_abbrev<CharT>, Units::temperature::value ) +
+    string_from_exp_den( light_abbrev<CharT>, Units::light::value ) +
+    string_from_exp_den( angle_abbrev<CharT>, Units::angle::value );
+    if( !theDen.empty() )
+    {
+        return theNum + '/' + theDen;
+    }
+
+    return theNum;
 }
 
 } // end of namespace si

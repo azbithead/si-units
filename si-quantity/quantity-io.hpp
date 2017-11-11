@@ -57,14 +57,14 @@ string_from_quantity
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    auto theResult = string_from_scalar<CharT,Storage>(aQuantity.count());
+    auto theResult = string_from_scalar<CharT,Storage>(aQuantity.value()) + ' ';
 
-    if( !(aQuantity.ratio().num == 1 && aQuantity.ratio().den == 1) )
+    if( !(aQuantity.ratio.num == 1 && aQuantity.ratio.den == 1) )
     {
-        theResult += multiply_char<CharT> + string_from_ratio<CharT>(aQuantity.ratio());
+        theResult += multiply_char<CharT> + string_from_ratio<CharT>(aQuantity.ratio) + ' ';
     }
 
-    theResult += string_from_units<CharT>(aQuantity.units());
+    theResult += string_from_units<CharT,Units>();
 
     return theResult;
 }

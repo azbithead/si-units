@@ -1,5 +1,7 @@
 #include <iostream>
 #include "quantity.hpp"
+#include "quantity-test.hpp"
+#include "units-test.hpp"
 
 // compile-time unit tests
 namespace
@@ -13,8 +15,8 @@ constexpr bool is_same = std::is_same<T, U>::value;
 template< typename T, typename S, typename R, typename U >
 constexpr bool is_q = is_same< T, const si::quantity<S, R, U> >;
 
-using mm_t = quantity<int, std::milli, meters>;
-using m_t = quantity<int, std::ratio<1>, meters>;
+using mm_t = quantity<int, std::milli, distance>;
+using m_t = quantity<int, std::ratio<1>, distance>;
 
 // is_quantity
 static_assert( !is_quantity< int >, "" );
@@ -34,33 +36,27 @@ static_assert( lcm<4,6> == 12, "" );
 static_assert( is_same<ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
 
 // quantity_cast
-static_assert( quantity_cast<mm_t>( mm_t{5} ).count() == 5, "" );
-static_assert( quantity_cast<m_t>( mm_t{5000} ).count() == 5, "" );
-static_assert( quantity_cast<mm_t>( m_t{5} ).count() == 5000, "" );
-static_assert( quantity_cast<m_t>( quantity<int, std::ratio<3,2>, meters>{2} ).count() == 3, "" );
+static_assert( quantity_cast<mm_t>( mm_t{5} ).value() == 5, "" );
+static_assert( quantity_cast<m_t>( mm_t{5000} ).value() == 5, "" );
+static_assert( quantity_cast<mm_t>( m_t{5} ).value() == 5000, "" );
+static_assert( quantity_cast<m_t>( quantity<int, std::ratio<3,2>, distance>{2} ).value() == 3, "" );
 
 // is_ratio
 static_assert( !is_ratio<int>, "" );
 static_assert( is_ratio<std::ratio<1>>, "" );
 
-// ctor and count()
-static_assert( mm_t{}.count() == 0, "" );
-static_assert( mm_t{2}.count() == 2, "" );
+// ctor and value()
+static_assert( mm_t{}.value() == 0, "" );
+static_assert( mm_t{2}.value() == 2, "" );
 
 // units_t
-static_assert( is_same<m_t::units_t, meters>, "" );
+static_assert( is_same<m_t::units_t, distance>, "" );
 
 // storage_t
 static_assert( is_same<m_t::storage_t, int>, "" );
 
-// ratio_t
+// ratio
 static_assert( is_same<mm_t::ratio_t, std::milli>, "" );
-
-// ratio()
-static_assert( mm_t{}.ratio().num == 1 && mm_t{}.ratio().den == 1000, "" );
-
-// units()
-static_assert( mm_t{}.units() == meters{}, "" );
 
 // unary +
 static_assert( +m_t{ 1 } == m_t{ 1 }, "" );
@@ -99,68 +95,73 @@ static_assert( !(m_t{ 1 } >= m_t{ 2 }), "" );
 
 // add
 constexpr auto theResult1 = m_t{ 1 } + mm_t{ 1 };
-static_assert( theResult1.count() == 1001, "" );
+static_assert( theResult1.value() == 1001, "" );
 static_assert( is_same<decltype( theResult1 ), const mm_t>, "" );
 
 // subtract
 constexpr auto theResult2 = m_t{ 1 } - mm_t{ 1 };
-static_assert( theResult2.count() == 999, "" );
+static_assert( theResult2.value() == 999, "" );
 static_assert( is_same<decltype( theResult2 ), const mm_t>, "" );
 
 // multiply by scalar
 constexpr auto theResult3 = m_t{ 1 } * 2.1;
-static_assert( theResult3.count() == 2.1, "" );
-static_assert( is_q<decltype( theResult3 ), double, std::ratio<1>, meters>, "" );
+static_assert( theResult3.value() == 2.1, "" );
+static_assert( is_q<decltype( theResult3 ), double, std::ratio<1>, distance>, "" );
 
 constexpr auto theResult4 = 2 * m_t{ 1 };
-static_assert( theResult4.count() == 2, "" );
+static_assert( theResult4.value() == 2, "" );
 static_assert( is_same<decltype( theResult4 ), const m_t>, "" );
 
 // multiply
-using s_t = quantity<int, std::ratio<1>, seconds>;
+using s_t = quantity<int, std::ratio<1>, si::time>;
 constexpr auto theResult5 = m_t{ 2 } * s_t{ 3 };
-static_assert( theResult5.count() == 6, "" );
-using meterseconds_t = multiply_units<meters, seconds>;
+static_assert( theResult5.value() == 6, "" );
+using meterseconds_t = multiply_units<distance, si::time>;
 static_assert( is_q<decltype( theResult5 ), int, std::ratio<1>, meterseconds_t>, "" );
 
 // divide by scalar
 constexpr auto theResult6 = m_t{ 2 } / 2;
-static_assert( theResult6.count() == 1, "" );
+static_assert( theResult6.value() == 1, "" );
 static_assert( is_same<decltype( theResult6 ), const m_t>, "" );
 
 constexpr auto theResult7 = m_t{ 2 } / 2.0;
-static_assert( theResult7.count() == 1.0, "" );
-static_assert( is_q<decltype( theResult7 ), double, std::ratio<1>, meters>, "" );
+static_assert( theResult7.value() == 1.0, "" );
+static_assert( is_q<decltype( theResult7 ), double, std::ratio<1>, distance>, "" );
 
 // divide, same units
 static_assert( ( m_t{ 2 } / mm_t{ 2 } ) == 1000, "" );
 
 // divide, different units
-using km_t = quantity<int,std::kilo,meters>;
-using hours_t = quantity<int,std::ratio<60*60>,seconds>;
-using mpers_t = divide_units<meters,seconds>;
+using km_t = quantity<int,std::kilo,distance>;
+using hours_t = quantity<int,std::ratio<60*60>,si::time>;
+using mpers_t = divide_units<distance,si::time>;
 constexpr auto theResult8 = km_t{ 6 } / hours_t{ 2 };
-static_assert( theResult8.count() == 3, "" );
+static_assert( theResult8.value() == 3, "" );
 static_assert( is_q<decltype( theResult8 ), int, std::ratio<5,18>, mpers_t>, "" );
 
 // divide scalar by
 constexpr auto theResult9 = 1.0 / mm_t{2};
-static_assert( theResult9.count() == 0.5, "" );
-static_assert( is_q<decltype(theResult9), double, std::kilo, reciprocal_units<meters>>, "" );
+static_assert( theResult9.value() == 0.5, "" );
+static_assert( is_q<decltype(theResult9), double, std::kilo, reciprocal_units<distance>>, "" );
 
 // modulo by scalar
 constexpr auto theResult10 = m_t{ 3 } % 2;
-static_assert( theResult10.count() == 1, "" );
+static_assert( theResult10.value() == 1, "" );
 static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
 
+// modulo by quantity
+//constexpr auto theResult11 = m_t{ 5 } % s_t{ 2 };
+//static_assert( theResult10.value() == 1, "" );
+//static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
+
 // zero()
-static_assert( m_t::zero().count() == 0, "" );
+static_assert( m_t::zero().value() == 0, "" );
 
 // min()
-static_assert( m_t::min().count() == std::numeric_limits<m_t::storage_t>::min(), "" );
+static_assert( m_t::min().value() == std::numeric_limits<m_t::storage_t>::min(), "" );
 
 // max()
-static_assert( m_t::max().count() == std::numeric_limits<m_t::storage_t>::max(), "" );
+static_assert( m_t::max().value() == std::numeric_limits<m_t::storage_t>::max(), "" );
 
 constexpr inline void assertf( bool aInvariant, int aLineNumber )
 {
@@ -174,9 +175,11 @@ constexpr inline void assertf( bool aInvariant, int aLineNumber )
 
 #define assert( exp ) assertf( exp, __LINE__ )
 
-void run_quantity_tests()
+void si::run_quantity_tests()
 {
     using namespace si;
+
+    run_units_tests();
 
     // pre increment
     assert( ++m_t{ 1 } == m_t{ 2 } );
@@ -234,5 +237,12 @@ void run_quantity_tests()
     theValue = m_t{ 3 };
     theValue %= m_t{ 2 };
     assert( theValue == m_t{ 1 } );
+    }
+
+    // sqrt
+    {
+    auto theValue = sqrt(seconds<std::mega>{4.0});
+    auto theExpectedResult = seconds<std::kilo>{2.0};
+    assert( theValue == theExpectedResult );
     }
 }

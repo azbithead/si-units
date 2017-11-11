@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08447A621FB361AF0004BCD9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08447A611FB361AF0004BCD9 /* main.cpp */; };
+		08447A621FB361AF0004BCD9 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08447A611FB361AF0004BCD9 /* test.cpp */; };
 		08447A6F1FB361FF0004BCD9 /* units-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08447A6C1FB361FF0004BCD9 /* units-test.cpp */; };
 		08447A701FB361FF0004BCD9 /* quantity-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08447A6E1FB361FF0004BCD9 /* quantity-test.cpp */; };
 /* End PBXBuildFile section */
@@ -26,7 +26,7 @@
 
 /* Begin PBXFileReference section */
 		08447A5E1FB361AF0004BCD9 /* si-quantity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "si-quantity"; sourceTree = BUILT_PRODUCTS_DIR; };
-		08447A611FB361AF0004BCD9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		08447A611FB361AF0004BCD9 /* test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		08447A681FB361FF0004BCD9 /* quantity-io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "quantity-io.hpp"; sourceTree = "<group>"; };
 		08447A691FB361FF0004BCD9 /* units-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-test.hpp"; sourceTree = "<group>"; };
 		08447A6A1FB361FF0004BCD9 /* units.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = units.hpp; sourceTree = "<group>"; };
@@ -35,6 +35,9 @@
 		08447A6D1FB361FF0004BCD9 /* units-io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-io.hpp"; sourceTree = "<group>"; };
 		08447A6E1FB361FF0004BCD9 /* quantity-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "quantity-test.cpp"; sourceTree = "<group>"; };
 		08447A711FB362B60004BCD9 /* quantity-test.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "quantity-test.hpp"; sourceTree = "<group>"; };
+		088563D31FB4F60400C77001 /* ratio-sqrt.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "ratio-sqrt.hpp"; sourceTree = "<group>"; };
+		08A927611FB794FE00E4F37F /* ratio-gcd.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "ratio-gcd.hpp"; sourceTree = "<group>"; };
+		08A927621FB7967000E4F37F /* is-ratio.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "is-ratio.hpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +70,7 @@
 		08447A601FB361AF0004BCD9 /* si-quantity */ = {
 			isa = PBXGroup;
 			children = (
-				08447A611FB361AF0004BCD9 /* main.cpp */,
+				08447A611FB361AF0004BCD9 /* test.cpp */,
 				08447A681FB361FF0004BCD9 /* quantity-io.hpp */,
 				08447A6E1FB361FF0004BCD9 /* quantity-test.cpp */,
 				08447A711FB362B60004BCD9 /* quantity-test.hpp */,
@@ -76,6 +79,9 @@
 				08447A6C1FB361FF0004BCD9 /* units-test.cpp */,
 				08447A691FB361FF0004BCD9 /* units-test.hpp */,
 				08447A6A1FB361FF0004BCD9 /* units.hpp */,
+				088563D31FB4F60400C77001 /* ratio-sqrt.hpp */,
+				08A927611FB794FE00E4F37F /* ratio-gcd.hpp */,
+				08A927621FB7967000E4F37F /* is-ratio.hpp */,
 			);
 			path = "si-quantity";
 			sourceTree = "<group>";
@@ -137,7 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08447A621FB361AF0004BCD9 /* main.cpp in Sources */,
+				08447A621FB361AF0004BCD9 /* test.cpp in Sources */,
 				08447A6F1FB361FF0004BCD9 /* units-test.cpp in Sources */,
 				08447A701FB361FF0004BCD9 /* quantity-test.cpp in Sources */,
 			);
