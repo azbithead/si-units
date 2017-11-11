@@ -909,69 +909,69 @@ sqrt
 //==============================================================================
 // Some useful si::quantity types
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using meters = si::quantity<STORAGE, RATIO, si::distance>;
+using meters = quantity<STORAGE, RATIO, distance>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using kilograms = si::quantity<STORAGE, RATIO, si::mass>;
+using kilograms = quantity<STORAGE, RATIO, mass>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using seconds = si::quantity<STORAGE, RATIO, si::time>;
+using seconds = quantity<STORAGE, RATIO, time>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using amperes = si::quantity<STORAGE, RATIO, si::current>;
+using amperes = quantity<STORAGE, RATIO, current>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using kelvin = si::quantity<STORAGE, RATIO, si::temperature>;
+using kelvins = quantity<STORAGE, RATIO, temperature>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using candelas = si::quantity<STORAGE, RATIO, si::luminance>;
+using candelas = quantity<STORAGE, RATIO, luminance>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using radians = si::quantity<STORAGE, RATIO, si::angle>;
+using radians = quantity<STORAGE, RATIO, angle>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using steradians = si::quantity<STORAGE, RATIO, exponentiate_units<angle, 2>>;
+using steradians = quantity<STORAGE, RATIO, square_units<angle>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using hertz = si::quantity<STORAGE, RATIO, reciprocal_units<time>>;
+using hertz = quantity<STORAGE, RATIO, reciprocal_units<time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using newtons = si::quantity<STORAGE, RATIO, divide_units<multiply_units<mass, distance>, exponentiate_units<time, 2>>>;
+using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, distance>, square_units<time>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using pascals = si::quantity<STORAGE, RATIO, divide_units<typename newtons<RATIO,STORAGE>::units_t, exponentiate_units<distance, 2>>>;
+using coulombs = quantity<STORAGE, RATIO, multiply_units<current, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using joules = si::quantity<STORAGE, RATIO, multiply_units<typename newtons<RATIO,STORAGE>::units_t, distance>>;
+using lux = quantity<STORAGE, RATIO, divide_units<luminance, square_units<distance>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using watts = si::quantity<STORAGE, RATIO, divide_units<typename joules<RATIO,STORAGE>::units_t, time>>;
+using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, square_units<distance>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using coulombs = si::quantity<STORAGE, RATIO, multiply_units<current, time>>;
+using joules = quantity<STORAGE, RATIO, multiply_units<typename newtons<>::units_t, distance>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using volts = si::quantity<STORAGE, RATIO, divide_units<typename watts<RATIO,STORAGE>::units_t, current>>;
+using watts = quantity<STORAGE, RATIO, divide_units<typename joules<>::units_t, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using farads = si::quantity<STORAGE, RATIO, divide_units<typename coulombs<RATIO,STORAGE>::units_t, typename volts<RATIO,STORAGE>::units_t>>;
+using volts = quantity<STORAGE, RATIO, divide_units<typename watts<>::units_t, current>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using ohms = si::quantity<STORAGE, RATIO, divide_units<typename volts<RATIO,STORAGE>::units_t, current>>;
+using farads = quantity<STORAGE, RATIO, divide_units<typename coulombs<>::units_t, typename volts<>::units_t>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using webers = si::quantity<STORAGE, RATIO, multiply_units<typename volts<RATIO,STORAGE>::units_t, time>>;
+using ohms = quantity<STORAGE, RATIO, divide_units<typename volts<>::units_t, current>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using teslas = si::quantity<STORAGE, RATIO, divide_units<typename webers<RATIO,STORAGE>::units_t, exponentiate_units<distance, 2>>>;
+using webers = quantity<STORAGE, RATIO, multiply_units<typename volts<>::units_t, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using henries = si::quantity<STORAGE, RATIO, divide_units<typename webers<RATIO,STORAGE>::units_t, current>>;
+using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, square_units<distance>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lumens = si::quantity<STORAGE, RATIO, multiply_units<luminance, typename steradians<RATIO,STORAGE>::units_t>>;
+using henries = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, current>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lux = si::quantity<STORAGE, RATIO, divide_units<luminance, exponentiate_units<distance, 2>>>;
+using lumens = quantity<STORAGE, RATIO, multiply_units<luminance, typename steradians<>::units_t>>;
 
 } // end of namespace si

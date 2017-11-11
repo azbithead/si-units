@@ -133,6 +133,13 @@ template< typename aDividend, typename aDivisor >
 using modulo_units = aDividend;
 
 //------------------------------------------------------------------------------
+/// The square of an si::units type.
+/// @param aUnits an si::units type
+/// @return the si::units type that is the square of aUnits
+template< typename aUnits >
+using square_units = exponentiate_units<aUnits, 2>;
+
+//------------------------------------------------------------------------------
 /// Base units
 using scalar = units<>; // unitless
 using mass = units<1>;
