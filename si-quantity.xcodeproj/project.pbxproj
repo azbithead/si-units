@@ -70,20 +70,44 @@
 		08447A601FB361AF0004BCD9 /* si-quantity */ = {
 			isa = PBXGroup;
 			children = (
-				08447A611FB361AF0004BCD9 /* test.cpp */,
-				08447A681FB361FF0004BCD9 /* quantity-io.hpp */,
-				08447A6E1FB361FF0004BCD9 /* quantity-test.cpp */,
-				08447A711FB362B60004BCD9 /* quantity-test.hpp */,
 				08447A6B1FB361FF0004BCD9 /* quantity.hpp */,
-				08447A6D1FB361FF0004BCD9 /* units-io.hpp */,
-				08447A6C1FB361FF0004BCD9 /* units-test.cpp */,
-				08447A691FB361FF0004BCD9 /* units-test.hpp */,
+				08A927651FB8C6F900E4F37F /* ratio */,
+				08A927641FB8C6B500E4F37F /* string */,
+				08A927631FB8C5F800E4F37F /* unit-test */,
 				08447A6A1FB361FF0004BCD9 /* units.hpp */,
-				088563D31FB4F60400C77001 /* ratio-sqrt.hpp */,
-				08A927611FB794FE00E4F37F /* ratio-gcd.hpp */,
-				08A927621FB7967000E4F37F /* is-ratio.hpp */,
 			);
 			path = "si-quantity";
+			sourceTree = "<group>";
+		};
+		08A927631FB8C5F800E4F37F /* unit-test */ = {
+			isa = PBXGroup;
+			children = (
+				08447A6E1FB361FF0004BCD9 /* quantity-test.cpp */,
+				08447A711FB362B60004BCD9 /* quantity-test.hpp */,
+				08447A611FB361AF0004BCD9 /* test.cpp */,
+				08447A6C1FB361FF0004BCD9 /* units-test.cpp */,
+				08447A691FB361FF0004BCD9 /* units-test.hpp */,
+			);
+			path = "unit-test";
+			sourceTree = "<group>";
+		};
+		08A927641FB8C6B500E4F37F /* string */ = {
+			isa = PBXGroup;
+			children = (
+				08447A681FB361FF0004BCD9 /* quantity-io.hpp */,
+				08447A6D1FB361FF0004BCD9 /* units-io.hpp */,
+			);
+			path = string;
+			sourceTree = "<group>";
+		};
+		08A927651FB8C6F900E4F37F /* ratio */ = {
+			isa = PBXGroup;
+			children = (
+				08A927621FB7967000E4F37F /* is-ratio.hpp */,
+				08A927611FB794FE00E4F37F /* ratio-gcd.hpp */,
+				088563D31FB4F60400C77001 /* ratio-sqrt.hpp */,
+			);
+			path = ratio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
