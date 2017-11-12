@@ -3,6 +3,8 @@
 
 namespace si
 {
+namespace ratio
+{
 
 template <typename aType>
 struct is_ratio_impl : std::false_type{};
@@ -16,4 +18,6 @@ struct is_ratio_impl<std::ratio<aNum, aDen>> : std::true_type{};
 template <typename aType>
 constexpr bool is_ratio = is_ratio_impl<aType>::value;
 
+} // end of namespace ratio
 } // end of namespace si
+

@@ -3,6 +3,8 @@
 
 namespace si
 {
+namespace ratio
+{
 
 template <intmax_t aX, intmax_t aY>
 struct gcd_impl
@@ -57,4 +59,5 @@ using ratio_gcd = std::ratio
     >
 >;
 
+} // end of namespace ratio
 } // end of namespace si

@@ -3,6 +3,8 @@
 
 namespace si
 {
+namespace ratio
+{
 
 using Zero = std::ratio<0>;
 using One = std::ratio<1>;
@@ -188,6 +190,6 @@ struct ratio_sqrt
 {
 };
 
+} // end of namespace ratio
 } // end of namespace si
 
-void run();

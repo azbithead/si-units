@@ -26,14 +26,14 @@ static_assert( is_quantity< volatile m_t >, "" );
 static_assert( is_quantity< const volatile m_t >, "" );
 
 // gcd
-static_assert( gcd<12,9> == 3, "" );
-static_assert( gcd<7,5> == 1, "" );
+static_assert( si::ratio::gcd<12,9> == 3, "" );
+static_assert( si::ratio::gcd<7,5> == 1, "" );
 
 // lcm
-static_assert( lcm<4,6> == 12, "" );
+static_assert( si::ratio::lcm<4,6> == 12, "" );
 
 // ratio_gcd
-static_assert( is_same<ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
+static_assert( is_same<si::ratio::ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
 
 // quantity_cast
 static_assert( quantity_cast<mm_t>( mm_t{5} ).value() == 5, "" );
@@ -42,8 +42,8 @@ static_assert( quantity_cast<mm_t>( m_t{5} ).value() == 5000, "" );
 static_assert( quantity_cast<m_t>( quantity<int, std::ratio<3,2>, distance>{2} ).value() == 3, "" );
 
 // is_ratio
-static_assert( !is_ratio<int>, "" );
-static_assert( is_ratio<std::ratio<1>>, "" );
+static_assert( !si::ratio::is_ratio<int>, "" );
+static_assert( si::ratio::is_ratio<std::ratio<1>>, "" );
 
 // ctor and value()
 static_assert( mm_t{}.value() == 0, "" );

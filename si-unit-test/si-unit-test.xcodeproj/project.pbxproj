@@ -25,6 +25,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0856C4C31FB8D44700EFCB91 /* ratio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ratio; path = ../si/ratio; sourceTree = "<group>"; };
+		0856C4C41FB8D44700EFCB91 /* string */ = {isa = PBXFileReference; lastKnownFileType = folder; name = string; path = ../si/string; sourceTree = "<group>"; };
+		0856C4C51FB8D44700EFCB91 /* units.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = units.hpp; path = ../si/units.hpp; sourceTree = "<group>"; };
+		0856C4C61FB8D44700EFCB91 /* quantity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = quantity.hpp; path = ../si/quantity.hpp; sourceTree = "<group>"; };
 		08A9276F1FB8C90000E4F37F /* si-unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "si-unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A927791FB8CA3E00E4F37F /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		08A9277B1FB8CA8400E4F37F /* units-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-test.hpp"; sourceTree = "<group>"; };
@@ -44,9 +48,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0856C4C21FB8D42E00EFCB91 /* si */ = {
+			isa = PBXGroup;
+			children = (
+				0856C4C61FB8D44700EFCB91 /* quantity.hpp */,
+				0856C4C31FB8D44700EFCB91 /* ratio */,
+				0856C4C41FB8D44700EFCB91 /* string */,
+				0856C4C51FB8D44700EFCB91 /* units.hpp */,
+			);
+			name = si;
+			sourceTree = "<group>";
+		};
 		08A927661FB8C90000E4F37F = {
 			isa = PBXGroup;
 			children = (
+				0856C4C21FB8D42E00EFCB91 /* si */,
 				08A927711FB8C90000E4F37F /* si-unit-test */,
 				08A927701FB8C90000E4F37F /* Products */,
 			);
@@ -186,7 +202,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../si-quantity";
+				HEADER_SEARCH_PATHS = ../si;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -236,7 +252,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../si-quantity";
+				HEADER_SEARCH_PATHS = ../si;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;

@@ -36,7 +36,7 @@ struct std::common_type
     using type = si::quantity
     <
         typename std::common_type<STORAGE1, STORAGE2>::type,
-        si::ratio_gcd<RATIO1, RATIO2>,
+        si::ratio::ratio_gcd<RATIO1, RATIO2>,
         UNITS
     >;
 };
@@ -208,7 +208,7 @@ template <typename STORAGE, typename RATIO, typename UNITS>
 class quantity
 {
     static_assert(std::is_arithmetic<STORAGE>::value, "STORAGE must be an arithmetic type");
-    static_assert(is_ratio<RATIO>, "RATIO must be of type std::ratio");
+    static_assert(ratio::is_ratio<RATIO>, "RATIO must be of type std::ratio");
     static_assert(std::ratio_greater<RATIO, std::ratio<0>>::value, "RATIO must be positive");
     static_assert(is_units<UNITS>, "UNITS must be of type si::units" );
 
@@ -216,8 +216,8 @@ class quantity
     struct no_overflow
     {
     private:
-        static constexpr intmax_t num_gcd = gcd<_R1::num, _R2::num>;
-        static constexpr intmax_t den_gcd = gcd<_R1::den, _R2::den>;
+        static constexpr intmax_t num_gcd = ratio::gcd<_R1::num, _R2::num>;
+        static constexpr intmax_t den_gcd = ratio::gcd<_R1::den, _R2::den>;
         static constexpr intmax_t num1 = _R1::num / num_gcd;
         static constexpr intmax_t den1 = _R1::den / den_gcd;
         static constexpr intmax_t num2 = _R2::num / num_gcd;
@@ -883,7 +883,7 @@ using sqrt_result_t = typename std::enable_if
     quantity
     <
         STORAGE,
-        typename ratio_sqrt<RATIO, EPSILON>::type,
+        typename ratio::ratio_sqrt<RATIO, EPSILON>::type,
         root_units<UNITS, 2>
     >
 >::type;
