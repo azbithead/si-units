@@ -28,6 +28,8 @@ constexpr wchar_t multiply_char<wchar_t> = L'x';
 
 namespace si
 {
+namespace string
+{
 
 template
 <
@@ -69,4 +71,6 @@ string_from_quantity
     return theResult;
 }
 
+} // end of namespace string
 } // end of namespace si
+

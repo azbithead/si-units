@@ -18,6 +18,8 @@ constexpr wchar_t power_char<wchar_t> = L'^';
 
 namespace si
 {
+namespace string
+{
 
 template< typename CharT > constexpr CharT mass_abbrev[3] = {0,0,0};
 template<> constexpr char mass_abbrev<char>[3] = "kg";
@@ -194,4 +196,6 @@ string_from_units
     return theNum;
 }
 
+} // end of namespace string
 } // end of namespace si
+
