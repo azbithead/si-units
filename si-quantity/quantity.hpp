@@ -5,9 +5,9 @@
 #include <cmath>
 
 #include "units.hpp"
-#include "is-ratio.hpp"
-#include "ratio-gcd.hpp"
-#include "ratio-sqrt.hpp"
+#include "ratio/is-ratio.hpp"
+#include "ratio/ratio-gcd.hpp"
+#include "ratio/ratio-sqrt.hpp"
 
 namespace si
 {
