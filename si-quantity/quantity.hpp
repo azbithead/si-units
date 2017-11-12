@@ -167,8 +167,8 @@ template <typename UNITS, typename STORAGE, typename RATIO>
 struct is_quantity_impl<quantity<STORAGE, RATIO, UNITS>> : std::true_type {};
 
 //------------------------------------------------------------------------------
-/// @param aType a type to be tested
-/// @return true if aType is an si::quantity, false otherwise
+/// true if aType is an si::quantity, false otherwise
+/// @tparam aType a type to be tested
 template <typename aType>
 constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<aType>::type>::value;
 
@@ -281,7 +281,7 @@ public:
     //--------------------------------------------------------------------------
     /// Initialize a quantity from a unitless value.
     /// This constructor will not be chosen by the compiler if it would result in loss of precision.
-    /// @param aValue the unitless value that will be stored in this object
+    /// @param aValue the scalar value that will be stored in this object
     template <typename STORAGE2>
     constexpr
     explicit

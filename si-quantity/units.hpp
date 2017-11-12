@@ -56,9 +56,8 @@ struct is_units_impl
 > : std::true_type {};
 
 //------------------------------------------------------------------------------
-/// Test a type to see if it is an si::units type.
-/// @param aType the type to be tested
-/// @return true if aType is an si::units type, false otherwise
+/// true if aType is an si::units type, false otherwise
+/// @tparam aType the type to be tested
 template <typename aType>
 constexpr bool is_units = is_units_impl<typename std::remove_cv<aType>::type>::value;
 
@@ -78,10 +77,9 @@ struct multiply_units_impl
 };
 
 //------------------------------------------------------------------------------
-/// The product of two si::units types.
-/// @param aLeft an si::units type to be multiplied
-/// @param aRight an si::units type to be multiplied
-/// @return the si::units type that is the product of aLeft and aRight
+/// the si::units type that is the product of aLeft and aRight
+/// @tparam aLeft an si::units type to be multiplied
+/// @tparam aRight an si::units type to be multiplied
 template< typename aLeft, typename aRight >
 using multiply_units = typename multiply_units_impl< aLeft, aRight >::type;
 
@@ -101,33 +99,30 @@ struct exponentiate_units_impl
 };
 
 //------------------------------------------------------------------------------
+/// the si::units type that is aUnits raised to aPower
 /// Raise an si::units type to a power.
-/// @param aUnits an si::units type
-/// @param aPower the power to which aUnits is raised
-/// @return the si::units type that is aUnits raised to aPower
+/// @tparam aUnits an si::units type
+/// @tparam aPower the power to which aUnits is raised
 template< typename aUnits, std::intmax_t aPower >
 using power_units = typename exponentiate_units_impl<aUnits, std::ratio<aPower,1>>::type;
 
 //------------------------------------------------------------------------------
-/// The reciprocal of an si::units type.
-/// @param aUnits an si::units type
-/// @return the si::units type that is the reciprocal of aUnits
+/// the si::units type that is the reciprocal of aUnits
+/// @tparam aUnits an si::units type
 template< typename aUnits >
 using reciprocal_units = typename exponentiate_units_impl<aUnits, std::ratio<-1,1>>::type;
 
 //------------------------------------------------------------------------------
-/// The quotient of two si::units types.
-/// @param aDividend an si::units type
-/// @param aDivisor an si::units type
-/// @return the si::units type that is the quotient of dividing aDividend by aDivisor
+/// the si::units type that is the quotient of dividing aDividend by aDivisor
+/// @tparam aDividend an si::units type
+/// @tparam aDivisor an si::units type
 template< typename aDividend, typename aDivisor >
 using divide_units = multiply_units< aDividend, reciprocal_units< aDivisor > >;
 
 //------------------------------------------------------------------------------
-/// Get the root of an si::units type.
-/// @param aUnits an si::units type
-/// @param aRoot the root to be gotten
-/// @return the si::units type that is the root aRoot of aUnits
+/// the si::units type that is the root aRoot of aUnits
+/// @tparam aUnits an si::units type
+/// @tparam aRoot the root to be gotten
 template< typename aUnits, std::intmax_t aRoot >
 using root_units = typename exponentiate_units_impl<aUnits, std::ratio<1,aRoot>>::type;
 

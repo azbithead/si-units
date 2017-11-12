@@ -152,9 +152,9 @@ struct ratio_sqrt_impl
 };
 
 //------------------------------------------------------------------------------
-/// @param aRatio a ratio to take the square root of
-/// @param aEpsilon a ratio expressing the greatest acceptable error
-/// @return the ratio that is the square root of R
+/// the std::ratio that is the square root of aRatio
+/// @tparam aRatio a ratio to take the square root of
+/// @tparam aEpsilon a ratio expressing the greatest acceptable error
 template <typename aRatio, typename aEpsilon, typename isEnabled = void>
 struct ratio_sqrt
 {

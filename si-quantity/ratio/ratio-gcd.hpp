@@ -39,9 +39,9 @@ template <intmax_t aX, intmax_t aY>
 constexpr intmax_t lcm = lcm_impl<aX,aY>::value;
 
 //------------------------------------------------------------------------------
-/// @param aRatioX a std::ratio
-/// @param aRatioY a std::ratio
-/// @return the std::ratio that is the greatest common divisor (GCD) of aRatioX and aRatioY
+/// the std::ratio that is the greatest common divisor (GCD) of aRatioX and aRatioY
+/// @tparam aRatioX a std::ratio
+/// @tparam aRatioY a std::ratio
 template <typename aRatioX, typename aRatioY>
 using ratio_gcd = std::ratio
 <

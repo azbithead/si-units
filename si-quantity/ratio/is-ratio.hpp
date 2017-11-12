@@ -11,8 +11,8 @@ template <std::intmax_t aNum, std::intmax_t aDen>
 struct is_ratio_impl<std::ratio<aNum, aDen>> : std::true_type{};
 
 //------------------------------------------------------------------------------
-/// @param aType a type to be tested
-/// @return true if aType is a std::ratio, false otherwise
+/// true if aType is a std::ratio, false otherwise
+/// @tparam aType a type to be tested
 template <typename aType>
 constexpr bool is_ratio = is_ratio_impl<aType>::value;
 
