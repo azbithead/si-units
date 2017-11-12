@@ -124,7 +124,7 @@ template< typename aDividend, typename aDivisor >
 using divide_units = multiply_units< aDividend, reciprocal_units< aDivisor > >;
 
 //------------------------------------------------------------------------------
-/// Get the root an si::units type.
+/// Get the root of an si::units type.
 /// @param aUnits an si::units type
 /// @param aRoot the root to be gotten
 /// @return the si::units type that is the root aRoot of aUnits
