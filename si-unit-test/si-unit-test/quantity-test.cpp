@@ -150,9 +150,9 @@ static_assert( theResult10.value() == 1, "" );
 static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
 
 // modulo by quantity
-//constexpr auto theResult11 = m_t{ 5 } % s_t{ 2 };
-//static_assert( theResult10.value() == 1, "" );
-//static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
+constexpr auto theResult11 = m_t{ 5 } % s_t{ 2 };
+static_assert( theResult11.value() == 1, "" );
+static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
 
 // zero()
 static_assert( m_t::zero().value() == 0, "" );

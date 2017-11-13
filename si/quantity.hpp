@@ -827,7 +827,6 @@ operator%
     return Result_t(Result_t(aQuantity).value() % static_cast<ResultStorage_t>(aScalar));
 }
 
-#if 0
 template
 <
     typename STORAGE1,
@@ -863,12 +862,8 @@ operator%
     const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
 )
 {
-    using Result_t = mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>;
-    using ResultStorage_t = typename Result_t::storage_t;
-    auto x =
-    return Result_t(static_cast<ResultStorage_t>(Result_t{aLHS.value()}.value % static_cast<ResultStorage_t>(Result_t(aRHS).value()));
+    return aLHS - (aRHS * (aLHS / aRHS));
 }
-#endif
 
 template
 <
