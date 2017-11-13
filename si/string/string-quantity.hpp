@@ -121,7 +121,7 @@ template
     typename Units
 >
 std::basic_string<CharT>
-string_from_quantity
+basic_string_from_quantity
 (
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
@@ -136,6 +136,36 @@ string_from_quantity
     theResult += string_from_units<CharT,Units>();
 
     return theResult;
+}
+
+template
+<
+    typename Storage,
+    typename Ratio,
+    typename Units
+>
+std::string
+string_from_quantity
+(
+    const si::quantity<Storage, Ratio, Units>& aQuantity
+)
+{
+    return basic_string_from_quantity<char>(aQuantity);
+}
+
+template
+<
+    typename Storage,
+    typename Ratio,
+    typename Units
+>
+std::wstring
+wstring_from_quantity
+(
+    const si::quantity<Storage, Ratio, Units>& aQuantity
+)
+{
+    return basic_string_from_quantity<wchar_t>(aQuantity);
 }
 
 } // end of namespace string
