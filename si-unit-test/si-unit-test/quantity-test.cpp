@@ -179,8 +179,6 @@ void si::run_quantity_tests()
 {
     using namespace si;
 
-    run_units_tests();
-
     // pre increment
     assert( ++m_t{ 1 } == m_t{ 2 } );
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0856C4C91FB8D70300EFCB91 /* string-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0856C4C71FB8D70300EFCB91 /* string-test.cpp */; };
 		08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A927791FB8CA3E00E4F37F /* test.cpp */; };
 		08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277D1FB8CA8400E4F37F /* units-test.cpp */; };
 		08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */; };
@@ -29,6 +30,8 @@
 		0856C4C41FB8D44700EFCB91 /* string */ = {isa = PBXFileReference; lastKnownFileType = folder; name = string; path = ../si/string; sourceTree = "<group>"; };
 		0856C4C51FB8D44700EFCB91 /* units.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = units.hpp; path = ../si/units.hpp; sourceTree = "<group>"; };
 		0856C4C61FB8D44700EFCB91 /* quantity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = quantity.hpp; path = ../si/quantity.hpp; sourceTree = "<group>"; };
+		0856C4C71FB8D70300EFCB91 /* string-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "string-test.cpp"; sourceTree = "<group>"; };
+		0856C4C81FB8D70300EFCB91 /* string-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "string-test.hpp"; sourceTree = "<group>"; };
 		08A9276F1FB8C90000E4F37F /* si-unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "si-unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A927791FB8CA3E00E4F37F /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		08A9277B1FB8CA8400E4F37F /* units-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-test.hpp"; sourceTree = "<group>"; };
@@ -81,6 +84,8 @@
 			children = (
 				08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */,
 				08A9277C1FB8CA8400E4F37F /* quantity-test.hpp */,
+				0856C4C71FB8D70300EFCB91 /* string-test.cpp */,
+				0856C4C81FB8D70300EFCB91 /* string-test.hpp */,
 				08A927791FB8CA3E00E4F37F /* test.cpp */,
 				08A9277D1FB8CA8400E4F37F /* units-test.cpp */,
 				08A9277B1FB8CA8400E4F37F /* units-test.hpp */,
@@ -145,6 +150,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0856C4C91FB8D70300EFCB91 /* string-test.cpp in Sources */,
 				08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */,
 				08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */,
 				08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */,
