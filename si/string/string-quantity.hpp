@@ -1,66 +1,25 @@
 #pragma once
 #include <string>
+#include <cstdint>
+#include <ratio>
 #include "quantity.hpp"
-#include "units-io.hpp"
-
-namespace
-{
-
-template< typename CharT >
-constexpr CharT divide_char = 0;
-
-template<>
-constexpr char divide_char<char> = '/';
-
-template<>
-constexpr wchar_t divide_char<wchar_t> = L'/';
-
-template< typename CharT >
-constexpr CharT multiply_char = 0;
-
-template<>
-constexpr char multiply_char<char> = 'x';
-
-template<>
-constexpr wchar_t multiply_char<wchar_t> = L'x';
-
-} // end of anonymous namespace
+#include "string-units.hpp"
 
 namespace si
 {
 namespace string
 {
 
-template< typename CharT, typename ValueT >
+template<typename CharT>
 std::basic_string<CharT>
-string_from_scalar
+basic_string_from_intmax
 (
-    ValueT aValue
+    std::intmax_t aValue
 );
 
 template<>
 std::basic_string<char>
-string_from_scalar<char, int>
-(
-    int aValue
-)
-{
-    return std::to_string(aValue);
-}
-
-template<>
-std::basic_string<wchar_t>
-string_from_scalar<wchar_t, int>
-(
-    int aValue
-)
-{
-    return std::to_wstring(aValue);
-}
-
-template<>
-std::basic_string<char>
-string_from_scalar<char, std::intmax_t>
+basic_string_from_intmax<char>
 (
     std::intmax_t aValue
 )
@@ -70,29 +29,9 @@ string_from_scalar<char, std::intmax_t>
 
 template<>
 std::basic_string<wchar_t>
-string_from_scalar<wchar_t, std::intmax_t>
+basic_string_from_intmax<wchar_t>
 (
     std::intmax_t aValue
-)
-{
-    return std::to_wstring(aValue);
-}
-
-template<>
-std::basic_string<char>
-string_from_scalar<char, double>
-(
-    double aValue
-)
-{
-    return std::to_string(aValue);
-}
-
-template<>
-std::basic_string<wchar_t>
-string_from_scalar<wchar_t, double>
-(
-    double aValue
 )
 {
     return std::to_wstring(aValue);
@@ -101,16 +40,44 @@ string_from_scalar<wchar_t, double>
 template
 <
     typename CharT,
-    std::intmax_t Num,
-    std::intmax_t Den
+    typename RatioT
 >
 std::basic_string<CharT>
-string_from_ratio
+basic_string_from_ratio
 (
-    std::ratio<Num, Den> aRatio
 )
 {
-    return string_from_scalar<CharT,std::intmax_t>(aRatio.num) + divide_char<CharT> + string_from_scalar<CharT,std::intmax_t>(aRatio.den);
+    auto theResult = basic_string_from_intmax<CharT>(RatioT::num);
+    if( RatioT::den != 1 )
+    {
+        theResult += forward_slash<CharT> + basic_string_from_intmax<CharT>(RatioT::den);
+    }
+
+    return theResult;
+}
+
+template
+<
+    typename RatioT
+>
+std::string
+string_from_ratio
+(
+)
+{
+    return basic_string_from_ratio<char, RatioT>();
+}
+
+template
+<
+    typename RatioT
+>
+std::wstring
+wstring_from_ratio
+(
+)
+{
+    return basic_string_from_ratio<wchar_t, RatioT>();
 }
 
 template
@@ -121,19 +88,27 @@ template
     typename Units
 >
 std::basic_string<CharT>
-basic_string_from_quantity
+basic_string_from_quantity_suffix
 (
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    auto theResult = string_from_scalar<CharT,Storage>(aQuantity.value()) + ' ';
-
-    if( !(aQuantity.ratio.num == 1 && aQuantity.ratio.den == 1) )
+    auto theResult = basic_string_from_ratio<CharT,Ratio>();
+    if( theResult == one<CharT> )
     {
-        theResult += multiply_char<CharT> + string_from_ratio<CharT>(aQuantity.ratio) + ' ';
+        theResult.clear();
     }
 
-    theResult += string_from_units<CharT,Units>();
+    const auto theUnitsString = basic_string_from_units<CharT,Units>();
+    if( !theUnitsString.empty() )
+    {
+        if( !theResult.empty() )
+        {
+            theResult += dot<CharT>;
+        }
+
+        theResult += theUnitsString;
+    }
 
     return theResult;
 }
@@ -145,12 +120,12 @@ template
     typename Units
 >
 std::string
-string_from_quantity
+string_from_quantity_suffix
 (
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    return basic_string_from_quantity<char>(aQuantity);
+    return basic_string_from_quantity_suffix<char>(aQuantity);
 }
 
 template
@@ -160,12 +135,12 @@ template
     typename Units
 >
 std::wstring
-wstring_from_quantity
+wstring_from_quantity_suffix
 (
     const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    return basic_string_from_quantity<wchar_t>(aQuantity);
+    return basic_string_from_quantity_suffix<wchar_t>(aQuantity);
 }
 
 } // end of namespace string
