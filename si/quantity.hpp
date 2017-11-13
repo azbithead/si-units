@@ -910,7 +910,7 @@ sqrt
 //==============================================================================
 // Some useful si::quantity types
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using meters = quantity<STORAGE, RATIO, distance>;
+using meters = quantity<STORAGE, RATIO, length>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using kilograms = quantity<STORAGE, RATIO, mass>;
@@ -937,19 +937,19 @@ template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using hertz = quantity<STORAGE, RATIO, reciprocal_units<time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, distance>, power_units<time,2>>>;
+using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, length>, power_units<time,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using coulombs = quantity<STORAGE, RATIO, multiply_units<current, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lux = quantity<STORAGE, RATIO, divide_units<luminance, power_units<distance,2>>>;
+using lux = quantity<STORAGE, RATIO, divide_units<luminance, power_units<length,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, power_units<distance,2>>>;
+using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, power_units<length,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using joules = quantity<STORAGE, RATIO, multiply_units<typename newtons<>::units_t, distance>>;
+using joules = quantity<STORAGE, RATIO, multiply_units<typename newtons<>::units_t, length>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using watts = quantity<STORAGE, RATIO, divide_units<typename joules<>::units_t, time>>;
@@ -967,7 +967,7 @@ template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using webers = quantity<STORAGE, RATIO, multiply_units<typename volts<>::units_t, time>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, power_units<distance,2>>>;
+using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, power_units<length,2>>>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using henries = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, current>>;

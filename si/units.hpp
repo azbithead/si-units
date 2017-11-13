@@ -10,21 +10,23 @@ namespace si
 template
 <
     int aMassExponent = 0,
-    int aDistanceExponent = 0,
+    int aLengthExponent = 0,
     int aTimeExponent = 0,
     int aCurrentExponent = 0,
     int aTemperatureExponent = 0,
     int aLuminanceExponent = 0,
+    int aSubstanceExponent = 0,
     int aAngleExponent = 0
 >
 struct units
 {
     using mass = std::integral_constant<int, aMassExponent>;
-    using distance = std::integral_constant<int, aDistanceExponent>;
+    using length = std::integral_constant<int, aLengthExponent>;
     using time = std::integral_constant<int, aTimeExponent>;
     using current = std::integral_constant<int, aCurrentExponent>;
     using temperature = std::integral_constant<int, aTemperatureExponent>;
-    using light = std::integral_constant<int, aLuminanceExponent>;
+    using luminance = std::integral_constant<int, aLuminanceExponent>;
+    using substance = std::integral_constant<int, aSubstanceExponent>;
     using angle = std::integral_constant<int, aAngleExponent>;
 };
 
@@ -34,11 +36,12 @@ struct is_units_impl : std::false_type {};
 template
 <
     int aMassExponent,
-    int aDistanceExponent,
+    int aLengthExponent,
     int aTimeExponent,
     int aCurrentExponent,
     int aTemperatureExponent,
     int aLuminanceExponent,
+    int aSubstanceExponent,
     int aAngleExponent
 >
 struct is_units_impl
@@ -46,11 +49,12 @@ struct is_units_impl
     units
     <
         aMassExponent,
-        aDistanceExponent,
+        aLengthExponent,
         aTimeExponent,
         aCurrentExponent,
         aTemperatureExponent,
         aLuminanceExponent,
+        aSubstanceExponent,
         aAngleExponent
     >
 > : std::true_type {};
@@ -67,11 +71,12 @@ struct multiply_units_impl
     using type = units
     <
         aLeft::mass::value + aRight::mass::value,
-        aLeft::distance::value + aRight::distance::value,
+        aLeft::length::value + aRight::length::value,
         aLeft::time::value + aRight::time::value,
         aLeft::current::value + aRight::current::value,
         aLeft::temperature::value + aRight::temperature::value,
-        aLeft::light::value + aRight::light::value,
+        aLeft::luminance::value + aRight::luminance::value,
+        aLeft::substance::value + aRight::substance::value,
         aLeft::angle::value + aRight::angle::value
     >;
 };
@@ -89,11 +94,12 @@ struct exponentiate_units_impl
     using type = units
     <
         std::ratio_multiply<std::ratio<Units::mass::value>, aPower>::num,
-        std::ratio_multiply<std::ratio<Units::distance::value>, aPower>::num,
+        std::ratio_multiply<std::ratio<Units::length::value>, aPower>::num,
         std::ratio_multiply<std::ratio<Units::time::value>, aPower>::num,
         std::ratio_multiply<std::ratio<Units::current::value>, aPower>::num,
         std::ratio_multiply<std::ratio<Units::temperature::value>, aPower>::num,
-        std::ratio_multiply<std::ratio<Units::light::value>, aPower>::num,
+        std::ratio_multiply<std::ratio<Units::luminance::value>, aPower>::num,
+        std::ratio_multiply<std::ratio<Units::substance::value>, aPower>::num,
         std::ratio_multiply<std::ratio<Units::angle::value>, aPower>::num
     >;
 };
@@ -130,11 +136,13 @@ using root_units = typename exponentiate_units_impl<aUnits, std::ratio<1,aRoot>>
 /// Base units
 using scalar = units<>; // unitless
 using mass = units<1>;
-using distance = units<0,1>;
+using length = units<0,1>;
+using distance = length;
 using time = units<0,0,1>;
-using current = units<0,0,0,1>;
+using current = units<0,0,0,1>; // electric current
 using temperature = units<0,0,0,0,1>;
-using luminance = units<0,0,0,0,0,1>;
-using angle = units<0,0,0,0,0,0,1>;
+using luminance = units<0,0,0,0,0,1>; // luminous intensity
+using substance = units<0,0,0,0,0,0,1>; // amount of substance
+using angle = units<0,0,0,0,0,0,0,1>;
 
 } // end of namespace si
