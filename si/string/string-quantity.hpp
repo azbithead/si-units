@@ -31,6 +31,73 @@ namespace si
 namespace string
 {
 
+template< typename CharT, typename ValueT >
+std::basic_string<CharT>
+string_from_scalar
+(
+    ValueT aValue
+);
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, int>
+(
+    int aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, int>
+(
+    int aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, std::intmax_t>
+(
+    std::intmax_t aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, std::intmax_t>
+(
+    std::intmax_t aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
+template<>
+std::basic_string<char>
+string_from_scalar<char, double>
+(
+    double aValue
+)
+{
+    return std::to_string(aValue);
+}
+
+template<>
+std::basic_string<wchar_t>
+string_from_scalar<wchar_t, double>
+(
+    double aValue
+)
+{
+    return std::to_wstring(aValue);
+}
+
 template
 <
     typename CharT,
