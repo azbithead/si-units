@@ -111,10 +111,10 @@ void si::run_string_tests()
 
     {
         auto theTestValue = meters<std::kilo>{5.0} / seconds<std::ratio<3600>>{2.0};
-        assert(string::string_from_quantity(theTestValue) == "2.500000·5/18·m/s");
+        assert(string::string_from_quantity(theTestValue) == std::to_string(2.5) + "·5/18·m/s");
     }
     {
         auto theTestValue = meters<std::kilo>{5.0} / seconds<std::ratio<3600>>{2.0};
-        assert(string::wstring_from_quantity(theTestValue) == L"2.500000·5/18·m/s");
+        assert(string::wstring_from_quantity(theTestValue) == std::to_wstring(2.5) + L"·5/18·m/s");
     }
 }
