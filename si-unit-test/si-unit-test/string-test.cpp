@@ -108,4 +108,13 @@ void si::run_string_tests()
         using TestQuantity_t = quantity<int,std::milli,luminance>;
         assert_ratio_quantity_suffix_string(TestQuantity_t, "1/1000·cd");
     }
+
+    {
+        auto theTestValue = meters<std::kilo>{5.0} / seconds<std::ratio<3600>>{2.0};
+        assert(string::string_from_quantity(theTestValue) == "2.500000·5/18·m/s");
+    }
+    {
+        auto theTestValue = meters<std::kilo>{5.0} / seconds<std::ratio<3600>>{2.0};
+        assert(string::wstring_from_quantity(theTestValue) == L"2.500000·5/18·m/s");
+    }
 }

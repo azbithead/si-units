@@ -90,13 +90,15 @@ basic_string_from_quantity_suffix
 (
 )
 {
-    auto theResult = basic_string_from_ratio<CharT,typename QuantityT::ratio_t>();
+    using Quantity_t = std::decay_t<QuantityT>;
+
+    auto theResult = basic_string_from_ratio<CharT,typename Quantity_t::ratio_t>();
     if( theResult == one<CharT> )
     {
         theResult.clear();
     }
 
-    const auto theUnitsString = basic_string_from_units<CharT,typename QuantityT::units_t>();
+    const auto theUnitsString = basic_string_from_units<CharT,typename Quantity_t::units_t>();
     if( !theUnitsString.empty() )
     {
         if( !theResult.empty() )
@@ -132,6 +134,36 @@ wstring_from_quantity_suffix
 )
 {
     return basic_string_from_quantity_suffix<wchar_t,QuantityT>();
+}
+
+template
+<
+    typename StorageT,
+    typename RatioT,
+    typename UnitsT
+>
+std::string
+string_from_quantity
+(
+    const quantity<StorageT, RatioT, UnitsT>& aQuantity
+)
+{
+    return std::to_string(aQuantity.value()) + dot<char> + string_from_quantity_suffix<decltype(aQuantity)>();
+}
+
+template
+<
+    typename StorageT,
+    typename RatioT,
+    typename UnitsT
+>
+std::wstring
+wstring_from_quantity
+(
+    const quantity<StorageT, RatioT, UnitsT>& aQuantity
+)
+{
+    return std::to_wstring(aQuantity.value()) + dot<wchar_t> + wstring_from_quantity_suffix<decltype(aQuantity)>();
 }
 
 } // end of namespace string
