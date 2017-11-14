@@ -46,13 +46,13 @@ constexpr inline void assertf( bool aInvariant, const char* aFilename, int aLine
     } \
 }
 
-#define assert_ratio_quantity_suffix_string( aQuantity, str ) \
+#define assert_ratio_quantity_suffix_string( aSuffix, str ) \
 { \
     { \
-        assert(si::string::string_from_quantity_suffix(aQuantity) == str); \
+        assert(si::string::string_from_quantity_suffix<aSuffix>() == str); \
     } \
     { \
-        assert(si::string::wstring_from_quantity_suffix(aQuantity) == L##str); \
+        assert(si::string::wstring_from_quantity_suffix<aSuffix>() == L##str); \
     } \
 }
 
@@ -94,18 +94,18 @@ void si::run_string_tests()
 
     {
         using TestQuantity_t = quantity<int,std::ratio<1>,scalar>;
-        assert_ratio_quantity_suffix_string(TestQuantity_t{}, "");
+        assert_ratio_quantity_suffix_string(TestQuantity_t, "");
     }
     {
         using TestQuantity_t = quantity<int,std::milli,scalar>;
-        assert_ratio_quantity_suffix_string(TestQuantity_t{}, "1/1000");
+        assert_ratio_quantity_suffix_string(TestQuantity_t, "1/1000");
     }
     {
         using TestQuantity_t = quantity<int,std::ratio<1>,mass>;
-        assert_ratio_quantity_suffix_string(TestQuantity_t{}, "kg");
+        assert_ratio_quantity_suffix_string(TestQuantity_t, "kg");
     }
     {
         using TestQuantity_t = quantity<int,std::milli,luminance>;
-        assert_ratio_quantity_suffix_string(TestQuantity_t{}, "1/1000·cd");
+        assert_ratio_quantity_suffix_string(TestQuantity_t, "1/1000·cd");
     }
 }

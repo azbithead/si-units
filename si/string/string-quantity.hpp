@@ -83,23 +83,20 @@ wstring_from_ratio
 template
 <
     typename CharT,
-    typename Storage,
-    typename Ratio,
-    typename Units
+    typename QuantityT
 >
 std::basic_string<CharT>
 basic_string_from_quantity_suffix
 (
-    const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    auto theResult = basic_string_from_ratio<CharT,Ratio>();
+    auto theResult = basic_string_from_ratio<CharT,typename QuantityT::ratio_t>();
     if( theResult == one<CharT> )
     {
         theResult.clear();
     }
 
-    const auto theUnitsString = basic_string_from_units<CharT,Units>();
+    const auto theUnitsString = basic_string_from_units<CharT,typename QuantityT::units_t>();
     if( !theUnitsString.empty() )
     {
         if( !theResult.empty() )
@@ -115,32 +112,26 @@ basic_string_from_quantity_suffix
 
 template
 <
-    typename Storage,
-    typename Ratio,
-    typename Units
+    typename QuantityT
 >
 std::string
 string_from_quantity_suffix
 (
-    const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    return basic_string_from_quantity_suffix<char>(aQuantity);
+    return basic_string_from_quantity_suffix<char,QuantityT>();
 }
 
 template
 <
-    typename Storage,
-    typename Ratio,
-    typename Units
+    typename QuantityT
 >
 std::wstring
 wstring_from_quantity_suffix
 (
-    const si::quantity<Storage, Ratio, Units>& aQuantity
 )
 {
-    return basic_string_from_quantity_suffix<wchar_t>(aQuantity);
+    return basic_string_from_quantity_suffix<wchar_t,QuantityT>();
 }
 
 } // end of namespace string
