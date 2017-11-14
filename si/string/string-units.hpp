@@ -3,7 +3,9 @@
 #include <utility>
 #include "units.hpp"
 
-namespace
+namespace si
+{
+namespace string
 {
 
 template< typename CharT >
@@ -41,13 +43,6 @@ constexpr const char* superscript<char>[8] = {"\u00B2","\u00B3","\u2074","\u2075
 
 template<>
 constexpr const wchar_t* superscript<wchar_t>[8] = {L"\u00B2",L"\u00B3",L"\u2074",L"\u2075",L"\u2076",L"\u2077",L"\u2078",L"\u2079"};
-
-} // end of anonymous namespace
-
-namespace si
-{
-namespace string
-{
 
 template< typename CharT > constexpr const CharT* mass_abbrev = nullptr;
 template<> constexpr const char* mass_abbrev<char> = "kg";
