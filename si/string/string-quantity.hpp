@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <ratio>
 #include "quantity.hpp"
-#include "string-units.hpp"
+#include "string/string-units.hpp"
 
 namespace si
 {
