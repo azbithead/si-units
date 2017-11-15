@@ -170,7 +170,7 @@ struct is_quantity_impl<quantity<STORAGE, RATIO, UNITS>> : std::true_type {};
 /// true if aType is an si::quantity, false otherwise
 /// @tparam aType a type to be tested
 template <typename aType>
-constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<aType>::type>::value;
+constexpr bool is_quantity = is_quantity_impl<typename std::decay<aType>::type>::value;
 
 //------------------------------------------------------------------------------
 /// Convert an si::quantity to another si:quantity type.

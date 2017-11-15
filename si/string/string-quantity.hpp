@@ -42,7 +42,7 @@ template
     typename CharT,
     typename RatioT
 >
-std::basic_string<CharT>
+typename std::enable_if<ratio::is_ratio<RatioT>, std::basic_string<CharT>>::type
 basic_string_from_ratio
 (
 )
