@@ -18,6 +18,7 @@ basic_string_from_intmax
 );
 
 template<>
+inline
 std::basic_string<char>
 basic_string_from_intmax<char>
 (
@@ -28,6 +29,7 @@ basic_string_from_intmax<char>
 }
 
 template<>
+inline
 std::basic_string<wchar_t>
 basic_string_from_intmax<wchar_t>
 (
@@ -42,6 +44,7 @@ template
     typename CharT,
     typename RatioT
 >
+inline
 typename std::enable_if<ratio::is_ratio<RatioT>, std::basic_string<CharT>>::type
 basic_string_from_ratio
 (
@@ -60,6 +63,7 @@ template
 <
     typename RatioT
 >
+inline
 std::string
 string_from_ratio
 (
@@ -72,6 +76,7 @@ template
 <
     typename RatioT
 >
+inline
 std::wstring
 wstring_from_ratio
 (
@@ -85,6 +90,7 @@ template
     typename CharT,
     typename QuantityT
 >
+inline
 std::basic_string<CharT>
 basic_string_from_quantity_suffix
 (
@@ -116,6 +122,7 @@ template
 <
     typename QuantityT
 >
+inline
 std::string
 string_from_quantity_suffix
 (
@@ -128,6 +135,7 @@ template
 <
     typename QuantityT
 >
+inline
 std::wstring
 wstring_from_quantity_suffix
 (
@@ -142,6 +150,7 @@ template
     typename RatioT,
     typename UnitsT
 >
+inline
 std::string
 string_from_quantity
 (
@@ -157,6 +166,7 @@ template
     typename RatioT,
     typename UnitsT
 >
+inline
 std::wstring
 wstring_from_quantity
 (

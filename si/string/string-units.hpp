@@ -10,6 +10,7 @@ namespace string
 {
 
 template< typename CharT >
+inline
 std::basic_string<CharT>
 basic_string_from_exp
 (
@@ -41,6 +42,7 @@ template
     typename CharT,
     typename Units
 >
+inline
 std::basic_string<CharT>
 basic_string_from_units
 (
@@ -85,6 +87,7 @@ template
 <
     typename Units
 >
+inline
 std::string
 string_from_units
 (
@@ -97,6 +100,7 @@ template
 <
     typename Units
 >
+inline
 std::wstring
 wstring_from_units
 (
