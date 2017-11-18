@@ -56,8 +56,10 @@ Note that VALUE can be either an integral or floating point type. If an integral
 
 Convenience type aliases are defined for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and RATIO defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
 
+```c++
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using kilograms = quantity<VALUE, RATIO, mass>;
+```
 
 ## Example 1
 
