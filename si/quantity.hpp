@@ -523,12 +523,7 @@ operator -
     const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
-    using CommonQuantity_t = std::common_type_t
-    <
-        quantity<VALUE1, RATIO1, UNITS>,
-        quantity<VALUE2, RATIO2, UNITS>
-    >;
-    return CommonQuantity_t{CommonQuantity_t{aLHS}.value() - CommonQuantity_t{aRHS}.value()};
+    return aLHS + (-aRHS);
 }
 
 //------------------------------------------------------------------------------
