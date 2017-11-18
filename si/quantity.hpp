@@ -892,6 +892,7 @@ template
     typename UNITS,
     typename EPSILON = std::ratio<1,10000000000000>
 >
+inline
 sqrt_result_t<STORAGE, RATIO, UNITS, EPSILON>
 sqrt
 (
