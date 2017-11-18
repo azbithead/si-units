@@ -915,6 +915,12 @@ template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using seconds = quantity<STORAGE, RATIO, time>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
+using minutes = seconds<std::ratio_multiply<RATIO, std::ratio<60>>, STORAGE>;
+
+template< typename RATIO = std::ratio<1>, typename STORAGE = double >
+using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, STORAGE>;
+
+template< typename RATIO = std::ratio<1>, typename STORAGE = double >
 using amperes = quantity<STORAGE, RATIO, current>;
 
 template< typename RATIO = std::ratio<1>, typename STORAGE = double >
