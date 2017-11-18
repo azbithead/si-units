@@ -106,7 +106,6 @@ struct exponentiate_units_impl
 
 //------------------------------------------------------------------------------
 /// the si::units type that is aUnits raised to aPower
-/// Raise an si::units type to a power.
 /// @tparam aUnits an si::units type
 /// @tparam aPower the power to which aUnits is raised
 template< typename aUnits, std::intmax_t aPower >
