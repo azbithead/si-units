@@ -69,9 +69,9 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, true>
     ToQ operator()(const FromQ& aFromQuantity) const
     {
         return ToQ
-        (
+        {
             static_cast<typename ToQ::value_t>(aFromQuantity.value())
-        );
+        };
     }
 };
 
@@ -93,13 +93,13 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
             intmax_t
         >;
         return ToQ
-        (
+        {
             static_cast<typename ToQ::value_t>
             (
                 static_cast<ResultValue_t>(aFromQuantity.value()) /
                 static_cast<ResultValue_t>(RATIO::den)
             )
-        );
+        };
     }
 };
 
@@ -121,13 +121,13 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
             intmax_t
         >;
         return ToQ
-        (
+        {
             static_cast<typename ToQ::value_t>
             (
                 static_cast<ResultValue_t>(aFromQuantity.value()) *
                 static_cast<ResultValue_t>(RATIO::num)
             )
-        );
+        };
     }
 };
 
@@ -149,14 +149,14 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
             intmax_t
         >;
         return ToQ
-        (
+        {
             static_cast<typename ToQ::value_t>
             (
                 static_cast<ResultValue_t>(aFromQuantity.value()) *
                 static_cast<ResultValue_t>(RATIO::num) /
                 static_cast<ResultValue_t>(RATIO::den)
             )
-        );
+        };
     }
 };
 
@@ -560,11 +560,11 @@ operator *
     >;
 
     return Result_t
-    (
+    {
         static_cast<ResultValue_t>( aLHS.value() )
         *
         static_cast<ResultValue_t>( aRHS.value() )
-    );
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -708,7 +708,7 @@ operator /
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
-    return Result_t(Result_t(aQuantity).value() / static_cast<ResultValue_t>(aScalar));
+    return Result_t{Result_t{aQuantity}.value() / static_cast<ResultValue_t>(aScalar)};
 }
 
 //------------------------------------------------------------------------------
@@ -735,7 +735,7 @@ operator /
         quantity<VALUE1, RATIO1, UNITS>,
         quantity<VALUE2, RATIO2, UNITS>
     >;
-    return CommonQuantity_t(aLHS).value() / CommonQuantity_t(aRHS).value();
+    return CommonQuantity_t{aLHS}.value() / CommonQuantity_t{aRHS}.value();
 }
 
 template
@@ -779,7 +779,7 @@ operator /
 )
 {
     using Result_t = diff_units_result_t<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2, UNITS2>;
-    return Result_t( aLHS.value() / aRHS.value() );
+    return Result_t{aLHS.value() / aRHS.value()};
 }
 
 //------------------------------------------------------------------------------
@@ -824,7 +824,7 @@ operator%
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
-    return Result_t(Result_t(aQuantity).value() % static_cast<ResultValue_t>(aScalar));
+    return Result_t{Result_t{aQuantity}.value() % static_cast<ResultValue_t>(aScalar)};
 }
 
 template
@@ -900,7 +900,7 @@ sqrt
 )
 {
     using Result_t = sqrt_result_t<VALUE, RATIO, UNITS, EPSILON>;
-    return Result_t{ std::sqrt(aQuantity.value()) };
+    return Result_t{std::sqrt(aQuantity.value())};
 }
 
 //==============================================================================
