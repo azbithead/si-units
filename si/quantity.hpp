@@ -202,6 +202,10 @@ public:
     static constexpr VALUE min()  {return std::numeric_limits<VALUE>::lowest();}
 };
 
+// This is coming in c++ 17 but we don't have that yet
+template< class From, class To >
+constexpr bool is_convertible_v = std::is_convertible<From, To>::value;
+
 //------------------------------------------------------------------------------
 /// Class si::quantity represents a numeric value with associated SI units.
 template <typename VALUE, typename RATIO, typename UNITS>
@@ -290,7 +294,7 @@ public:
         const VALUE2& aValue,
         typename std::enable_if
         <
-            std::is_convertible<VALUE2, value_t>::value &&
+            is_convertible_v<VALUE2, value_t> &&
             (
                 std::is_floating_point<value_t>::value ||
                 !std::is_floating_point<VALUE2>::value
@@ -570,11 +574,11 @@ constexpr
 typename std::enable_if
 <
     !is_quantity<VALUE2> &&
-    std::is_convertible
+    is_convertible_v
     <
         VALUE2,
         std::common_type_t<VALUE1, VALUE2>
-    >::value,
+    >,
     quantity
     <
         std::common_type_t<VALUE1, VALUE2>,
@@ -599,11 +603,11 @@ constexpr
 typename std::enable_if
 <
     !is_quantity<VALUE2> &&
-    std::is_convertible
+    is_convertible_v
     <
         VALUE2,
         std::common_type_t<VALUE1, VALUE2>
-    >::value,
+    >,
     quantity
     <
         std::common_type_t<VALUE1, VALUE2>,
@@ -624,11 +628,11 @@ template
 <
     typename QUANTITY,
     typename VALUE,
-    bool = std::is_convertible
+    bool = is_convertible_v
     <
         VALUE,
         std::common_type_t<typename QUANTITY::value_t, VALUE>
-    >::value
+    >
 >
 struct quantity_divide_helper
 {
