@@ -13,7 +13,7 @@ namespace si
 {
 
 // Forward declaration
-template <typename STORAGE, typename RATIO, typename UNITS > class quantity;
+template <typename VALUE, typename RATIO, typename UNITS > class quantity;
 
 } // end of namespace si
 
@@ -22,20 +22,20 @@ template <typename STORAGE, typename RATIO, typename UNITS > class quantity;
 template
 <
     typename UNITS,
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2
 >
 struct std::common_type
 <
-    si::quantity<STORAGE1, RATIO1, UNITS>,
-    si::quantity<STORAGE2, RATIO2, UNITS>
+    si::quantity<VALUE1, RATIO1, UNITS>,
+    si::quantity<VALUE2, RATIO2, UNITS>
 >
 {
     using type = si::quantity
     <
-        typename std::common_type<STORAGE1, STORAGE2>::type,
+        typename std::common_type<VALUE1, VALUE2>::type,
         si::ratio::ratio_gcd<RATIO1, RATIO2>,
         UNITS
     >;
@@ -70,7 +70,7 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, true>
     {
         return ToQ
         (
-            static_cast<typename ToQ::storage_t>(aFromQuantity.value())
+            static_cast<typename ToQ::value_t>(aFromQuantity.value())
         );
     }
 };
@@ -86,18 +86,18 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultStorage_t = typename std::common_type
+        using ResultValue_t = typename std::common_type
         <
-            typename ToQ::storage_t,
-            typename FromQ::storage_t,
+            typename ToQ::value_t,
+            typename FromQ::value_t,
             intmax_t
         >::type;
         return ToQ
         (
-            static_cast<typename ToQ::storage_t>
+            static_cast<typename ToQ::value_t>
             (
-                static_cast<ResultStorage_t>(aFromQuantity.value()) /
-                static_cast<ResultStorage_t>(RATIO::den)
+                static_cast<ResultValue_t>(aFromQuantity.value()) /
+                static_cast<ResultValue_t>(RATIO::den)
             )
         );
     }
@@ -114,18 +114,18 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultStorage_t = typename std::common_type
+        using ResultValue_t = typename std::common_type
         <
-            typename ToQ::storage_t,
-            typename FromQ::storage_t,
+            typename ToQ::value_t,
+            typename FromQ::value_t,
             intmax_t
         >::type;
         return ToQ
         (
-            static_cast<typename ToQ::storage_t>
+            static_cast<typename ToQ::value_t>
             (
-                static_cast<ResultStorage_t>(aFromQuantity.value()) *
-                static_cast<ResultStorage_t>(RATIO::num)
+                static_cast<ResultValue_t>(aFromQuantity.value()) *
+                static_cast<ResultValue_t>(RATIO::num)
             )
         );
     }
@@ -142,19 +142,19 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultStorage_t = typename std::common_type
+        using ResultValue_t = typename std::common_type
         <
-            typename ToQ::storage_t,
-            typename FromQ::storage_t,
+            typename ToQ::value_t,
+            typename FromQ::value_t,
             intmax_t
         >::type;
         return ToQ
         (
-            static_cast<typename ToQ::storage_t>
+            static_cast<typename ToQ::value_t>
             (
-                static_cast<ResultStorage_t>(aFromQuantity.value()) *
-                static_cast<ResultStorage_t>(RATIO::num) /
-                static_cast<ResultStorage_t>(RATIO::den)
+                static_cast<ResultValue_t>(aFromQuantity.value()) *
+                static_cast<ResultValue_t>(RATIO::num) /
+                static_cast<ResultValue_t>(RATIO::den)
             )
         );
     }
@@ -163,8 +163,8 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
 template <typename aType>
 struct is_quantity_impl : std::false_type {};
 
-template <typename UNITS, typename STORAGE, typename RATIO>
-struct is_quantity_impl<quantity<STORAGE, RATIO, UNITS>> : std::true_type {};
+template <typename UNITS, typename VALUE, typename RATIO>
+struct is_quantity_impl<quantity<VALUE, RATIO, UNITS>> : std::true_type {};
 
 //------------------------------------------------------------------------------
 /// true if aType is an si::quantity, false otherwise
@@ -175,7 +175,7 @@ constexpr bool is_quantity = is_quantity_impl<typename std::decay<aType>::type>:
 //------------------------------------------------------------------------------
 /// Convert an si::quantity to another si:quantity type.
 /// Both types must have the same si::units type.
-template <typename ToQ, typename UNITS, typename STORAGE, typename RATIO>
+template <typename ToQ, typename UNITS, typename VALUE, typename RATIO>
 inline
 constexpr
 typename std::enable_if
@@ -183,31 +183,31 @@ typename std::enable_if
     is_quantity<ToQ> && std::is_same<typename ToQ::units_t,UNITS>::value,
     ToQ
 >::type
-quantity_cast(const quantity<STORAGE, RATIO, UNITS>& aFromQuantity)
+quantity_cast(const quantity<VALUE, RATIO, UNITS>& aFromQuantity)
 {
     return quantity_cast_impl
     <
-        quantity<STORAGE, RATIO, UNITS>,
+        quantity<VALUE, RATIO, UNITS>,
         ToQ
     >()(aFromQuantity);
 }
 
 // some special quantity values
-template <typename STORAGE>
+template <typename VALUE>
 struct quantity_values
 {
 public:
-    static constexpr STORAGE zero() {return STORAGE(0);}
-    static constexpr STORAGE max()  {return std::numeric_limits<STORAGE>::max();}
-    static constexpr STORAGE min()  {return std::numeric_limits<STORAGE>::lowest();}
+    static constexpr VALUE zero() {return VALUE(0);}
+    static constexpr VALUE max()  {return std::numeric_limits<VALUE>::max();}
+    static constexpr VALUE min()  {return std::numeric_limits<VALUE>::lowest();}
 };
 
 //------------------------------------------------------------------------------
 /// Class si::quantity represents a numeric value with associated SI units.
-template <typename STORAGE, typename RATIO, typename UNITS>
+template <typename VALUE, typename RATIO, typename UNITS>
 class quantity
 {
-    static_assert(std::is_arithmetic<STORAGE>::value, "STORAGE must be an arithmetic type");
+    static_assert(std::is_arithmetic<VALUE>::value, "VALUE must be an arithmetic type");
     static_assert(ratio::is_ratio<RATIO>, "RATIO must be of type std::ratio");
     static_assert(std::ratio_greater<RATIO, std::ratio<0>>::value, "RATIO must be positive");
     static_assert(is_units<UNITS>, "UNITS must be of type si::units" );
@@ -250,7 +250,7 @@ public:
     //--------------------------------------------------------------------------
     /// Type aliases
     using units_t = UNITS;
-    using storage_t = STORAGE;
+    using value_t = VALUE;
     using ratio_t = typename RATIO::type;
 
 
@@ -261,7 +261,7 @@ public:
 
 private:
 
-    storage_t mValue;
+    value_t mValue;
 
 public:
 
@@ -282,18 +282,18 @@ public:
     /// Initialize a quantity from a unitless value.
     /// This constructor will not be chosen by the compiler if it would result in loss of precision.
     /// @param aValue the scalar value that will be stored in this object
-    template <typename STORAGE2>
+    template <typename VALUE2>
     constexpr
     explicit
     quantity
     (
-        const STORAGE2& aValue,
+        const VALUE2& aValue,
         typename std::enable_if
         <
-            std::is_convertible<STORAGE2, storage_t>::value &&
+            std::is_convertible<VALUE2, value_t>::value &&
             (
-                std::is_floating_point<storage_t>::value ||
-                !std::is_floating_point<STORAGE2>::value
+                std::is_floating_point<value_t>::value ||
+                !std::is_floating_point<VALUE2>::value
             )
         >::type* = 0
     )
@@ -302,22 +302,22 @@ public:
     }
 
     //--------------------------------------------------------------------------
-    /// Initialize a quantity from another quantity possibly having different storage_t and ratio_t types but the same units_t type.
+    /// Initialize a quantity from another quantity possibly having different value_t and ratio_t types but the same units_t type.
     /// This constructor will not be chosen by the compiler if it would result in overflow or loss of precision.
     /// @param aQuantity the quantity that will be converted to this quantity
-    template <typename STORAGE2, typename RATIO2>
+    template <typename VALUE2, typename RATIO2>
     constexpr
     quantity
     (
-        const quantity<STORAGE2, RATIO2, UNITS>& aQuantity,
+        const quantity<VALUE2, RATIO2, UNITS>& aQuantity,
         typename std::enable_if
         <
             no_overflow<RATIO2, ratio_t>::value &&
             (
-                std::is_floating_point<storage_t>::value ||
+                std::is_floating_point<value_t>::value ||
                 (
                     no_overflow<RATIO2, ratio_t>::type::den == 1 &&
-                    !std::is_floating_point<STORAGE2>::value
+                    !std::is_floating_point<VALUE2>::value
                 )
             )
         >::type* = 0
@@ -328,7 +328,7 @@ public:
 
     //--------------------------------------------------------------------------
     // Accessor function
-    constexpr storage_t value() const {return mValue;}
+    constexpr value_t value() const {return mValue;}
 
     //--------------------------------------------------------------------------
     // Arithmetic functions
@@ -340,16 +340,16 @@ public:
     quantity operator--(int) {return quantity{mValue--};}
     quantity& operator+=(const quantity& aQuantity) {mValue += aQuantity.value(); return *this;}
     quantity& operator-=(const quantity& aQuantity) {mValue -= aQuantity.value(); return *this;}
-    quantity& operator*=(const storage_t& rhs) {mValue *= rhs; return *this;}
-    quantity& operator/=(const storage_t& rhs) {mValue /= rhs; return *this;}
-    quantity& operator%=(const storage_t& rhs) {mValue %= rhs; return *this;}
+    quantity& operator*=(const value_t& rhs) {mValue *= rhs; return *this;}
+    quantity& operator/=(const value_t& rhs) {mValue /= rhs; return *this;}
+    quantity& operator%=(const value_t& rhs) {mValue %= rhs; return *this;}
     quantity& operator%=(const quantity& rhs) {mValue %= rhs.value(); return *this;}
 
     //--------------------------------------------------------------------------
     // Special values
-    static constexpr quantity zero() {return quantity{quantity_values<storage_t>::zero()};}
-    static constexpr quantity min() {return quantity{quantity_values<storage_t>::min()};}
-    static constexpr quantity max() {return quantity{quantity_values<storage_t>::max()};}
+    static constexpr quantity zero() {return quantity{quantity_values<value_t>::zero()};}
+    static constexpr quantity min() {return quantity{quantity_values<value_t>::min()};}
+    static constexpr quantity max() {return quantity{quantity_values<value_t>::max()};}
 }; // end of class quantity
 
 template <typename LhsQ, typename RhsQ>
@@ -396,33 +396,33 @@ struct quantity_lt_impl<LhsQ, LhsQ>
 
 //------------------------------------------------------------------------------
 /// quantity ==
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator ==
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     return quantity_eq_impl
     <
-        quantity<STORAGE1, RATIO1, UNITS>,
-        quantity<STORAGE2, RATIO2, UNITS>
+        quantity<VALUE1, RATIO1, UNITS>,
+        quantity<VALUE2, RATIO2, UNITS>
     >()(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
 // quantity !=
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator !=
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     return !(aLHS == aRHS);
@@ -430,32 +430,32 @@ operator !=
 
 //------------------------------------------------------------------------------
 // quantity <
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator <
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS)
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS)
 {
     return quantity_lt_impl
     <
-        quantity<STORAGE1, RATIO1, UNITS>,
-        quantity<STORAGE2, RATIO2, UNITS>
+        quantity<VALUE1, RATIO1, UNITS>,
+        quantity<VALUE2, RATIO2, UNITS>
     >()(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
 // quantity >
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator >
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     return aRHS < aLHS;
@@ -463,14 +463,14 @@ operator >
 
 //------------------------------------------------------------------------------
 // quantity <=
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator <=
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     return !(aRHS < aLHS);
@@ -478,14 +478,14 @@ operator <=
 
 //------------------------------------------------------------------------------
 // quantity >=
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 bool
 operator >=
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     return !(aLHS < aRHS);
@@ -493,40 +493,40 @@ operator >=
 
 //------------------------------------------------------------------------------
 // quantity +
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 auto
 operator +
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     using CommonQuantity_t = typename std::common_type
     <
-        quantity<STORAGE1, RATIO1, UNITS>,
-        quantity<STORAGE2, RATIO2, UNITS>
+        quantity<VALUE1, RATIO1, UNITS>,
+        quantity<VALUE2, RATIO2, UNITS>
     >::type;
     return CommonQuantity_t{CommonQuantity_t{aLHS}.value() + CommonQuantity_t{aRHS}.value()};
 }
 
 //------------------------------------------------------------------------------
 // quantity -
-template <typename UNITS, typename STORAGE1, typename RATIO1, typename STORAGE2, typename RATIO2>
+template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
 inline
 constexpr
 auto
 operator -
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     using CommonQuantity_t = typename std::common_type
     <
-        quantity<STORAGE1, RATIO1, UNITS>,
-        quantity<STORAGE2, RATIO2, UNITS>
+        quantity<VALUE1, RATIO1, UNITS>,
+        quantity<VALUE2, RATIO2, UNITS>
     >::type;
     return CommonQuantity_t{CommonQuantity_t{aLHS}.value() - CommonQuantity_t{aRHS}.value()};
 }
@@ -536,10 +536,10 @@ operator -
 template
 <
     typename UNITS1,
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
     typename UNITS2,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2
 >
 inline
@@ -547,79 +547,79 @@ constexpr
 auto
 operator *
 (
-    const quantity<STORAGE1, RATIO1, UNITS1>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
 )
 {
-    using ResultStorage_t = typename std::common_type<STORAGE1, STORAGE2>::type;
+    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
     using Result_t = quantity
     <
-        ResultStorage_t,
+        ResultValue_t,
         std::ratio_multiply<RATIO1, RATIO2>,
         multiply_units<UNITS1, UNITS2>
     >;
 
     return Result_t
     (
-        static_cast<ResultStorage_t>( aLHS.value() )
+        static_cast<ResultValue_t>( aLHS.value() )
         *
-        static_cast<ResultStorage_t>( aRHS.value() )
+        static_cast<ResultValue_t>( aRHS.value() )
     );
 }
 
 //------------------------------------------------------------------------------
 // quantity * scalar
-template <typename STORAGE1, typename RATIO, typename UNITS, typename STORAGE2>
+template <typename VALUE1, typename RATIO, typename UNITS, typename VALUE2>
 inline
 constexpr
 typename std::enable_if
 <
-    !is_quantity<STORAGE2> &&
+    !is_quantity<VALUE2> &&
     std::is_convertible
     <
-        STORAGE2,
-        typename std::common_type<STORAGE1, STORAGE2>::type
+        VALUE2,
+        typename std::common_type<VALUE1, VALUE2>::type
     >::value,
     quantity
     <
-        typename std::common_type<STORAGE1, STORAGE2>::type,
+        typename std::common_type<VALUE1, VALUE2>::type,
         RATIO,
         UNITS
     >
 >::type
 operator *
 (
-    const quantity<STORAGE1, RATIO, UNITS>& aQuantity,
-    const STORAGE2& aScalar
+    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
+    const VALUE2& aScalar
 )
 {
-    return aQuantity * quantity<STORAGE2, std::ratio<1>, scalar>{aScalar};
+    return aQuantity * quantity<VALUE2, std::ratio<1>, scalar>{aScalar};
 }
 
 //------------------------------------------------------------------------------
 // scalar * quantity
-template <typename STORAGE1, typename RATIO, typename UNITS, typename STORAGE2>
+template <typename VALUE1, typename RATIO, typename UNITS, typename VALUE2>
 inline
 constexpr
 typename std::enable_if
 <
-    !is_quantity<STORAGE2> &&
+    !is_quantity<VALUE2> &&
     std::is_convertible
     <
-        STORAGE2,
-        typename std::common_type<STORAGE1, STORAGE2>::type
+        VALUE2,
+        typename std::common_type<VALUE1, VALUE2>::type
     >::value,
     quantity
     <
-        typename std::common_type<STORAGE1, STORAGE2>::type,
+        typename std::common_type<VALUE1, VALUE2>::type,
         RATIO,
         UNITS
     >
 >::type
 operator *
 (
-    const STORAGE2& aScalar,
-    const quantity<STORAGE1, RATIO, UNITS>& aQuantity
+    const VALUE2& aScalar,
+    const quantity<VALUE1, RATIO, UNITS>& aQuantity
 )
 {
     return aQuantity * aScalar;
@@ -628,11 +628,11 @@ operator *
 template
 <
     typename QUANTITY,
-    typename STORAGE,
+    typename VALUE,
     bool = std::is_convertible
     <
-        STORAGE,
-        typename std::common_type<typename QUANTITY::storage_t, STORAGE>::type
+        VALUE,
+        typename std::common_type<typename QUANTITY::value_t, VALUE>::type
     >::value
 >
 struct quantity_divide_helper
@@ -641,21 +641,21 @@ struct quantity_divide_helper
 
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO,
     typename UNITS,
-    typename STORAGE2
+    typename VALUE2
 >
 struct quantity_divide_helper
 <
-    quantity<STORAGE1, RATIO, UNITS>,
-    STORAGE2,
+    quantity<VALUE1, RATIO, UNITS>,
+    VALUE2,
     true
 >
 {
     using type = quantity
     <
-        typename std::common_type<STORAGE1, STORAGE2>::type,
+        typename std::common_type<VALUE1, VALUE2>::type,
         RATIO,
         UNITS
     >;
@@ -664,8 +664,8 @@ struct quantity_divide_helper
 template
 <
     typename QUANTITY,
-    typename STORAGE,
-    bool = is_quantity<STORAGE>
+    typename VALUE,
+    bool = is_quantity<VALUE>
 >
 struct quantity_divide_result_t
 {
@@ -673,18 +673,18 @@ struct quantity_divide_result_t
 
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO,
     typename UNITS,
-    typename STORAGE2
+    typename VALUE2
 >
 struct quantity_divide_result_t
 <
-    quantity<STORAGE1, RATIO, UNITS>,
-    STORAGE2,
+    quantity<VALUE1, RATIO, UNITS>,
+    VALUE2,
     false
 >
-: quantity_divide_helper<quantity<STORAGE1, RATIO, UNITS>, STORAGE2>
+: quantity_divide_helper<quantity<VALUE1, RATIO, UNITS>, VALUE2>
 {
 };
 
@@ -692,23 +692,23 @@ struct quantity_divide_result_t
 // divide quantity by scalar
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO,
     typename UNITS,
-    typename STORAGE2
+    typename VALUE2
 >
 inline
 constexpr
-typename quantity_divide_result_t<quantity<STORAGE1, RATIO, UNITS>, STORAGE2>::type
+typename quantity_divide_result_t<quantity<VALUE1, RATIO, UNITS>, VALUE2>::type
 operator /
 (
-    const quantity<STORAGE1, RATIO, UNITS>& aQuantity,
-    const STORAGE2& aScalar
+    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
+    const VALUE2& aScalar
 )
 {
-    using ResultStorage_t = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using Result_t = quantity<ResultStorage_t, RATIO, UNITS>;
-    return Result_t(Result_t(aQuantity).value() / static_cast<ResultStorage_t>(aScalar));
+    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
+    return Result_t(Result_t(aQuantity).value() / static_cast<ResultValue_t>(aScalar));
 }
 
 //------------------------------------------------------------------------------
@@ -716,9 +716,9 @@ operator /
 template
 <
     typename UNITS,
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2
 >
 inline
@@ -726,30 +726,30 @@ constexpr
 auto
 operator /
 (
-    const quantity<STORAGE1, RATIO1, UNITS>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
     using CommonQuantity_t = typename std::common_type
     <
-        quantity<STORAGE1, RATIO1, UNITS>,
-        quantity<STORAGE2, RATIO2, UNITS>
+        quantity<VALUE1, RATIO1, UNITS>,
+        quantity<VALUE2, RATIO2, UNITS>
     >::type;
     return CommonQuantity_t(aLHS).value() / CommonQuantity_t(aRHS).value();
 }
 
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
     typename UNITS1,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2,
     typename UNITS2
 >
 using diff_units_result_t = quantity
 <
-    typename std::common_type<STORAGE1, STORAGE2>::type,
+    typename std::common_type<VALUE1, VALUE2>::type,
     std::ratio_divide<RATIO1, RATIO2>,
     divide_units<UNITS1, UNITS2>
 >;
@@ -759,10 +759,10 @@ using diff_units_result_t = quantity
 template
 <
     typename UNITS1,
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
     typename UNITS2,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2
 >
 inline
@@ -770,15 +770,15 @@ constexpr
 typename std::enable_if
 <
     !std::is_same<UNITS1,UNITS2>::value,
-    diff_units_result_t<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2, UNITS2>
+    diff_units_result_t<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2, UNITS2>
 >::type
 operator /
 (
-    const quantity<STORAGE1, RATIO1, UNITS1>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
 )
 {
-    using Result_t = diff_units_result_t<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2, UNITS2>;
+    using Result_t = diff_units_result_t<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2, UNITS2>;
     return Result_t( aLHS.value() / aRHS.value() );
 }
 
@@ -786,22 +786,22 @@ operator /
 // divide scalar by quantity
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO,
     typename UNITS,
-    typename STORAGE2
+    typename VALUE2
 >
 inline
 constexpr
 auto
 operator /
 (
-    const STORAGE2& aScalar,
-    const quantity<STORAGE1, RATIO, UNITS>& aQuantity
+    const VALUE2& aScalar,
+    const quantity<VALUE1, RATIO, UNITS>& aQuantity
 )
 {
-    using ResultStorage_t = typename std::common_type<STORAGE1, STORAGE2>::type;
-    return quantity<ResultStorage_t, std::ratio<1>, scalar>{aScalar} / aQuantity;
+    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    return quantity<ResultValue_t, std::ratio<1>, scalar>{aScalar} / aQuantity;
 }
 
 //------------------------------------------------------------------------------
@@ -809,35 +809,35 @@ operator /
 template
 <
     typename UNITS,
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO,
-    typename STORAGE2
+    typename VALUE2
 >
 inline
 constexpr
-typename quantity_divide_result_t<quantity<STORAGE1, RATIO, UNITS>, STORAGE2>::type
+typename quantity_divide_result_t<quantity<VALUE1, RATIO, UNITS>, VALUE2>::type
 operator%
 (
-    const quantity<STORAGE1, RATIO, UNITS>& aQuantity,
-    const STORAGE2& aScalar
+    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
+    const VALUE2& aScalar
 )
 {
-    using ResultStorage_t = typename std::common_type<STORAGE1, STORAGE2>::type;
-    using Result_t = quantity<ResultStorage_t, RATIO, UNITS>;
-    return Result_t(Result_t(aQuantity).value() % static_cast<ResultStorage_t>(aScalar));
+    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
+    return Result_t(Result_t(aQuantity).value() % static_cast<ResultValue_t>(aScalar));
 }
 
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
     typename UNITS1,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2
 >
 using mod_result = quantity
 <
-    typename std::common_type<STORAGE1, STORAGE2>::type,
+    typename std::common_type<VALUE1, VALUE2>::type,
     std::ratio_divide<RATIO1, RATIO2>,
     UNITS1
 >;
@@ -846,20 +846,20 @@ using mod_result = quantity
 // modulo quantity by quantity
 template
 <
-    typename STORAGE1,
+    typename VALUE1,
     typename RATIO1,
     typename UNITS1,
-    typename STORAGE2,
+    typename VALUE2,
     typename RATIO2,
     typename UNITS2
 >
 inline
 constexpr
-mod_result<STORAGE1, RATIO1, UNITS1, STORAGE2, RATIO2>
+mod_result<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2>
 operator%
 (
-    const quantity<STORAGE1, RATIO1, UNITS1>& aLHS,
-    const quantity<STORAGE2, RATIO2, UNITS2>& aRHS
+    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
+    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
 )
 {
     return aLHS - (aRHS * (aLHS / aRHS));
@@ -867,17 +867,17 @@ operator%
 
 template
 <
-    typename STORAGE,
+    typename VALUE,
     typename RATIO,
     typename UNITS,
     typename EPSILON
 >
 using sqrt_result_t = typename std::enable_if
 <
-    std::is_floating_point<STORAGE>::value,
+    std::is_floating_point<VALUE>::value,
     quantity
     <
-        STORAGE,
+        VALUE,
         typename ratio::ratio_sqrt<RATIO, EPSILON>::type,
         root_units<UNITS, 2>
     >
@@ -887,94 +887,94 @@ using sqrt_result_t = typename std::enable_if
 // square root of a quantity
 template
 <
-    typename STORAGE,
+    typename VALUE,
     typename RATIO,
     typename UNITS,
     typename EPSILON = std::ratio<1,10000000000000>
 >
 inline
-sqrt_result_t<STORAGE, RATIO, UNITS, EPSILON>
+sqrt_result_t<VALUE, RATIO, UNITS, EPSILON>
 sqrt
 (
-    const quantity<STORAGE, RATIO, UNITS>& aQuantity
+    const quantity<VALUE, RATIO, UNITS>& aQuantity
 )
 {
-    using Result_t = sqrt_result_t<STORAGE, RATIO, UNITS, EPSILON>;
+    using Result_t = sqrt_result_t<VALUE, RATIO, UNITS, EPSILON>;
     return Result_t{ std::sqrt(aQuantity.value()) };
 }
 
 //==============================================================================
 // Some useful si::quantity types
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using meters = quantity<STORAGE, RATIO, length>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using meters = quantity<VALUE, RATIO, length>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using kilograms = quantity<STORAGE, RATIO, mass>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using kilograms = quantity<VALUE, RATIO, mass>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using seconds = quantity<STORAGE, RATIO, time>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using seconds = quantity<VALUE, RATIO, time>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using minutes = seconds<std::ratio_multiply<RATIO, std::ratio<60>>, STORAGE>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using minutes = seconds<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, STORAGE>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using amperes = quantity<STORAGE, RATIO, current>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using amperes = quantity<VALUE, RATIO, current>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using kelvins = quantity<STORAGE, RATIO, temperature>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using kelvins = quantity<VALUE, RATIO, temperature>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using candelas = quantity<STORAGE, RATIO, luminance>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using candelas = quantity<VALUE, RATIO, luminance>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using radians = quantity<STORAGE, RATIO, angle>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using radians = quantity<VALUE, RATIO, angle>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using steradians = quantity<STORAGE, RATIO, power_units<angle,2>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using steradians = quantity<VALUE, RATIO, power_units<angle,2>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using hertz = quantity<STORAGE, RATIO, reciprocal_units<time>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using hertz = quantity<VALUE, RATIO, reciprocal_units<time>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using newtons = quantity<STORAGE, RATIO, divide_units<multiply_units<mass, length>, power_units<time,2>>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using newtons = quantity<VALUE, RATIO, divide_units<multiply_units<mass, length>, power_units<time,2>>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using coulombs = quantity<STORAGE, RATIO, multiply_units<current, time>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using coulombs = quantity<VALUE, RATIO, multiply_units<current, time>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lux = quantity<STORAGE, RATIO, divide_units<luminance, power_units<length,2>>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using lux = quantity<VALUE, RATIO, divide_units<luminance, power_units<length,2>>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using pascals = quantity<STORAGE, RATIO, divide_units<typename newtons<>::units_t, power_units<length,2>>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using pascals = quantity<VALUE, RATIO, divide_units<typename newtons<>::units_t, power_units<length,2>>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using joules = quantity<STORAGE, RATIO, multiply_units<typename newtons<>::units_t, length>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using joules = quantity<VALUE, RATIO, multiply_units<typename newtons<>::units_t, length>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using watts = quantity<STORAGE, RATIO, divide_units<typename joules<>::units_t, time>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using watts = quantity<VALUE, RATIO, divide_units<typename joules<>::units_t, time>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using volts = quantity<STORAGE, RATIO, divide_units<typename watts<>::units_t, current>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using volts = quantity<VALUE, RATIO, divide_units<typename watts<>::units_t, current>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using farads = quantity<STORAGE, RATIO, divide_units<typename coulombs<>::units_t, typename volts<>::units_t>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using farads = quantity<VALUE, RATIO, divide_units<typename coulombs<>::units_t, typename volts<>::units_t>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using ohms = quantity<STORAGE, RATIO, divide_units<typename volts<>::units_t, current>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using ohms = quantity<VALUE, RATIO, divide_units<typename volts<>::units_t, current>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using webers = quantity<STORAGE, RATIO, multiply_units<typename volts<>::units_t, time>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using webers = quantity<VALUE, RATIO, multiply_units<typename volts<>::units_t, time>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using teslas = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, power_units<length,2>>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using teslas = quantity<VALUE, RATIO, divide_units<typename webers<>::units_t, power_units<length,2>>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using henries = quantity<STORAGE, RATIO, divide_units<typename webers<>::units_t, current>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using henries = quantity<VALUE, RATIO, divide_units<typename webers<>::units_t, current>>;
 
-template< typename RATIO = std::ratio<1>, typename STORAGE = double >
-using lumens = quantity<STORAGE, RATIO, multiply_units<luminance, typename steradians<>::units_t>>;
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using lumens = quantity<VALUE, RATIO, multiply_units<luminance, typename steradians<>::units_t>>;
 
 } // end of namespace si

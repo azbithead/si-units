@@ -53,7 +53,7 @@ static_assert( mm_t{2}.value() == 2, "" );
 static_assert( is_same<m_t::units_t, distance>, "" );
 
 // storage_t
-static_assert( is_same<m_t::storage_t, int>, "" );
+static_assert( is_same<m_t::value_t, int>, "" );
 
 // ratio
 static_assert( is_same<mm_t::ratio_t, std::milli>, "" );
@@ -158,10 +158,10 @@ static_assert( is_same<decltype( theResult10 ), const m_t>, "" );
 static_assert( m_t::zero().value() == 0, "" );
 
 // min()
-static_assert( m_t::min().value() == std::numeric_limits<m_t::storage_t>::min(), "" );
+static_assert( m_t::min().value() == std::numeric_limits<m_t::value_t>::min(), "" );
 
 // max()
-static_assert( m_t::max().value() == std::numeric_limits<m_t::storage_t>::max(), "" );
+static_assert( m_t::max().value() == std::numeric_limits<m_t::value_t>::max(), "" );
 
 constexpr inline void assertf( bool aInvariant, int aLineNumber )
 {
