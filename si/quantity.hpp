@@ -256,8 +256,8 @@ public:
 
     //--------------------------------------------------------------------------
     /// Static member constants
-    static constexpr auto ratio = RATIO{};
-    static constexpr auto units = UNITS{};
+    static constexpr auto ratio = ratio_t{};
+    static constexpr auto units = units_t{};
 
 private:
 
