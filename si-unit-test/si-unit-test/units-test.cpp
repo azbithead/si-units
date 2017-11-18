@@ -15,7 +15,7 @@ static_assert( is_units< distance >, "" );
 static_assert( is_units< time >, "" );
 static_assert( is_units< current >, "" );
 static_assert( is_units< const temperature >, "" );
-static_assert( is_units< volatile luminance >, "" );
+static_assert( is_units< volatile luminous_intensity >, "" );
 static_assert( is_units< const volatile angle >, "" );
 
 // multiply_units

@@ -65,7 +65,7 @@ void si::run_string_tests()
     assert_units_abbrev( time, string::time_abbrev );
     assert_units_abbrev( current, string::current_abbrev );
     assert_units_abbrev( temperature, string::temperature_abbrev );
-    assert_units_abbrev( luminance, string::luminance_abbrev );
+    assert_units_abbrev( luminous_intensity, string::luminous_intensity_abbrev );
     assert_units_abbrev( substance, string::substance_abbrev );
     assert_units_abbrev( angle, string::angle_abbrev );
 
@@ -105,7 +105,7 @@ void si::run_string_tests()
         assert_ratio_quantity_suffix_string(TestQuantity_t, "kg");
     }
     {
-        using TestQuantity_t = quantity<int,std::milli,luminance>;
+        using TestQuantity_t = quantity<int,std::milli,luminous_intensity>;
         assert_ratio_quantity_suffix_string(TestQuantity_t, "1/1000·cd");
     }
 

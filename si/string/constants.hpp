@@ -61,9 +61,9 @@ template< typename CharT > constexpr const CharT* temperature_abbrev = nullptr;
 template<> constexpr const char* temperature_abbrev<char> = "K";
 template<> constexpr const wchar_t* temperature_abbrev<wchar_t> = L"K";
 
-template< typename CharT > constexpr const CharT* luminance_abbrev = nullptr;
-template<> constexpr const char* luminance_abbrev<char> = "cd";
-template<> constexpr const wchar_t* luminance_abbrev<wchar_t> = L"cd";
+template< typename CharT > constexpr const CharT* luminous_intensity_abbrev = nullptr;
+template<> constexpr const char* luminous_intensity_abbrev<char> = "cd";
+template<> constexpr const wchar_t* luminous_intensity_abbrev<wchar_t> = L"cd";
 
 template< typename CharT > constexpr const CharT* substance_abbrev = nullptr;
 template<> constexpr const char* substance_abbrev<char> = "mol";

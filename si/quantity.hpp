@@ -926,54 +926,57 @@ template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using kelvins = quantity<VALUE, RATIO, temperature>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using candelas = quantity<VALUE, RATIO, luminance>;
+using candelas = quantity<VALUE, RATIO, luminous_intensity>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using radians = quantity<VALUE, RATIO, angle>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using steradians = quantity<VALUE, RATIO, power_units<angle,2>>;
+using steradians = quantity<VALUE, RATIO, solid_angle>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using hertz = quantity<VALUE, RATIO, reciprocal_units<time>>;
+using hertz = quantity<VALUE, RATIO, frequency>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using newtons = quantity<VALUE, RATIO, divide_units<multiply_units<mass, length>, power_units<time,2>>>;
+using newtons = quantity<VALUE, RATIO, force>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using coulombs = quantity<VALUE, RATIO, multiply_units<current, time>>;
+using coulombs = quantity<VALUE, RATIO, charge>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lux = quantity<VALUE, RATIO, divide_units<luminance, power_units<length,2>>>;
+using lux = quantity<VALUE, RATIO, illuminance>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using pascals = quantity<VALUE, RATIO, divide_units<typename newtons<>::units_t, power_units<length,2>>>;
+using pascals = quantity<VALUE, RATIO, pressure>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using joules = quantity<VALUE, RATIO, multiply_units<typename newtons<>::units_t, length>>;
+using joules = quantity<VALUE, RATIO, energy>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using watts = quantity<VALUE, RATIO, divide_units<typename joules<>::units_t, time>>;
+using watts = quantity<VALUE, RATIO, power>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using volts = quantity<VALUE, RATIO, divide_units<typename watts<>::units_t, current>>;
+using volts = quantity<VALUE, RATIO, voltage>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using farads = quantity<VALUE, RATIO, divide_units<typename coulombs<>::units_t, typename volts<>::units_t>>;
+using farads = quantity<VALUE, RATIO, capacitance>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using ohms = quantity<VALUE, RATIO, divide_units<typename volts<>::units_t, current>>;
+using ohms = quantity<VALUE, RATIO, impedance>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using webers = quantity<VALUE, RATIO, multiply_units<typename volts<>::units_t, time>>;
+using siemens = quantity<VALUE, RATIO, conductance>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using teslas = quantity<VALUE, RATIO, divide_units<typename webers<>::units_t, power_units<length,2>>>;
+using webers = quantity<VALUE, RATIO, magnetic_flux>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using henries = quantity<VALUE, RATIO, divide_units<typename webers<>::units_t, current>>;
+using teslas = quantity<VALUE, RATIO, magnetic_flux_density>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lumens = quantity<VALUE, RATIO, multiply_units<luminance, typename steradians<>::units_t>>;
+using henries = quantity<VALUE, RATIO, inductance>;
+
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using lumens = quantity<VALUE, RATIO, luminous_flux>;
 
 } // end of namespace si
