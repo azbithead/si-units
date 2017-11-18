@@ -35,7 +35,7 @@ struct std::common_type
 {
     using type = si::quantity
     <
-        typename std::common_type<VALUE1, VALUE2>::type,
+        std::common_type_t<VALUE1, VALUE2>,
         si::ratio::ratio_gcd<RATIO1, RATIO2>,
         UNITS
     >;
@@ -86,12 +86,12 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultValue_t = typename std::common_type
+        using ResultValue_t = std::common_type_t
         <
             typename ToQ::value_t,
             typename FromQ::value_t,
             intmax_t
-        >::type;
+        >;
         return ToQ
         (
             static_cast<typename ToQ::value_t>
@@ -114,12 +114,12 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultValue_t = typename std::common_type
+        using ResultValue_t = std::common_type_t
         <
             typename ToQ::value_t,
             typename FromQ::value_t,
             intmax_t
-        >::type;
+        >;
         return ToQ
         (
             static_cast<typename ToQ::value_t>
@@ -142,12 +142,12 @@ struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
     constexpr
     ToQ operator()(const FromQ& aFromQuantity) const
     {
-        using ResultValue_t = typename std::common_type
+        using ResultValue_t = std::common_type_t
         <
             typename ToQ::value_t,
             typename FromQ::value_t,
             intmax_t
-        >::type;
+        >;
         return ToQ
         (
             static_cast<typename ToQ::value_t>
@@ -358,7 +358,7 @@ struct quantity_eq_impl
     constexpr
     bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
     {
-        using CommonQuantity_t = typename std::common_type<LhsQ, RhsQ>::type;
+        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
         return CommonQuantity_t{aLHS}.value() == CommonQuantity_t{aRHS}.value();
     }
 };
@@ -379,7 +379,7 @@ struct quantity_lt_impl
     constexpr
     bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
     {
-        using CommonQuantity_t = typename std::common_type<LhsQ, RhsQ>::type;
+        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
         return CommonQuantity_t{aLHS}.value() < CommonQuantity_t{aRHS}.value();
     }
 };
@@ -503,11 +503,11 @@ operator +
     const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
-    using CommonQuantity_t = typename std::common_type
+    using CommonQuantity_t = std::common_type_t
     <
         quantity<VALUE1, RATIO1, UNITS>,
         quantity<VALUE2, RATIO2, UNITS>
-    >::type;
+    >;
     return CommonQuantity_t{CommonQuantity_t{aLHS}.value() + CommonQuantity_t{aRHS}.value()};
 }
 
@@ -523,11 +523,11 @@ operator -
     const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
-    using CommonQuantity_t = typename std::common_type
+    using CommonQuantity_t = std::common_type_t
     <
         quantity<VALUE1, RATIO1, UNITS>,
         quantity<VALUE2, RATIO2, UNITS>
-    >::type;
+    >;
     return CommonQuantity_t{CommonQuantity_t{aLHS}.value() - CommonQuantity_t{aRHS}.value()};
 }
 
@@ -551,7 +551,7 @@ operator *
     const quantity<VALUE2, RATIO2, UNITS2>& aRHS
 )
 {
-    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = quantity
     <
         ResultValue_t,
@@ -578,11 +578,11 @@ typename std::enable_if
     std::is_convertible
     <
         VALUE2,
-        typename std::common_type<VALUE1, VALUE2>::type
+        std::common_type_t<VALUE1, VALUE2>
     >::value,
     quantity
     <
-        typename std::common_type<VALUE1, VALUE2>::type,
+        std::common_type_t<VALUE1, VALUE2>,
         RATIO,
         UNITS
     >
@@ -607,11 +607,11 @@ typename std::enable_if
     std::is_convertible
     <
         VALUE2,
-        typename std::common_type<VALUE1, VALUE2>::type
+        std::common_type_t<VALUE1, VALUE2>
     >::value,
     quantity
     <
-        typename std::common_type<VALUE1, VALUE2>::type,
+        std::common_type_t<VALUE1, VALUE2>,
         RATIO,
         UNITS
     >
@@ -632,7 +632,7 @@ template
     bool = std::is_convertible
     <
         VALUE,
-        typename std::common_type<typename QUANTITY::value_t, VALUE>::type
+        std::common_type_t<typename QUANTITY::value_t, VALUE>
     >::value
 >
 struct quantity_divide_helper
@@ -655,7 +655,7 @@ struct quantity_divide_helper
 {
     using type = quantity
     <
-        typename std::common_type<VALUE1, VALUE2>::type,
+        std::common_type_t<VALUE1, VALUE2>,
         RATIO,
         UNITS
     >;
@@ -706,7 +706,7 @@ operator /
     const VALUE2& aScalar
 )
 {
-    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
     return Result_t(Result_t(aQuantity).value() / static_cast<ResultValue_t>(aScalar));
 }
@@ -730,11 +730,11 @@ operator /
     const quantity<VALUE2, RATIO2, UNITS>& aRHS
 )
 {
-    using CommonQuantity_t = typename std::common_type
+    using CommonQuantity_t = std::common_type_t
     <
         quantity<VALUE1, RATIO1, UNITS>,
         quantity<VALUE2, RATIO2, UNITS>
-    >::type;
+    >;
     return CommonQuantity_t(aLHS).value() / CommonQuantity_t(aRHS).value();
 }
 
@@ -749,7 +749,7 @@ template
 >
 using diff_units_result_t = quantity
 <
-    typename std::common_type<VALUE1, VALUE2>::type,
+    std::common_type_t<VALUE1, VALUE2>,
     std::ratio_divide<RATIO1, RATIO2>,
     divide_units<UNITS1, UNITS2>
 >;
@@ -800,7 +800,7 @@ operator /
     const quantity<VALUE1, RATIO, UNITS>& aQuantity
 )
 {
-    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     return quantity<ResultValue_t, std::ratio<1>, scalar>{aScalar} / aQuantity;
 }
 
@@ -822,7 +822,7 @@ operator%
     const VALUE2& aScalar
 )
 {
-    using ResultValue_t = typename std::common_type<VALUE1, VALUE2>::type;
+    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
     return Result_t(Result_t(aQuantity).value() % static_cast<ResultValue_t>(aScalar));
 }
@@ -837,7 +837,7 @@ template
 >
 using mod_result = quantity
 <
-    typename std::common_type<VALUE1, VALUE2>::type,
+    std::common_type_t<VALUE1, VALUE2>,
     std::ratio_divide<RATIO1, RATIO2>,
     UNITS1
 >;
