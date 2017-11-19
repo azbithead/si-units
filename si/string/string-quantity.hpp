@@ -1,181 +1,113 @@
 #pragma once
 #include <string>
-#include <cstdint>
-#include <ratio>
+#include <utility>
+#include "string/constants.hpp"
 #include "quantity.hpp"
-#include "string/string-units.hpp"
 
 namespace si
 {
 namespace string
 {
 
-template<typename CharT>
-std::basic_string<CharT>
-basic_string_from_intmax
-(
-    std::intmax_t aValue
-);
-
-template<>
-inline
-std::basic_string<char>
-basic_string_from_intmax<char>
-(
-    std::intmax_t aValue
-)
-{
-    return std::to_string(aValue);
-}
-
-template<>
-inline
-std::basic_string<wchar_t>
-basic_string_from_intmax<wchar_t>
-(
-    std::intmax_t aValue
-)
-{
-    return std::to_wstring(aValue);
-}
-
-template
-<
-    typename CharT,
-    typename RatioT
->
-inline
-typename std::enable_if<ratio::is_ratio<RatioT>, std::basic_string<CharT>>::type
-basic_string_from_ratio
-(
-)
-{
-    auto theResult = basic_string_from_intmax<CharT>(RatioT::num);
-    if( RatioT::den != 1 )
-    {
-        theResult += forward_slash<CharT> + basic_string_from_intmax<CharT>(RatioT::den);
-    }
-
-    return theResult;
-}
-
-template
-<
-    typename RatioT
->
-inline
-std::string
-string_from_ratio
-(
-)
-{
-    return basic_string_from_ratio<char, RatioT>();
-}
-
-template
-<
-    typename RatioT
->
-inline
-std::wstring
-wstring_from_ratio
-(
-)
-{
-    return basic_string_from_ratio<wchar_t, RatioT>();
-}
-
-template
-<
-    typename CharT,
-    typename QuantityT
->
+template< typename CharT >
 inline
 std::basic_string<CharT>
-basic_string_from_quantity_suffix
+basic_string_from_exp
 (
+    const CharT* const aAbbreviation,
+    int aExp,
+    std::basic_string<CharT> aString = std::basic_string<CharT>{}
 )
 {
-    using Quantity_t = std::decay_t<QuantityT>;
-
-    auto theResult = basic_string_from_ratio<CharT,typename Quantity_t::ratio_t>();
-    if( theResult == one<CharT> )
+    if( aExp > 0 )
     {
-        theResult.clear();
-    }
-
-    const auto theUnitsString = basic_string_from_units<CharT,typename Quantity_t::units_t>();
-    if( !theUnitsString.empty() )
-    {
-        if( !theResult.empty() )
+        if( !aString.empty() )
         {
-            theResult += dot<CharT>;
+            aString += dot<CharT>;
         }
 
-        theResult += theUnitsString;
+        aString += aAbbreviation;
+
+        if( aExp > 1 )
+        {
+            aString += superscript<CharT>[aExp-2];
+        }
     }
 
-    return theResult;
+    return aString;
 }
 
 template
 <
-    typename QuantityT
+    typename CharT,
+    typename Quantity
 >
 inline
-std::string
-string_from_quantity_suffix
+std::basic_string<CharT>
+basic_string_from_quantity
 (
 )
 {
-    return basic_string_from_quantity_suffix<char,QuantityT>();
+    auto theNum = basic_string_from_exp( mass_abbrev<CharT>, Quantity::mass_exp );
+    theNum = basic_string_from_exp( length_abbrev<CharT>, Quantity::length_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( time_abbrev<CharT>, Quantity::time_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( current_abbrev<CharT>, Quantity::current_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( temperature_abbrev<CharT>, Quantity::temperature_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( luminous_intensity_abbrev<CharT>, Quantity::luminous_intensity_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( substance_abbrev<CharT>, Quantity::substance_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( angle_abbrev<CharT>, Quantity::angle_exp, std::move(theNum) );
+
+    auto theDen = basic_string_from_exp( mass_abbrev<CharT>, -Quantity::mass_exp );
+    theDen = basic_string_from_exp( length_abbrev<CharT>, -Quantity::length_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( time_abbrev<CharT>, -Quantity::time_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( current_abbrev<CharT>, -Quantity::current_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( temperature_abbrev<CharT>, -Quantity::temperature_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( luminous_intensity_abbrev<CharT>, -Quantity::luminous_intensity_exp, std::move(theDen) );
+    theNum = basic_string_from_exp( substance_abbrev<CharT>, -Quantity::substance_exp, std::move(theNum) );
+    theDen = basic_string_from_exp( angle_abbrev<CharT>, -Quantity::angle_exp, std::move(theDen) );
+
+    if( theDen.empty() )
+    {
+        return theNum;
+    }
+    else
+    {
+        if( theNum.empty() )
+        {
+            theNum = one<CharT>;
+        }
+
+        return theNum + forward_slash<CharT> + theDen;
+    }
+
+    return theNum;
 }
 
 template
 <
-    typename QuantityT
->
-inline
-std::wstring
-wstring_from_quantity_suffix
-(
-)
-{
-    return basic_string_from_quantity_suffix<wchar_t,QuantityT>();
-}
-
-template
-<
-    typename StorageT,
-    typename RatioT,
-    typename UnitsT
+    typename Quantity
 >
 inline
 std::string
 string_from_quantity
 (
-    const quantity<StorageT, RatioT, UnitsT>& aQuantity
 )
 {
-    return std::to_string(aQuantity.value()) + dot<char> + string_from_quantity_suffix<decltype(aQuantity)>();
+    return basic_string_from_quantity<char, Quantity>();
 }
 
 template
 <
-    typename StorageT,
-    typename RatioT,
-    typename UnitsT
+    typename Quantity
 >
 inline
 std::wstring
 wstring_from_quantity
 (
-    const quantity<StorageT, RatioT, UnitsT>& aQuantity
 )
 {
-    return std::to_wstring(aQuantity.value()) + dot<wchar_t> + wstring_from_quantity_suffix<decltype(aQuantity)>();
+    return basic_string_from_quantity<wchar_t, Quantity>();
 }
 
 } // end of namespace string
 } // end of namespace si
-

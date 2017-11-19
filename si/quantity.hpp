@@ -1,982 +1,170 @@
 #pragma once
 #include <type_traits>
 #include <ratio>
-#include <limits>
-#include <cmath>
-
-#include "units.hpp"
-#include "ratio/is-ratio.hpp"
-#include "ratio/ratio-gcd.hpp"
-#include "ratio/ratio-sqrt.hpp"
 
 namespace si
 {
-
-// Forward declaration
-template <typename VALUE, typename RATIO, typename UNITS > class quantity;
-
-} // end of namespace si
 
 //------------------------------------------------------------------------------
-/// Specialization of std::common_type for quantity.
+/// si::quantity_t
 template
 <
-    typename UNITS,
-    typename VALUE1,
-    typename RATIO1,
-    typename VALUE2,
-    typename RATIO2
+    std::intmax_t aMassExponent = 0,
+    std::intmax_t aLengthExponent = 0,
+    std::intmax_t aTimeExponent = 0,
+    std::intmax_t aCurrentExponent = 0,
+    std::intmax_t aTemperatureExponent = 0,
+    std::intmax_t aLuminousIntensityExponent = 0,
+    std::intmax_t aSubstanceExponent = 0,
+    std::intmax_t aAngleExponent = 0
 >
-struct std::common_type
-<
-    si::quantity<VALUE1, RATIO1, UNITS>,
-    si::quantity<VALUE2, RATIO2, UNITS>
->
+struct quantity_t
 {
-    using type = si::quantity
-    <
-        std::common_type_t<VALUE1, VALUE2>,
-        si::ratio::ratio_gcd<RATIO1, RATIO2>,
-        UNITS
-    >;
+    static constexpr std::intmax_t mass_exp = aMassExponent;
+    static constexpr std::intmax_t length_exp = aLengthExponent;
+    static constexpr std::intmax_t time_exp = aTimeExponent;
+    static constexpr std::intmax_t current_exp = aCurrentExponent;
+    static constexpr std::intmax_t temperature_exp = aTemperatureExponent;
+    static constexpr std::intmax_t luminous_intensity_exp = aLuminousIntensityExponent;
+    static constexpr std::intmax_t substance_exp = aSubstanceExponent;
+    static constexpr std::intmax_t angle_exp = aAngleExponent;
 };
 
-namespace si
-{
-
-template
-<
-    typename FromQ,
-    typename ToQ,
-    typename RATIO = typename std::ratio_divide
-    <
-        typename FromQ::ratio_t,
-        typename ToQ::ratio_t
-    >::type,
-    bool = RATIO::num == 1,
-    bool = RATIO::den == 1>
-struct quantity_cast_impl;
-
-template
-<
-    typename FromQ,
-    typename ToQ,
-    typename RATIO
->
-struct quantity_cast_impl<FromQ, ToQ, RATIO, true, true>
-{
-    constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
-    {
-        return ToQ
-        {
-            static_cast<typename ToQ::value_t>(aFromQuantity.value())
-        };
-    }
-};
-
-template
-<
-    typename FromQ,
-    typename ToQ,
-    typename RATIO
->
-struct quantity_cast_impl<FromQ, ToQ, RATIO, true, false>
-{
-    constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
-    {
-        using ResultValue_t = std::common_type_t
-        <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
-            intmax_t
-        >;
-        return ToQ
-        {
-            static_cast<typename ToQ::value_t>
-            (
-                static_cast<ResultValue_t>(aFromQuantity.value()) /
-                static_cast<ResultValue_t>(RATIO::den)
-            )
-        };
-    }
-};
-
-template
-<
-    typename FromQ,
-    typename ToQ,
-    typename RATIO
->
-struct quantity_cast_impl<FromQ, ToQ, RATIO, false, true>
-{
-    constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
-    {
-        using ResultValue_t = std::common_type_t
-        <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
-            intmax_t
-        >;
-        return ToQ
-        {
-            static_cast<typename ToQ::value_t>
-            (
-                static_cast<ResultValue_t>(aFromQuantity.value()) *
-                static_cast<ResultValue_t>(RATIO::num)
-            )
-        };
-    }
-};
-
-template
-<
-    typename FromQ,
-    typename ToQ,
-    typename RATIO
->
-struct quantity_cast_impl<FromQ, ToQ, RATIO, false, false>
-{
-    constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
-    {
-        using ResultValue_t = std::common_type_t
-        <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
-            intmax_t
-        >;
-        return ToQ
-        {
-            static_cast<typename ToQ::value_t>
-            (
-                static_cast<ResultValue_t>(aFromQuantity.value()) *
-                static_cast<ResultValue_t>(RATIO::num) /
-                static_cast<ResultValue_t>(RATIO::den)
-            )
-        };
-    }
-};
-
-template <typename aType>
+template< typename aType >
 struct is_quantity_impl : std::false_type {};
 
-template <typename UNITS, typename VALUE, typename RATIO>
-struct is_quantity_impl<quantity<VALUE, RATIO, UNITS>> : std::true_type {};
+template
+<
+    std::intmax_t aMassExponent,
+    std::intmax_t aLengthExponent,
+    std::intmax_t aTimeExponent,
+    std::intmax_t aCurrentExponent,
+    std::intmax_t aTemperatureExponent,
+    std::intmax_t aLuminousIntensityExponent,
+    std::intmax_t aSubstanceExponent,
+    std::intmax_t aAngleExponent
+>
+struct is_quantity_impl
+<
+    quantity_t
+    <
+        aMassExponent,
+        aLengthExponent,
+        aTimeExponent,
+        aCurrentExponent,
+        aTemperatureExponent,
+        aLuminousIntensityExponent,
+        aSubstanceExponent,
+        aAngleExponent
+    >
+> : std::true_type {};
 
 //------------------------------------------------------------------------------
-/// true if aType is an si::quantity, false otherwise
-/// @tparam aType a type to be tested
+/// true if aType is an si::quantity_t type, false otherwise
+/// @tparam aType the type to be tested
 template <typename aType>
-constexpr bool is_quantity = is_quantity_impl<typename std::decay<aType>::type>::value;
+constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<aType>::type>::value;
 
-//------------------------------------------------------------------------------
-/// Convert an si::quantity to another si:quantity type.
-/// Both types must have the same si::units type.
-template <typename ToQ, typename UNITS, typename VALUE, typename RATIO>
-inline
-constexpr
-typename std::enable_if
-<
-    is_quantity<ToQ> && std::is_same<typename ToQ::units_t,UNITS>::value,
-    ToQ
->::type
-quantity_cast(const quantity<VALUE, RATIO, UNITS>& aFromQuantity)
+template< typename aLeft, typename aRight >
+struct multiply_quantity_impl
 {
-    return quantity_cast_impl
+    using type = quantity_t
     <
-        quantity<VALUE, RATIO, UNITS>,
-        ToQ
-    >()(aFromQuantity);
-}
-
-// some special quantity values
-template <typename VALUE>
-struct quantity_values
-{
-public:
-    static constexpr VALUE zero() {return VALUE(0);}
-    static constexpr VALUE max()  {return std::numeric_limits<VALUE>::max();}
-    static constexpr VALUE min()  {return std::numeric_limits<VALUE>::lowest();}
-};
-
-// This is coming in c++ 17 but we don't have that yet
-template< class From, class To >
-constexpr bool is_convertible_v = std::is_convertible<From, To>::value;
-
-//------------------------------------------------------------------------------
-/// Class si::quantity represents a numeric value with associated SI units.
-template <typename VALUE, typename RATIO, typename UNITS>
-class quantity
-{
-    static_assert(std::is_arithmetic<VALUE>::value, "VALUE must be an arithmetic type");
-    static_assert(ratio::is_ratio<RATIO>, "RATIO must be of type std::ratio");
-    static_assert(std::ratio_greater<RATIO, std::ratio<0>>::value, "RATIO must be positive");
-    static_assert(is_units<UNITS>, "UNITS must be of type si::units" );
-
-    template <typename _R1, typename _R2>
-    struct no_overflow
-    {
-    private:
-        static constexpr intmax_t num_gcd = ratio::gcd<_R1::num, _R2::num>;
-        static constexpr intmax_t den_gcd = ratio::gcd<_R1::den, _R2::den>;
-        static constexpr intmax_t num1 = _R1::num / num_gcd;
-        static constexpr intmax_t den1 = _R1::den / den_gcd;
-        static constexpr intmax_t num2 = _R2::num / num_gcd;
-        static constexpr intmax_t den2 = _R2::den / den_gcd;
-        static constexpr intmax_t max = -((intmax_t(1) << (sizeof(intmax_t) * CHAR_BIT - 1)) + 1);
-
-        template <intmax_t aX, intmax_t aY, bool isOverflow>
-        struct multiply    // isOverflow == false
-        {
-            static constexpr intmax_t value = aX * aY;
-        };
-
-        template <intmax_t aX, intmax_t aY>
-        struct multiply<aX, aY, true>
-        {
-            static constexpr intmax_t value = 1;
-        };
-
-    public:
-        static constexpr bool value = (num1 <= max / den2) && (num2 <= max / den1);
-        using type = std::ratio
-        <
-            multiply<num1, den2, !value>::value,
-            multiply<num2, den1, !value>::value
-        >;
-    };
-
-public:
-
-    //--------------------------------------------------------------------------
-    /// Type aliases
-    using units_t = UNITS;
-    using value_t = VALUE;
-    using ratio_t = typename RATIO::type;
-
-
-    //--------------------------------------------------------------------------
-    /// Static member constants
-    static constexpr auto ratio = ratio_t{};
-    static constexpr auto units = units_t{};
-
-private:
-
-    value_t mValue;
-
-public:
-
-    //--------------------------------------------------------------------------
-    constexpr
-    quantity
-    (
-    ) = default;
-
-    //--------------------------------------------------------------------------
-    constexpr
-    quantity
-    (
-        const quantity& aQuantity
-    ) = default;
-
-    //--------------------------------------------------------------------------
-    /// Initialize a quantity from a unitless value.
-    /// This constructor will not be chosen by the compiler if it would result in loss of precision.
-    /// @param aValue the scalar value that will be stored in this object
-    template <typename VALUE2>
-    constexpr
-    explicit
-    quantity
-    (
-        const VALUE2& aValue,
-        typename std::enable_if
-        <
-            is_convertible_v<VALUE2, value_t> &&
-            (
-                std::is_floating_point<value_t>::value ||
-                !std::is_floating_point<VALUE2>::value
-            )
-        >::type* = 0
-    )
-    : mValue{aValue}
-    {
-    }
-
-    //--------------------------------------------------------------------------
-    /// Initialize a quantity from another quantity possibly having different value_t and ratio_t types but the same units_t type.
-    /// This constructor will not be chosen by the compiler if it would result in overflow or loss of precision.
-    /// @param aQuantity the quantity that will be converted to this quantity
-    template <typename VALUE2, typename RATIO2>
-    constexpr
-    quantity
-    (
-        const quantity<VALUE2, RATIO2, UNITS>& aQuantity,
-        typename std::enable_if
-        <
-            no_overflow<RATIO2, ratio_t>::value &&
-            (
-                std::is_floating_point<value_t>::value ||
-                (
-                    no_overflow<RATIO2, ratio_t>::type::den == 1 &&
-                    !std::is_floating_point<VALUE2>::value
-                )
-            )
-        >::type* = 0
-    )
-    : mValue{quantity_cast<quantity>(aQuantity).value()}
-    {
-    }
-
-    //--------------------------------------------------------------------------
-    // Accessor function
-    constexpr value_t value() const {return mValue;}
-
-    //--------------------------------------------------------------------------
-    // Arithmetic functions
-    constexpr quantity operator+() const {return *this;}
-    constexpr quantity operator-() const {return quantity{-mValue};}
-    quantity& operator++() {++mValue; return *this;}
-    quantity operator++(int) {return quantity{mValue++};}
-    quantity& operator--() {--mValue; return *this;}
-    quantity operator--(int) {return quantity{mValue--};}
-    quantity& operator+=(const quantity& aQuantity) {mValue += aQuantity.value(); return *this;}
-    quantity& operator-=(const quantity& aQuantity) {mValue -= aQuantity.value(); return *this;}
-    quantity& operator*=(const value_t& rhs) {mValue *= rhs; return *this;}
-    quantity& operator/=(const value_t& rhs) {mValue /= rhs; return *this;}
-    quantity& operator%=(const value_t& rhs) {mValue %= rhs; return *this;}
-    quantity& operator%=(const quantity& rhs) {mValue %= rhs.value(); return *this;}
-
-    //--------------------------------------------------------------------------
-    // Special values
-    static constexpr quantity zero() {return quantity{quantity_values<value_t>::zero()};}
-    static constexpr quantity min() {return quantity{quantity_values<value_t>::min()};}
-    static constexpr quantity max() {return quantity{quantity_values<value_t>::max()};}
-}; // end of class quantity
-
-template <typename LhsQ, typename RhsQ>
-struct quantity_eq_impl
-{
-    constexpr
-    bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
-    {
-        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
-        return CommonQuantity_t{aLHS}.value() == CommonQuantity_t{aRHS}.value();
-    }
-};
-
-template <typename LhsQ>
-struct quantity_eq_impl<LhsQ, LhsQ>
-{
-    constexpr
-    bool operator()(const LhsQ& aLHS, const LhsQ& aRHS) const
-    {
-        return aLHS.value() == aRHS.value();
-    }
-};
-
-template <typename LhsQ, typename RhsQ>
-struct quantity_lt_impl
-{
-    constexpr
-    bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
-    {
-        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
-        return CommonQuantity_t{aLHS}.value() < CommonQuantity_t{aRHS}.value();
-    }
-};
-
-template <typename LhsQ>
-struct quantity_lt_impl<LhsQ, LhsQ>
-{
-    constexpr
-    bool operator()(const LhsQ& aLHS, const LhsQ& aRHS) const
-    {
-        return aLHS.value() < aRHS.value();
-    }
-};
-
-//------------------------------------------------------------------------------
-/// quantity ==
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator ==
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return quantity_eq_impl
-    <
-        quantity<VALUE1, RATIO1, UNITS>,
-        quantity<VALUE2, RATIO2, UNITS>
-    >()(aLHS, aRHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity !=
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator !=
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return !(aLHS == aRHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity <
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator <
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS)
-{
-    return quantity_lt_impl
-    <
-        quantity<VALUE1, RATIO1, UNITS>,
-        quantity<VALUE2, RATIO2, UNITS>
-    >()(aLHS, aRHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity >
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator >
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return aRHS < aLHS;
-}
-
-//------------------------------------------------------------------------------
-// quantity <=
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator <=
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return !(aRHS < aLHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity >=
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-bool
-operator >=
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return !(aLHS < aRHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity +
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-auto
-operator +
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    using CommonQuantity_t = std::common_type_t
-    <
-        quantity<VALUE1, RATIO1, UNITS>,
-        quantity<VALUE2, RATIO2, UNITS>
-    >;
-    return CommonQuantity_t{CommonQuantity_t{aLHS}.value() + CommonQuantity_t{aRHS}.value()};
-}
-
-//------------------------------------------------------------------------------
-// quantity -
-template <typename UNITS, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
-inline
-constexpr
-auto
-operator -
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
-{
-    return aLHS + (-aRHS);
-}
-
-//------------------------------------------------------------------------------
-// quantity * quantity
-template
-<
-    typename UNITS1,
-    typename VALUE1,
-    typename RATIO1,
-    typename UNITS2,
-    typename VALUE2,
-    typename RATIO2
->
-inline
-constexpr
-auto
-operator *
-(
-    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
-)
-{
-    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    using Result_t = quantity
-    <
-        ResultValue_t,
-        std::ratio_multiply<RATIO1, RATIO2>,
-        multiply_units<UNITS1, UNITS2>
-    >;
-
-    return Result_t
-    {
-        static_cast<ResultValue_t>( aLHS.value() )
-        *
-        static_cast<ResultValue_t>( aRHS.value() )
-    };
-}
-
-//------------------------------------------------------------------------------
-// quantity * scalar
-template <typename VALUE1, typename RATIO, typename UNITS, typename VALUE2>
-inline
-constexpr
-typename std::enable_if
-<
-    !is_quantity<VALUE2> &&
-    is_convertible_v
-    <
-        VALUE2,
-        std::common_type_t<VALUE1, VALUE2>
-    >,
-    quantity
-    <
-        std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
-        UNITS
-    >
->::type
-operator *
-(
-    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
-    const VALUE2& aScalar
-)
-{
-    return aQuantity * quantity<VALUE2, std::ratio<1>, scalar>{aScalar};
-}
-
-//------------------------------------------------------------------------------
-// scalar * quantity
-template <typename VALUE1, typename RATIO, typename UNITS, typename VALUE2>
-inline
-constexpr
-typename std::enable_if
-<
-    !is_quantity<VALUE2> &&
-    is_convertible_v
-    <
-        VALUE2,
-        std::common_type_t<VALUE1, VALUE2>
-    >,
-    quantity
-    <
-        std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
-        UNITS
-    >
->::type
-operator *
-(
-    const VALUE2& aScalar,
-    const quantity<VALUE1, RATIO, UNITS>& aQuantity
-)
-{
-    return aQuantity * aScalar;
-}
-
-template
-<
-    typename QUANTITY,
-    typename VALUE,
-    bool = is_convertible_v
-    <
-        VALUE,
-        std::common_type_t<typename QUANTITY::value_t, VALUE>
-    >
->
-struct quantity_divide_helper
-{
-};
-
-template
-<
-    typename VALUE1,
-    typename RATIO,
-    typename UNITS,
-    typename VALUE2
->
-struct quantity_divide_helper
-<
-    quantity<VALUE1, RATIO, UNITS>,
-    VALUE2,
-    true
->
-{
-    using type = quantity
-    <
-        std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
-        UNITS
+        aLeft::mass_exp + aRight::mass_exp,
+        aLeft::length_exp + aRight::length_exp,
+        aLeft::time_exp + aRight::time_exp,
+        aLeft::current_exp + aRight::current_exp,
+        aLeft::temperature_exp + aRight::temperature_exp,
+        aLeft::luminous_intensity_exp + aRight::luminous_intensity_exp,
+        aLeft::substance_exp + aRight::substance_exp,
+        aLeft::angle_exp + aRight::angle_exp
     >;
 };
 
-template
-<
-    typename QUANTITY,
-    typename VALUE,
-    bool = is_quantity<VALUE>
->
-struct quantity_divide_result_t
-{
-};
-
-template
-<
-    typename VALUE1,
-    typename RATIO,
-    typename UNITS,
-    typename VALUE2
->
-struct quantity_divide_result_t
-<
-    quantity<VALUE1, RATIO, UNITS>,
-    VALUE2,
-    false
->
-: quantity_divide_helper<quantity<VALUE1, RATIO, UNITS>, VALUE2>
-{
-};
-
 //------------------------------------------------------------------------------
-// divide quantity by scalar
-template
-<
-    typename VALUE1,
-    typename RATIO,
-    typename UNITS,
-    typename VALUE2
->
-inline
-constexpr
-typename quantity_divide_result_t<quantity<VALUE1, RATIO, UNITS>, VALUE2>::type
-operator /
-(
-    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
-    const VALUE2& aScalar
-)
-{
-    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
-    return Result_t{Result_t{aQuantity}.value() / static_cast<ResultValue_t>(aScalar)};
-}
+/// the si::quantity_t type that is the product of aLeft and aRight
+/// @tparam aLeft an si::quantity_t type to be multiplied
+/// @tparam aRight an si::quantity_t type to be multiplied
+template< typename aLeft, typename aRight >
+using multiply_quantity = typename multiply_quantity_impl< aLeft, aRight >::type;
 
-//------------------------------------------------------------------------------
-// divide quantity by quantity, same units
-template
-<
-    typename UNITS,
-    typename VALUE1,
-    typename RATIO1,
-    typename VALUE2,
-    typename RATIO2
->
-inline
-constexpr
-auto
-operator /
-(
-    const quantity<VALUE1, RATIO1, UNITS>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS>& aRHS
-)
+template< typename Quantity, typename aPower >
+struct exponentiate_quantity_impl
 {
-    using CommonQuantity_t = std::common_type_t
+    using type = quantity_t
     <
-        quantity<VALUE1, RATIO1, UNITS>,
-        quantity<VALUE2, RATIO2, UNITS>
+        std::ratio_multiply<std::ratio<Quantity::mass_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::length_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::time_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::current_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::temperature_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::luminous_intensity_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::substance_exp>, aPower>::num,
+        std::ratio_multiply<std::ratio<Quantity::angle_exp>, aPower>::num
     >;
-    return CommonQuantity_t{aLHS}.value() / CommonQuantity_t{aRHS}.value();
-}
-
-template
-<
-    typename VALUE1,
-    typename RATIO1,
-    typename UNITS1,
-    typename VALUE2,
-    typename RATIO2,
-    typename UNITS2
->
-using diff_units_result_t = quantity
-<
-    std::common_type_t<VALUE1, VALUE2>,
-    std::ratio_divide<RATIO1, RATIO2>,
-    divide_units<UNITS1, UNITS2>
->;
+};
 
 //------------------------------------------------------------------------------
-// divide quantity by quantity, different units
-template
-<
-    typename UNITS1,
-    typename VALUE1,
-    typename RATIO1,
-    typename UNITS2,
-    typename VALUE2,
-    typename RATIO2
->
-inline
-constexpr
-typename std::enable_if
-<
-    !std::is_same<UNITS1,UNITS2>::value,
-    diff_units_result_t<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2, UNITS2>
->::type
-operator /
-(
-    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
-)
-{
-    using Result_t = diff_units_result_t<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2, UNITS2>;
-    return Result_t{aLHS.value() / aRHS.value()};
-}
+/// the si::quantity_t type that is aQuantity raised to aPower
+/// @tparam aQuantity an si::quantity_t type
+/// @tparam aPower the power to which aQuantity is raised
+template< typename aQuantity, std::intmax_t aPower >
+using power_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<aPower,1>>::type;
 
 //------------------------------------------------------------------------------
-// divide scalar by quantity
-template
-<
-    typename VALUE1,
-    typename RATIO,
-    typename UNITS,
-    typename VALUE2
->
-inline
-constexpr
-auto
-operator /
-(
-    const VALUE2& aScalar,
-    const quantity<VALUE1, RATIO, UNITS>& aQuantity
-)
-{
-    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    return quantity<ResultValue_t, std::ratio<1>, scalar>{aScalar} / aQuantity;
-}
+/// the si::quantity_t type that is the reciprocal of aQuantity
+/// @tparam aQuantity an si::quantity_t type
+template< typename aQuantity >
+using reciprocal_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<-1,1>>::type;
 
 //------------------------------------------------------------------------------
-// modulo quantity by scalar
-template
-<
-    typename UNITS,
-    typename VALUE1,
-    typename RATIO,
-    typename VALUE2
->
-inline
-constexpr
-typename quantity_divide_result_t<quantity<VALUE1, RATIO, UNITS>, VALUE2>::type
-operator%
-(
-    const quantity<VALUE1, RATIO, UNITS>& aQuantity,
-    const VALUE2& aScalar
-)
-{
-    using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    using Result_t = quantity<ResultValue_t, RATIO, UNITS>;
-    return Result_t{Result_t{aQuantity}.value() % static_cast<ResultValue_t>(aScalar)};
-}
-
-template
-<
-    typename VALUE1,
-    typename RATIO1,
-    typename UNITS1,
-    typename VALUE2,
-    typename RATIO2
->
-using mod_result = quantity
-<
-    std::common_type_t<VALUE1, VALUE2>,
-    std::ratio_divide<RATIO1, RATIO2>,
-    UNITS1
->;
+/// the si::quantity_t type that is the quotient of dividing aDividend by aDivisor
+/// @tparam aDividend an si::quantity_t type
+/// @tparam aDivisor an si::quantity_t type
+template< typename aDividend, typename aDivisor >
+using divide_quantity = multiply_quantity< aDividend, reciprocal_quantity< aDivisor > >;
 
 //------------------------------------------------------------------------------
-// modulo quantity by quantity
-template
-<
-    typename VALUE1,
-    typename RATIO1,
-    typename UNITS1,
-    typename VALUE2,
-    typename RATIO2,
-    typename UNITS2
->
-inline
-constexpr
-mod_result<VALUE1, RATIO1, UNITS1, VALUE2, RATIO2>
-operator%
-(
-    const quantity<VALUE1, RATIO1, UNITS1>& aLHS,
-    const quantity<VALUE2, RATIO2, UNITS2>& aRHS
-)
-{
-    return aLHS - (aRHS * (aLHS / aRHS));
-}
-
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename UNITS,
-    typename EPSILON
->
-using sqrt_result_t = typename std::enable_if
-<
-    std::is_floating_point<VALUE>::value,
-    quantity
-    <
-        VALUE,
-        typename ratio::ratio_sqrt<RATIO, EPSILON>::type,
-        root_units<UNITS, 2>
-    >
->::type;
+/// the si::quantity_t type that is the root aRoot of aQuantity
+/// @tparam aQuantity an si::quantity_t type
+/// @tparam aRoot the root to be gotten
+template< typename aQuantity, std::intmax_t aRoot >
+using root_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<1,aRoot>>::type;
 
 //------------------------------------------------------------------------------
-// square root of a quantity
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename UNITS,
-    typename EPSILON = std::ratio<1,10000000000000>
->
-inline
-sqrt_result_t<VALUE, RATIO, UNITS, EPSILON>
-sqrt
-(
-    const quantity<VALUE, RATIO, UNITS>& aQuantity
-)
-{
-    using Result_t = sqrt_result_t<VALUE, RATIO, UNITS, EPSILON>;
-    return Result_t{std::sqrt(aQuantity.value())};
-}
+/// Base quantity
+using scalar = quantity_t<>; // has no associated quantity
+using mass = quantity_t<1>;
+using length = quantity_t<0,1>;
+using distance = length;
+using time = quantity_t<0,0,1>;
+using current = quantity_t<0,0,0,1>; // electric current
+using temperature = quantity_t<0,0,0,0,1>;
+using luminous_intensity = quantity_t<0,0,0,0,0,1>;
+using substance = quantity_t<0,0,0,0,0,0,1>; // amount of substance
+using angle = quantity_t<0,0,0,0,0,0,0,1>;
 
-//==============================================================================
-// Some useful si::quantity types
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using meters = quantity<VALUE, RATIO, length>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using kilograms = quantity<VALUE, RATIO, mass>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using seconds = quantity<VALUE, RATIO, time>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using minutes = seconds<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using amperes = quantity<VALUE, RATIO, current>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using kelvins = quantity<VALUE, RATIO, temperature>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using candelas = quantity<VALUE, RATIO, luminous_intensity>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using radians = quantity<VALUE, RATIO, angle>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using steradians = quantity<VALUE, RATIO, solid_angle>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using hertz = quantity<VALUE, RATIO, frequency>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using newtons = quantity<VALUE, RATIO, force>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using coulombs = quantity<VALUE, RATIO, charge>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lux = quantity<VALUE, RATIO, illuminance>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using pascals = quantity<VALUE, RATIO, pressure>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using joules = quantity<VALUE, RATIO, energy>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using watts = quantity<VALUE, RATIO, power>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using volts = quantity<VALUE, RATIO, voltage>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using farads = quantity<VALUE, RATIO, capacitance>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using ohms = quantity<VALUE, RATIO, impedance>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using siemens = quantity<VALUE, RATIO, conductance>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using webers = quantity<VALUE, RATIO, magnetic_flux>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using teslas = quantity<VALUE, RATIO, magnetic_flux_density>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using henries = quantity<VALUE, RATIO, inductance>;
-
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lumens = quantity<VALUE, RATIO, luminous_flux>;
+//------------------------------------------------------------------------------
+/// Derived quantity
+using solid_angle = power_quantity<angle,2>;
+using frequency = reciprocal_quantity<time>;
+using force = divide_quantity<multiply_quantity<mass, length>, power_quantity<time,2>>;
+using weight = force;
+using area = power_quantity<length,2>;
+using pressure = divide_quantity<force, area>;
+using stress = pressure;
+using energy = multiply_quantity<force, length>;
+using work = energy;
+using power = divide_quantity<energy, time>;
+using charge = multiply_quantity<current, time>;
+using voltage = divide_quantity<power, current>;
+using capacitance = divide_quantity<charge, voltage>;
+using impedance = divide_quantity<voltage, current>;
+using conductance = reciprocal_quantity<impedance>;
+using magnetic_flux = divide_quantity<energy, current>;
+using magnetic_flux_density = divide_quantity<magnetic_flux, area>;
+using inductance = divide_quantity<magnetic_flux, current>;
+using luminous_flux = multiply_quantity<luminous_intensity, solid_angle>;
+using illuminance = divide_quantity<luminous_intensity, area>;
 
 } // end of namespace si
