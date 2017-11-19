@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "units-test.hpp"
 #include "quantity-test.hpp"
 #include "string-test.hpp"
