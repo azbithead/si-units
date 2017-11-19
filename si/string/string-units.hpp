@@ -12,7 +12,7 @@ namespace string
 
 template<typename CharT>
 std::basic_string<CharT>
-basic_string_from_intmax
+basic_string_from
 (
     std::intmax_t aValue
 );
@@ -20,7 +20,7 @@ basic_string_from_intmax
 template<>
 inline
 std::basic_string<char>
-basic_string_from_intmax<char>
+basic_string_from<char>
 (
     std::intmax_t aValue
 )
@@ -31,7 +31,7 @@ basic_string_from_intmax<char>
 template<>
 inline
 std::basic_string<wchar_t>
-basic_string_from_intmax<wchar_t>
+basic_string_from<wchar_t>
 (
     std::intmax_t aValue
 )
@@ -42,18 +42,20 @@ basic_string_from_intmax<wchar_t>
 template
 <
     typename CharT,
-    typename RatioT
+    std::intmax_t Num,
+    std::intmax_t Den
 >
 inline
-typename std::enable_if<ratio::is_ratio<RatioT>, std::basic_string<CharT>>::type
-basic_string_from_ratio
+std::basic_string<CharT>
+basic_string_from
 (
+    std::ratio<Num,Den> aRatio
 )
 {
-    auto theResult = basic_string_from_intmax<CharT>(RatioT::num);
-    if( RatioT::den != 1 )
+    auto theResult = basic_string_from<CharT>(aRatio.num);
+    if( aRatio.den != 1 )
     {
-        theResult += forward_slash<CharT> + basic_string_from_intmax<CharT>(RatioT::den);
+        theResult += forward_slash<CharT> + basic_string_from<CharT>(aRatio.den);
     }
 
     return theResult;
@@ -61,50 +63,54 @@ basic_string_from_ratio
 
 template
 <
-    typename RatioT
+    std::intmax_t Num,
+    std::intmax_t Den
 >
 inline
 std::string
-string_from_ratio
+string_from
 (
+    std::ratio<Num,Den> aRatio
 )
 {
-    return basic_string_from_ratio<char, RatioT>();
+    return basic_string_from<char>(aRatio);
 }
 
 template
 <
-    typename RatioT
+    std::intmax_t Num,
+    std::intmax_t Den
 >
 inline
 std::wstring
-wstring_from_ratio
+wstring_from
 (
+    std::ratio<Num,Den> aRatio
 )
 {
-    return basic_string_from_ratio<wchar_t, RatioT>();
+    return basic_string_from<wchar_t>(aRatio);
 }
 
 template
 <
     typename CharT,
-    typename UnitsT
+    typename RatioT,
+    typename QuantityT
 >
 inline
 std::basic_string<CharT>
-basic_string_from_units_suffix
+basic_string_from
 (
+    const units_suffix_t<RatioT, QuantityT>& aUnitsSuffix
 )
 {
-    using Units_t = std::decay_t<UnitsT>;
-
-    auto theResult = basic_string_from_ratio<CharT,typename Units_t::ratio_t>();
+    auto theResult = basic_string_from<CharT>(aUnitsSuffix.ratio);
     if( theResult == one<CharT> )
     {
         theResult.clear();
     }
 
-    const auto theQuantityString = basic_string_from_quantity<CharT,typename Units_t::quantity_t>();
+    const auto theQuantityString = basic_string_from<CharT>(aUnitsSuffix.quantity);
     if( !theQuantityString.empty() )
     {
         if( !theResult.empty() )
@@ -120,60 +126,32 @@ basic_string_from_units_suffix
 
 template
 <
-    typename UnitsT
->
-inline
-std::string
-string_from_units_suffix
-(
-)
-{
-    return basic_string_from_units_suffix<char,UnitsT>();
-}
-
-template
-<
-    typename UnitsT
->
-inline
-std::wstring
-wstring_from_units_suffix
-(
-)
-{
-    return basic_string_from_units_suffix<wchar_t,UnitsT>();
-}
-
-template
-<
-    typename StorageT,
     typename RatioT,
     typename QuantityT
 >
 inline
 std::string
-string_from_units
+string_from
 (
-    const units_t<StorageT, RatioT, QuantityT>& aUnits
+    const units_suffix_t<RatioT, QuantityT>& aUnitsSuffix
 )
 {
-    return std::to_string(aUnits.value()) + dot<char> + string_from_units_suffix<decltype(aUnits)>();
+    return basic_string_from<char>(aUnitsSuffix);
 }
 
 template
 <
-    typename StorageT,
     typename RatioT,
     typename QuantityT
 >
 inline
 std::wstring
-wstring_from_units
+wstring_from
 (
-    const units_t<StorageT, RatioT, QuantityT>& aUnits
+    const units_suffix_t<RatioT, QuantityT>& aUnitsSuffix
 )
 {
-    return std::to_wstring(aUnits.value()) + dot<wchar_t> + wstring_from_units_suffix<decltype(aUnits)>();
+    return basic_string_from<wchar_t>(aUnitsSuffix);
 }
 
 } // end of namespace string

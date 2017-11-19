@@ -206,6 +206,20 @@ public:
 template< class From, class To >
 constexpr bool is_convertible_v = std::is_convertible<From, To>::value;
 
+template <typename RATIO, typename QUANTITY>
+struct units_suffix_t
+{
+    static_assert(ratio::is_ratio<RATIO>, "RATIO must be of type std::ratio");
+    static_assert(std::ratio_greater<RATIO, std::ratio<0>>::value, "RATIO must be positive");
+    static_assert(is_quantity<QUANTITY>, "QUANTITY must be of type si::quantity_t" );
+
+    using quantity_t = QUANTITY;
+    using ratio_t = typename RATIO::type;
+
+    static constexpr auto ratio = ratio_t{};
+    static constexpr auto quantity = quantity_t{};
+};
+
 //------------------------------------------------------------------------------
 /// Class si::units_t represents a numeric value with associated SI units.
 template <typename VALUE, typename RATIO, typename QUANTITY>
@@ -256,12 +270,14 @@ public:
     using quantity_t = QUANTITY;
     using value_t = VALUE;
     using ratio_t = typename RATIO::type;
+    using suffix_t = units_suffix_t<ratio_t, quantity_t>;
 
 
     //--------------------------------------------------------------------------
     /// Static member constants
     static constexpr auto ratio = ratio_t{};
     static constexpr auto quantity = quantity_t{};
+    static constexpr auto suffix = suffix_t{};
 
 private:
 
