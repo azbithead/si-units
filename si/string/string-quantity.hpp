@@ -6,8 +6,6 @@
 
 namespace si
 {
-namespace string
-{
 
 template< typename CharT >
 inline
@@ -142,5 +140,4 @@ wstring_from
     return basic_string_from<wchar_t>(aQuantity);
 }
 
-} // end of namespace string
 } // end of namespace si

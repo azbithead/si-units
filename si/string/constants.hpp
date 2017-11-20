@@ -9,8 +9,6 @@ template<> constexpr const char32_t* aName<char32_t> = U##aString
 
 namespace si
 {
-namespace string
-{
 
 STRING_CONST(one, "1");
 STRING_CONST(divide_operator, "/");
@@ -80,5 +78,4 @@ template<> constexpr const char32_t* superscript_digit<char32_t>[digit_count] =
     U"\u2079"
 };
 
-} // end of namespace string
 } // end of namespace si

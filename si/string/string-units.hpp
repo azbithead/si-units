@@ -7,8 +7,6 @@
 
 namespace si
 {
-namespace string
-{
 
 template<typename CharT>
 std::basic_string<CharT>
@@ -157,6 +155,5 @@ wstring_from
     return basic_string_from<wchar_t>(aUnits);
 }
 
-} // end of namespace string
 } // end of namespace si
 

@@ -31,20 +31,20 @@ assertf
 #define assert_abbrev( aT, aAbbrev ) \
 { \
     { \
-        assert(si::string::string_from(aT{}), aAbbrev<char>); \
+        assert(si::string_from(aT{}), aAbbrev<char>); \
     } \
     { \
-        assert(si::string::wstring_from(aT{}), aAbbrev<wchar_t>); \
+        assert(si::wstring_from(aT{}), aAbbrev<wchar_t>); \
     } \
 }
 
 #define assert_literal( aT, str ) \
 { \
     { \
-        assert(si::string::string_from(aT{}), str); \
+        assert(si::string_from(aT{}), str); \
     } \
     { \
-        assert(si::string::wstring_from(aT{}), L##str); \
+        assert(si::wstring_from(aT{}), L##str); \
     } \
 }
 
@@ -52,14 +52,14 @@ assertf
 
 void si::run_string_tests()
 {
-    assert_abbrev( mass, string::mass_abbrev );
-    assert_abbrev( length, string::length_abbrev );
-    assert_abbrev( time, string::time_abbrev );
-    assert_abbrev( current, string::current_abbrev );
-    assert_abbrev( temperature, string::temperature_abbrev );
-    assert_abbrev( luminous_intensity, string::luminous_intensity_abbrev );
-    assert_abbrev( substance, string::substance_abbrev );
-    assert_abbrev( angle, string::angle_abbrev );
+    assert_abbrev( mass, mass_abbrev );
+    assert_abbrev( length, length_abbrev );
+    assert_abbrev( time, time_abbrev );
+    assert_abbrev( current, current_abbrev );
+    assert_abbrev( temperature, temperature_abbrev );
+    assert_abbrev( luminous_intensity, luminous_intensity_abbrev );
+    assert_abbrev( substance, substance_abbrev );
+    assert_abbrev( angle, angle_abbrev );
 
     assert_literal( scalar, "");
     assert_literal( reciprocal_quantity<mass>, "1/kg");
