@@ -1,22 +1,16 @@
 # si-units
 
-The si-units library provides type-safe calculations involving physical quantities that are measured in the units of the International System of Units (SI):
-
-* meter - length (or distance)
-* kilogram - mass
-* second - time
-* ampere - electric current
-* kelvin - thermodynamic temperature
-* mole - amount of substance
-* candela - luminous intensity
+The si-units C++ library provides type-safe calculations involving physical quantities that are measured in the units of the [International System of Units](https://en.wikipedia.org/wiki/International_System_of_Units).
 
 si-units is a header-only library of template classes and functions that automatically convert quantities to the correct units when performing mathematical or relational operations. The library contains two classes/structs: si::quantity_t and si::units_t.
 
 ## si::quantity_t
 
-si::quantity_t is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in si::quantity_t default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by si::quantity_t.
+si::quantity_t (see si/quantity.hpp) is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in si::quantity_t default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by si::quantity_t.
 
 The si::quantity_t examples provided below are intended to help the reader understand how the si::quantity_t type works. However, it is unlikely that clients of this library will need to write code that defines si::quantity_t types since those types are automatically created as needed when code performs mathematical or relational operations using si::units_t.
+
+The library defines type aliases based on si::quantity_t for all quantities related to base SI units and most derived SI units.
 
 ### Example 1
 
@@ -44,7 +38,7 @@ using speed = si::divide_units<si::length, si::time>; // same as si::quantity_t<
 
 ## si::units_t
 
-si::units_t is a class template that takes three template parameters:
+si::units_t (see si::units.hpp) is a class template that takes three template parameters:
 
 * QUANTITY: an si::quantity_t
 * VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic<VALUE> == true
@@ -56,7 +50,7 @@ si::units_t is type safe. Operations on si::units_t objects will not compile suc
 
 Note that VALUE can be either an integral or floating point type. If an integral type is chosen, all mathematical and conversion operations will produce truncated results where appropriate just as they would in such operations on the raw VALUE type.
 
-Convenience type aliases are defined for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and RATIO defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
+The library defines type aliases for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and RATIO defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
 
 ```c++
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
