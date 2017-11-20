@@ -118,7 +118,7 @@ theTime.value == 0.90909090909090906
 You may be thinking that the value 0.909 * 9/2500 seconds is not very useful. It is mathematically correct and could be used in subsequent calculations, if desired. However, if we want to display this result to a user, we would probably want a value that is easier to understand. Looking at the components of this result, we can see that it is much less than a second. So, perhaps converting it to milliseconds would be good. We can use the si::units_cast template function to do that:
 
 ```c++
-theMsecs = si::units_cast<si::seconds<std::milli>>(theTime);
+auto theMsecs = si::units_cast<si::seconds<std::milli>>(theTime);
 ```
 
 where:
@@ -127,4 +127,26 @@ where:
 theMsecs.value == 3.2727272727272725
 && theMsecs.ratio == std::milli{}
 && theMsecs.quantity == si::time{}
+```
+## Conversion to String
+
+The library provides functions to convert std::ratio, si::quantity_t and si::units_t to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for si::units_t only output the RATIO and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an si::units_t object.
+
+### Example
+
+Running the code below with the variables declared in the si::units_t examples above:
+
+```c++
+std::cout << theLength.value() << " " << si::string_from(theLength) << "\n";
+std::cout << theSpeed.value() << " " << si::string_from(theSpeed) << "\n";
+std::cout << theTime.value() << " " << si::string_from(theTime) << "\n";
+std::cout << theMsecs.value() << " " << si::string_from(theMsecs) << "\n";
+```
+Output:
+
+```
+50 1/1000·m
+55 5/18·m/s
+0.909091 9/2500·s
+3.27273 1/1000·s
 ```
