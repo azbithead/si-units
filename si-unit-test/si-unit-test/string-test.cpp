@@ -85,19 +85,19 @@ void si::run_string_tests()
     }
 
     {
-        using theSuffixT = typename units_t<int,std::ratio<1>,scalar>::suffix_t;
+        using theSuffixT = units_t<int,std::ratio<1>,scalar>;
         assert_literal(theSuffixT, "");
     }
     {
-        using theSuffixT = typename units_t<int,std::milli,scalar>::suffix_t;
+        using theSuffixT = units_t<int,std::milli,scalar>;
         assert_literal(theSuffixT, "1/1000");
     }
     {
-        using theSuffixT = typename units_t<int,std::ratio<1>,mass>::suffix_t;
+        using theSuffixT = units_t<int,std::ratio<1>,mass>;
         assert_literal(theSuffixT, "kg");
     }
     {
-        using theSuffixT = typename units_t<int,std::milli,luminous_intensity>::suffix_t;
+        using theSuffixT = units_t<int,std::milli,luminous_intensity>;
         assert_literal(theSuffixT, "1/1000·cd");
     }
 }
