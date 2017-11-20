@@ -55,7 +55,7 @@ basic_string_from
     auto theResult = basic_string_from<CharT>(aRatio.num);
     if( aRatio.den != 1 )
     {
-        theResult += forward_slash<CharT> + basic_string_from<CharT>(aRatio.den);
+        theResult += divide_operator<CharT> + basic_string_from<CharT>(aRatio.den);
     }
 
     return theResult;
@@ -104,10 +104,10 @@ basic_string_from
     const units_suffix_t<RatioT, QuantityT>& aUnitsSuffix
 )
 {
-    auto theResult = basic_string_from<CharT>(aUnitsSuffix.ratio);
-    if( theResult == one<CharT> )
+    std::basic_string<CharT> theResult;
+    if( aUnitsSuffix.ratio.num != aUnitsSuffix.ratio.den )
     {
-        theResult.clear();
+        theResult = basic_string_from<CharT>(aUnitsSuffix.ratio);
     }
 
     const auto theQuantityString = basic_string_from<CharT>(aUnitsSuffix.quantity);
@@ -115,7 +115,7 @@ basic_string_from
     {
         if( !theResult.empty() )
         {
-            theResult += dot<CharT>;
+            theResult += multiply_operator<CharT>;
         }
 
         theResult += theQuantityString;

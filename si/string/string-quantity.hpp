@@ -23,14 +23,23 @@ basic_string_from_exp
     {
         if( !aString.empty() )
         {
-            aString += dot<CharT>;
+            aString += multiply_operator<CharT>;
         }
 
         aString += aAbbreviation;
 
         if( aExp > 1 )
         {
-            aString += superscript<CharT>[aExp-2];
+            std::basic_string<CharT> theSuperscript;
+
+            do
+            {
+                theSuperscript = superscript_digit<CharT>[aExp % 10] + theSuperscript;
+                aExp /= 10;
+            }
+            while( aExp > 0 );
+
+            aString += theSuperscript;
         }
     }
 
@@ -85,7 +94,7 @@ basic_string_from
             theNum = one<CharT>;
         }
 
-        return theNum + forward_slash<CharT> + theDen;
+        return theNum + divide_operator<CharT> + theDen;
     }
 
     return theNum;
