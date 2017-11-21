@@ -32,7 +32,7 @@ basic_string_from
     {
         if( !theResult.empty() )
         {
-            theResult += multiply_operator<CharT>;
+            theResult += space<CharT>;
         }
 
         theResult += theQuantityString;

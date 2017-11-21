@@ -98,6 +98,6 @@ void si::run_string_tests()
     }
     {
         using theSuffixT = units_t<int,std::milli,luminous_intensity>;
-        assert_literal(theSuffixT, "1/1000·cd");
+        assert_literal(theSuffixT, "1/1000 cd");
     }
 }
