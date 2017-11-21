@@ -1,6 +1,8 @@
 #include <iostream>
+#include <sstream>
 #include <type_traits>
 #include "string/string-units.hpp"
+#include "stream/stream-units.hpp"
 #include "string-test.hpp"
 
 namespace
@@ -28,13 +30,13 @@ assertf
     }
 }
 
-#define assert_abbrev( aT, aAbbrev ) \
+#define assert_abbrev( aT ) \
 { \
     { \
-        assert(si::string_from(aT{}), aAbbrev<char>); \
+        assertf(si::string_from(aT{}) == si::abbrev<char,aT>, __FILE__, __LINE__); \
     } \
     { \
-        assert(si::wstring_from(aT{}), aAbbrev<wchar_t>); \
+        assertf(si::wstring_from(aT{}) == si::abbrev<wchar_t,aT>, __FILE__, __LINE__); \
     } \
 }
 
@@ -52,14 +54,15 @@ assertf
 
 void si::run_string_tests()
 {
-    assert_abbrev( mass, mass_abbrev );
-    assert_abbrev( length, length_abbrev );
-    assert_abbrev( time, time_abbrev );
-    assert_abbrev( current, current_abbrev );
-    assert_abbrev( temperature, temperature_abbrev );
-    assert_abbrev( luminous_intensity, luminous_intensity_abbrev );
-    assert_abbrev( substance, substance_abbrev );
-    assert_abbrev( angle, angle_abbrev );
+    assert_abbrev( mass );
+    assert_abbrev( length );
+    assert_abbrev( time );
+    assert_abbrev( current );
+    assert_abbrev( temperature );
+    assert_abbrev( luminous_intensity );
+    assert_abbrev( substance );
+    assert_abbrev( angle );
+    assert_abbrev( force );
 
     assert_literal( scalar, "");
     assert_literal( reciprocal_quantity<mass>, "1/kg");
@@ -99,5 +102,12 @@ void si::run_string_tests()
     {
         using theSuffixT = units_t<int,std::milli,luminous_intensity>;
         assert_literal(theSuffixT, "1/1000 cd");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::milli,luminous_intensity>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert(theStream.str(), "5·1/1000 cd");
     }
 }

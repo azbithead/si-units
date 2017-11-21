@@ -63,23 +63,28 @@ basic_string_from
     quantity_t<M,L,T,C,Temp,Lum,S,A> aQuantity
 )
 {
-    auto theNum = basic_string_from_exp( mass_abbrev<CharT>, aQuantity.mass_exp );
-    theNum = basic_string_from_exp( length_abbrev<CharT>, aQuantity.length_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( time_abbrev<CharT>, aQuantity.time_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( current_abbrev<CharT>, aQuantity.current_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( temperature_abbrev<CharT>, aQuantity.temperature_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( luminous_intensity_abbrev<CharT>, aQuantity.luminous_intensity_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( substance_abbrev<CharT>, aQuantity.substance_exp, std::move(theNum) );
-    theNum = basic_string_from_exp( angle_abbrev<CharT>, aQuantity.angle_exp, std::move(theNum) );
+    if( abbrev<CharT, quantity_t<M,L,T,C,Temp,Lum,S,A>> != nullptr )
+    {
+        return abbrev<CharT, quantity_t<M,L,T,C,Temp,Lum,S,A>>;
+    }
 
-    auto theDen = basic_string_from_exp( mass_abbrev<CharT>, -aQuantity.mass_exp );
-    theDen = basic_string_from_exp( length_abbrev<CharT>, -aQuantity.length_exp, std::move(theDen) );
-    theDen = basic_string_from_exp( time_abbrev<CharT>, -aQuantity.time_exp, std::move(theDen) );
-    theDen = basic_string_from_exp( current_abbrev<CharT>, -aQuantity.current_exp, std::move(theDen) );
-    theDen = basic_string_from_exp( temperature_abbrev<CharT>, -aQuantity.temperature_exp, std::move(theDen) );
-    theDen = basic_string_from_exp( luminous_intensity_abbrev<CharT>, -aQuantity.luminous_intensity_exp, std::move(theDen) );
-    theNum = basic_string_from_exp( substance_abbrev<CharT>, -aQuantity.substance_exp, std::move(theNum) );
-    theDen = basic_string_from_exp( angle_abbrev<CharT>, -aQuantity.angle_exp, std::move(theDen) );
+    auto theNum = basic_string_from_exp( abbrev<CharT,mass>, aQuantity.mass_exp );
+    theNum = basic_string_from_exp( abbrev<CharT,length>, aQuantity.length_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,time>, aQuantity.time_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,current>, aQuantity.current_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,temperature>, aQuantity.temperature_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,luminous_intensity>, aQuantity.luminous_intensity_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,substance>, aQuantity.substance_exp, std::move(theNum) );
+    theNum = basic_string_from_exp( abbrev<CharT,angle>, aQuantity.angle_exp, std::move(theNum) );
+
+    auto theDen = basic_string_from_exp( abbrev<CharT,mass>, -aQuantity.mass_exp );
+    theDen = basic_string_from_exp( abbrev<CharT,length>, -aQuantity.length_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( abbrev<CharT,time>, -aQuantity.time_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( abbrev<CharT,current>, -aQuantity.current_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( abbrev<CharT,temperature>, -aQuantity.temperature_exp, std::move(theDen) );
+    theDen = basic_string_from_exp( abbrev<CharT,luminous_intensity>, -aQuantity.luminous_intensity_exp, std::move(theDen) );
+    theNum = basic_string_from_exp( abbrev<CharT,substance>, -aQuantity.substance_exp, std::move(theNum) );
+    theDen = basic_string_from_exp( abbrev<CharT,angle>, -aQuantity.angle_exp, std::move(theDen) );
 
     if( theDen.empty() )
     {

@@ -14,14 +14,6 @@ STRING_CONST(one, "1");
 STRING_CONST(space, " ");
 STRING_CONST(divide_operator, "/");
 STRING_CONST(multiply_operator, "·");
-STRING_CONST(mass_abbrev, "kg");
-STRING_CONST(length_abbrev, "m");
-STRING_CONST(time_abbrev, "s");
-STRING_CONST(current_abbrev, "A");
-STRING_CONST(temperature_abbrev, "K");
-STRING_CONST(luminous_intensity_abbrev, "cd");
-STRING_CONST(substance_abbrev, "mol");
-STRING_CONST(angle_abbrev, "rad");
 
 constexpr auto digit_count = 10;
 
@@ -78,5 +70,40 @@ template<> constexpr const char32_t* superscript_digit<char32_t>[digit_count] =
     U"\u2078",
     U"\u2079"
 };
+
+template< typename CharT, typename QuantityT >
+constexpr const CharT* abbrev = nullptr;
+
+#define ABBREV_CONST(qt, str) \
+template<> constexpr const char* abbrev<char,qt> = str; \
+template<> constexpr const wchar_t* abbrev<wchar_t,qt> = L##str; \
+template<> constexpr const char16_t* abbrev<char16_t,qt> = u##str; \
+template<> constexpr const char32_t* abbrev<char32_t,qt> = U##str
+
+ABBREV_CONST(scalar, "");
+ABBREV_CONST(mass, "kg");
+ABBREV_CONST(length, "m");
+ABBREV_CONST(time, "s");
+ABBREV_CONST(current, "A");
+ABBREV_CONST(temperature, "K");
+ABBREV_CONST(luminous_intensity, "cd");
+ABBREV_CONST(substance, "mol");
+ABBREV_CONST(angle, "rad");
+ABBREV_CONST(solid_angle, "sr");
+ABBREV_CONST(frequency, "Hz");
+ABBREV_CONST(force, "N");
+ABBREV_CONST(pressure, "Pa");
+ABBREV_CONST(energy, "J");
+ABBREV_CONST(power, "W");
+ABBREV_CONST(charge, "C");
+ABBREV_CONST(voltage, "V");
+ABBREV_CONST(capacitance, "F");
+ABBREV_CONST(impedance, "\u2126");
+ABBREV_CONST(conductance, "S");
+ABBREV_CONST(magnetic_flux, "Wb");
+ABBREV_CONST(magnetic_flux_density, "T");
+ABBREV_CONST(inductance, "H");
+ABBREV_CONST(luminous_flux, "lm");
+ABBREV_CONST(illuminance, "lx");
 
 } // end of namespace si
