@@ -920,6 +920,9 @@ template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using days = hours<std::ratio_multiply<RATIO, std::ratio<24>>, VALUE>;
+
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using amperes = units_t<VALUE, RATIO, current>;
 
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
