@@ -130,7 +130,7 @@ theMsecs.value == 3.2727272727272725
 ```
 ## Conversion to String
 
-The library provides functions to convert si::quantity_t and si::units_t to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for si::units_t only output the RATIO and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an si::units_t object.
+The library provides functions to convert si::quantity_t and si::units_t to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for si::units_t only output the RATIO and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an si::units_t object. When converting an si::quantity_t, an abbreviation for a derived SI unit will be output when possible.
 
 ### Example
 
