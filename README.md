@@ -150,3 +150,26 @@ Output:
 0.909091 9/2500·s
 3.27273 1/1000·s
 ```
+
+## Streaming
+
+The library provides a function to stream si::units_t to any stream derived from std::ostream. Unlike string_from, this function does output the VALUE component.
+
+### Example
+
+Running the code below with the variables declared in the si::units_t examples above:
+
+```c++
+std::cout << theLength << "\n";
+std::cout << theSpeed << "\n";
+std::cout << theTime << "\n";
+std::cout << theMsecs << "\n";
+```
+Output:
+
+```
+50 1/1000·m
+55 5/18·m/s
+0.909091 9/2500·s
+3.27273 1/1000·s
+```
