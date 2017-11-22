@@ -235,23 +235,4 @@ void si::run_units_tests()
     theValue %= m_t{ 2 };
     assert( theValue == m_t{ 1 } );
     }
-
-    // sqrt
-    {
-    auto theValue = sqrt(seconds<std::mega>{4.0});
-    auto theExpectedResult = seconds<std::kilo>{2.0};
-    assert( theValue == theExpectedResult );
-    }
-
-    // pow floating point
-    {
-    auto theValue = seconds<>{3.0};
-    assert( pow<2>(theValue) == (theValue * theValue) );
-    }
-
-    // pow integer
-    {
-    auto theValue = seconds<std::ratio<1>,int>{2};
-    assert( pow<3>(theValue) == (theValue * theValue * theValue) );
-    }
 }

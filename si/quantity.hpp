@@ -133,7 +133,7 @@ using root_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<
 
 //------------------------------------------------------------------------------
 /// Base quantity
-using scalar = quantity_t<>; // has no associated quantity
+using none = quantity_t<>; // has no associated quantity
 using mass = quantity_t<1>;
 using length = quantity_t<0,1>;
 using distance = length;

@@ -9,7 +9,7 @@ using namespace si;
 
 // is_quantity
 static_assert( !is_quantity< int >, "" );
-static_assert( is_quantity< scalar >, "" );
+static_assert( is_quantity< none >, "" );
 static_assert( is_quantity< mass >, "" );
 static_assert( is_quantity< distance >, "" );
 static_assert( is_quantity< time >, "" );

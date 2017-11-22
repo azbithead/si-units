@@ -64,7 +64,7 @@ void si::run_string_tests()
     assert_abbrev( angle );
     assert_abbrev( force );
 
-    assert_literal( scalar, "");
+    assert_literal( none, "");
     assert_literal( reciprocal_quantity<mass>, "1/kg");
     {
         using TestQuantity_t = power_quantity<mass,102>;
@@ -88,11 +88,11 @@ void si::run_string_tests()
     }
 
     {
-        using theSuffixT = units_t<int,std::ratio<1>,scalar>;
+        using theSuffixT = units_t<int,std::ratio<1>,none>;
         assert_literal(theSuffixT, "");
     }
     {
-        using theSuffixT = units_t<int,std::milli,scalar>;
+        using theSuffixT = units_t<int,std::milli,none>;
         assert_literal(theSuffixT, "1/1000");
     }
     {

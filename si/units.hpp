@@ -333,6 +333,7 @@ public:
     //--------------------------------------------------------------------------
     // Accessor function
     constexpr value_t value() const {return mValue;}
+    constexpr value_t expand() const {return mValue * ratio.num / ratio.den;}
 
     //--------------------------------------------------------------------------
     // Arithmetic functions
@@ -592,7 +593,7 @@ operator *
     const VALUE2& aScalar
 )
 {
-    return aQuantity * units_t<VALUE2, std::ratio<1>, scalar>{aScalar};
+    return aQuantity * units_t<VALUE2, std::ratio<1>, none>{aScalar};
 }
 
 //------------------------------------------------------------------------------
@@ -800,7 +801,7 @@ operator /
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    return units_t<ResultValue_t, std::ratio<1>, scalar>{aScalar} / aQuantity;
+    return units_t<ResultValue_t, std::ratio<1>, none>{aScalar} / aQuantity;
 }
 
 //------------------------------------------------------------------------------
@@ -864,134 +865,11 @@ operator%
     return aLHS - (aRHS * (aLHS / aRHS));
 }
 
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY,
-    typename EPSILON
->
-using sqrt_result_t = typename std::enable_if
-<
-    std::is_floating_point<VALUE>::value,
-    units_t
-    <
-        VALUE,
-        typename ratio::ratio_sqrt<RATIO, EPSILON>::type,
-        root_quantity<QUANTITY, 2>
-    >
->::type;
-
-//------------------------------------------------------------------------------
-// square root of a units_t
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY,
-    typename EPSILON = std::ratio<1,10000000000000>
->
-inline
-sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>
-sqrt
-(
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
-)
-{
-    using Result_t = sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>;
-    return Result_t{std::sqrt(aQuantity.value())};
-}
-
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY,
-    std::intmax_t EXPONENT
->
-struct power_result_impl;
-
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY
->
-struct power_result_impl<VALUE, RATIO, QUANTITY, 0>
-{
-    using type = units_t<VALUE, std::ratio<1>, scalar>;
-};
-
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY,
-    std::intmax_t EXPONENT
->
-struct power_result_impl
-{
-    using temp = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT-1>::type;
-    using type = units_t
-    <
-        VALUE,
-        std::ratio_multiply<RATIO, typename temp::ratio_t>,
-        multiply_quantity<QUANTITY, typename temp::quantity_t>
-    >;
-};
-
-template
-<
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY,
-    std::intmax_t EXPONENT
->
-using power_result_t = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT>::type;
-
-template< typename VALUE >
-constexpr
-inline
-VALUE
-value_pow
-(
-    VALUE aBase,
-    std::intmax_t aExponent
-)
-{
-    if( aExponent > 0 )
-    {
-        return aBase * value_pow(aBase, aExponent - 1);
-    }
-    else
-    {
-        return 1;
-    }
-}
-
-//------------------------------------------------------------------------------
-// raise units_t to a power
-template
-<
-    std::intmax_t EXPONENT,
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY
->
-constexpr
-inline
-power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
-pow
-(
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
-)
-{
-    using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
-    return Result_t{value_pow(aQuantity.value(), EXPONENT)};
-}
-
 //==============================================================================
 // Some useful si::units_t types
+template< typename RATIO = std::ratio<1>, typename VALUE = double >
+using scalar = units_t<VALUE, RATIO, none>;
+
 template< typename RATIO = std::ratio<1>, typename VALUE = double >
 using meters = units_t<VALUE, RATIO, length>;
 

@@ -80,7 +80,7 @@ template<> constexpr const wchar_t* abbrev<wchar_t,qt> = L##str; \
 template<> constexpr const char16_t* abbrev<char16_t,qt> = u##str; \
 template<> constexpr const char32_t* abbrev<char32_t,qt> = U##str
 
-ABBREV_CONST(scalar, "");
+ABBREV_CONST(none, "");
 ABBREV_CONST(mass, "kg");
 ABBREV_CONST(length, "m");
 ABBREV_CONST(time, "s");
