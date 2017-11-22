@@ -251,7 +251,7 @@ void si::run_units_tests()
 
     // pow integer
     {
-    auto theValue = seconds<std::ratio<1>,int>{3};
-    assert( pow<2>(theValue) == (theValue * theValue) );
+    auto theValue = seconds<std::ratio<1>,int>{2};
+    assert( pow<3>(theValue) == (theValue * theValue * theValue) );
     }
 }

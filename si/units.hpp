@@ -949,6 +949,26 @@ template
 >
 using power_result_t = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT>::type;
 
+template< typename VALUE >
+constexpr
+inline
+VALUE
+value_pow
+(
+    VALUE aBase,
+    std::intmax_t aExponent
+)
+{
+    if( aExponent > 0 )
+    {
+        return aBase * value_pow(aBase, aExponent - 1);
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 //------------------------------------------------------------------------------
 // raise units_t to a power
 template
@@ -958,64 +978,16 @@ template
     typename RATIO,
     typename QUANTITY
 >
-inline
-power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
-pow
-(
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity,
-    typename std::enable_if
-    <
-        std::is_floating_point<VALUE>::value
-    >::type* = 0
-
-)
-{
-    using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
-    return Result_t{std::pow(aQuantity.value(), EXPONENT)};
-}
-
-template< typename IntT >
-constexpr
-inline
-IntT
-int_pow
-(
-    IntT aBase,
-    std::intmax_t aExponent
-)
-{
-    if( aExponent > 0 )
-    {
-        return aBase * int_pow(aBase, aExponent - 1);
-    }
-    else
-    {
-        return 1;
-    }
-}
-
-template
-<
-    std::intmax_t EXPONENT,
-    typename VALUE,
-    typename RATIO,
-    typename QUANTITY
->
 constexpr
 inline
 power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
 pow
 (
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity,
-    typename std::enable_if
-    <
-        std::is_integral<VALUE>::value
-    >::type* = 0
-
+    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
 )
 {
     using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
-    return Result_t{int_pow(aQuantity.value(), EXPONENT)};
+    return Result_t{value_pow(aQuantity.value(), EXPONENT)};
 }
 
 //==============================================================================
