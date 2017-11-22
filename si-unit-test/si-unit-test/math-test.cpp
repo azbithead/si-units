@@ -43,21 +43,21 @@ void si::run_math_tests()
     assert( pow<3>(theValue) == (theValue * theValue * theValue) );
     }
 
-    static constexpr auto theHalfPi = 3.14159 / 2.0;
+    static constexpr auto theHalfPi = radians<std::ratio<1,2>>{3.14159};
 
     // sin
     {
-    assert( sine(radians<>{theHalfPi}) == scalar<>{std::sin(theHalfPi)} );
+    assert( sine(theHalfPi) == scalar<>{std::sin(theHalfPi.expand())} );
     }
 
     // cosine
     {
-    assert( cosine(radians<>{0.0}) == scalar<>{std::cos(0.0)} );
+    assert( cosine(radians<>{}.zero()) == scalar<>{std::cos(0.0)} );
     }
 
     // tangent
     {
-    assert( tangent(radians<>{-theHalfPi}) == scalar<>{std::tan(-theHalfPi)} );
+    assert( tangent(-theHalfPi) == scalar<>{std::tan(-theHalfPi.expand())} );
     }
 
     // arc sine
