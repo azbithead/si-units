@@ -243,9 +243,15 @@ void si::run_units_tests()
     assert( theValue == theExpectedResult );
     }
 
-    // pow
+    // pow floating point
     {
     auto theValue = seconds<>{3.0};
+    assert( pow<2>(theValue) == (theValue * theValue) );
+    }
+
+    // pow integer
+    {
+    auto theValue = seconds<std::ratio<1>,int>{3};
     assert( pow<2>(theValue) == (theValue * theValue) );
     }
 }

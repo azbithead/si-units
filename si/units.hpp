@@ -962,11 +962,58 @@ inline
 power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
 pow
 (
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
+    const units_t<VALUE, RATIO, QUANTITY>& aQuantity,
+    typename std::enable_if
+    <
+        std::is_floating_point<VALUE>::value
+    >::type* = 0
+
 )
 {
     using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
     return Result_t{std::pow(aQuantity.value(), EXPONENT)};
+}
+
+template< typename IntT >
+inline
+IntT
+int_pow
+(
+    IntT aBase,
+    std::intmax_t aExponent
+)
+{
+    if( aExponent > 0 )
+    {
+        return aBase * int_pow(aBase, aExponent - 1);
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+template
+<
+    std::intmax_t EXPONENT,
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY
+>
+inline
+power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
+pow
+(
+    const units_t<VALUE, RATIO, QUANTITY>& aQuantity,
+    typename std::enable_if
+    <
+        std::is_integral<VALUE>::value
+    >::type* = 0
+
+)
+{
+    using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
+    return Result_t{int_pow(aQuantity.value(), EXPONENT)};
 }
 
 //==============================================================================
