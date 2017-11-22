@@ -975,6 +975,7 @@ pow
 }
 
 template< typename IntT >
+constexpr
 inline
 IntT
 int_pow
@@ -1000,6 +1001,7 @@ template
     typename RATIO,
     typename QUANTITY
 >
+constexpr
 inline
 power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
 pow
