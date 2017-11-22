@@ -46,12 +46,12 @@ namespace si
 
 template
 <
-    typename FromQ,
-    typename ToQ,
+    typename FromUnitsT,
+    typename ToUnitsT,
     typename RATIO = typename std::ratio_divide
     <
-        typename FromQ::ratio_t,
-        typename ToQ::ratio_t
+        typename FromUnitsT::ratio_t,
+        typename ToUnitsT::ratio_t
     >::type,
     bool = RATIO::num == 1,
     bool = RATIO::den == 1>
@@ -59,44 +59,44 @@ struct units_cast_impl;
 
 template
 <
-    typename FromQ,
-    typename ToQ,
+    typename FromUnitsT,
+    typename ToUnitsT,
     typename RATIO
 >
-struct units_cast_impl<FromQ, ToQ, RATIO, true, true>
+struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, true>
 {
     constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
+    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
     {
-        return ToQ
+        return ToUnitsT
         {
-            static_cast<typename ToQ::value_t>(aFromQuantity.value())
+            static_cast<typename ToUnitsT::value_t>(aFromUnits.value())
         };
     }
 };
 
 template
 <
-    typename FromQ,
-    typename ToQ,
+    typename FromUnitsT,
+    typename ToUnitsT,
     typename RATIO
 >
-struct units_cast_impl<FromQ, ToQ, RATIO, true, false>
+struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, false>
 {
     constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
+    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
+            typename ToUnitsT::value_t,
+            typename FromUnitsT::value_t,
             intmax_t
         >;
-        return ToQ
+        return ToUnitsT
         {
-            static_cast<typename ToQ::value_t>
+            static_cast<typename ToUnitsT::value_t>
             (
-                static_cast<ResultValue_t>(aFromQuantity.value()) /
+                static_cast<ResultValue_t>(aFromUnits.value()) /
                 static_cast<ResultValue_t>(RATIO::den)
             )
         };
@@ -105,26 +105,26 @@ struct units_cast_impl<FromQ, ToQ, RATIO, true, false>
 
 template
 <
-    typename FromQ,
-    typename ToQ,
+    typename FromUnitsT,
+    typename ToUnitsT,
     typename RATIO
 >
-struct units_cast_impl<FromQ, ToQ, RATIO, false, true>
+struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, true>
 {
     constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
+    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
+            typename ToUnitsT::value_t,
+            typename FromUnitsT::value_t,
             intmax_t
         >;
-        return ToQ
+        return ToUnitsT
         {
-            static_cast<typename ToQ::value_t>
+            static_cast<typename ToUnitsT::value_t>
             (
-                static_cast<ResultValue_t>(aFromQuantity.value()) *
+                static_cast<ResultValue_t>(aFromUnits.value()) *
                 static_cast<ResultValue_t>(RATIO::num)
             )
         };
@@ -133,26 +133,26 @@ struct units_cast_impl<FromQ, ToQ, RATIO, false, true>
 
 template
 <
-    typename FromQ,
-    typename ToQ,
+    typename FromUnitsT,
+    typename ToUnitsT,
     typename RATIO
 >
-struct units_cast_impl<FromQ, ToQ, RATIO, false, false>
+struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, false>
 {
     constexpr
-    ToQ operator()(const FromQ& aFromQuantity) const
+    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
-            typename ToQ::value_t,
-            typename FromQ::value_t,
+            typename ToUnitsT::value_t,
+            typename FromUnitsT::value_t,
             intmax_t
         >;
-        return ToQ
+        return ToUnitsT
         {
-            static_cast<typename ToQ::value_t>
+            static_cast<typename ToUnitsT::value_t>
             (
-                static_cast<ResultValue_t>(aFromQuantity.value()) *
+                static_cast<ResultValue_t>(aFromUnits.value()) *
                 static_cast<ResultValue_t>(RATIO::num) /
                 static_cast<ResultValue_t>(RATIO::den)
             )
@@ -175,21 +175,21 @@ constexpr bool is_units_t = is_units_impl<typename std::decay<aType>::type>::val
 //------------------------------------------------------------------------------
 /// Convert an si::units_t to another si::units_t type.
 /// Both types must have the same si::quantity_t type.
-template <typename ToQ, typename QUANTITY, typename VALUE, typename RATIO>
+template <typename ToUnitsT, typename QUANTITY, typename VALUE, typename RATIO>
 inline
 constexpr
 typename std::enable_if
 <
-    is_units_t<ToQ> && std::is_same<typename ToQ::quantity_t,QUANTITY>::value,
-    ToQ
+    is_units_t<ToUnitsT> && std::is_same<typename ToUnitsT::quantity_t,QUANTITY>::value,
+    ToUnitsT
 >::type
-units_cast(const units_t<VALUE, RATIO, QUANTITY>& aFromQuantity)
+units_cast(const units_t<VALUE, RATIO, QUANTITY>& aFromUnits)
 {
     return units_cast_impl
     <
         units_t<VALUE, RATIO, QUANTITY>,
-        ToQ
-    >()(aFromQuantity);
+        ToUnitsT
+    >()(aFromUnits);
 }
 
 // some special units_t values
@@ -279,7 +279,7 @@ public:
     constexpr
     units_t
     (
-        const units_t& aQuantity
+        const units_t&
     ) = default;
 
     //--------------------------------------------------------------------------
@@ -308,12 +308,12 @@ public:
     //--------------------------------------------------------------------------
     /// Initialize a units_t from another units_t possibly having different value_t and ratio_t types but the same quantity_t type.
     /// This constructor will not be chosen by the compiler if it would result in overflow or loss of precision.
-    /// @param aQuantity the units_t that will be converted to this units_t
+    /// @param aUnits the units_t that will be converted to this units_t
     template <typename VALUE2, typename RATIO2>
     constexpr
     units_t
     (
-        const units_t<VALUE2, RATIO2, QUANTITY>& aQuantity,
+        const units_t<VALUE2, RATIO2, QUANTITY>& aUnits,
         typename std::enable_if
         <
             no_overflow<RATIO2, ratio_t>::value &&
@@ -326,7 +326,7 @@ public:
             )
         >::type* = 0
     )
-    : mValue{units_cast<units_t>(aQuantity).value()}
+    : mValue{units_cast<units_t>(aUnits).value()}
     {
     }
 
@@ -343,8 +343,8 @@ public:
     units_t operator++(int) {return units_t{mValue++};}
     units_t& operator--() {--mValue; return *this;}
     units_t operator--(int) {return units_t{mValue--};}
-    units_t& operator+=(const units_t& aQuantity) {mValue += aQuantity.value(); return *this;}
-    units_t& operator-=(const units_t& aQuantity) {mValue -= aQuantity.value(); return *this;}
+    units_t& operator+=(const units_t& rhs) {mValue += rhs.value(); return *this;}
+    units_t& operator-=(const units_t& rhs) {mValue -= rhs.value(); return *this;}
     units_t& operator*=(const value_t& rhs) {mValue *= rhs; return *this;}
     units_t& operator/=(const value_t& rhs) {mValue /= rhs; return *this;}
     units_t& operator%=(const value_t& rhs) {mValue %= rhs; return *this;}
@@ -357,43 +357,43 @@ public:
     static constexpr units_t max() {return units_t{units_values<value_t>::max()};}
 }; // end of class units_t
 
-template <typename LhsQ, typename RhsQ>
+template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_eq_impl
 {
     constexpr
-    bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
+    bool operator()(const LhsUnitsT& aLHS, const RhsUnitsT& aRHS) const
     {
-        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
-        return CommonQuantity_t{aLHS}.value() == CommonQuantity_t{aRHS}.value();
+        using CommonUnits_t = std::common_type_t<LhsUnitsT, RhsUnitsT>;
+        return CommonUnits_t{aLHS}.value() == CommonUnits_t{aRHS}.value();
     }
 };
 
-template <typename LhsQ>
-struct units_eq_impl<LhsQ, LhsQ>
+template <typename LhsUnitsT>
+struct units_eq_impl<LhsUnitsT, LhsUnitsT>
 {
     constexpr
-    bool operator()(const LhsQ& aLHS, const LhsQ& aRHS) const
+    bool operator()(const LhsUnitsT& aLHS, const LhsUnitsT& aRHS) const
     {
         return aLHS.value() == aRHS.value();
     }
 };
 
-template <typename LhsQ, typename RhsQ>
+template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_lt_impl
 {
     constexpr
-    bool operator()(const LhsQ& aLHS, const RhsQ& aRHS) const
+    bool operator()(const LhsUnitsT& aLHS, const RhsUnitsT& aRHS) const
     {
-        using CommonQuantity_t = std::common_type_t<LhsQ, RhsQ>;
-        return CommonQuantity_t{aLHS}.value() < CommonQuantity_t{aRHS}.value();
+        using CommonUnits_t = std::common_type_t<LhsUnitsT, RhsUnitsT>;
+        return CommonUnits_t{aLHS}.value() < CommonUnits_t{aRHS}.value();
     }
 };
 
-template <typename LhsQ>
-struct units_lt_impl<LhsQ, LhsQ>
+template <typename LhsUnitsT>
+struct units_lt_impl<LhsUnitsT, LhsUnitsT>
 {
     constexpr
-    bool operator()(const LhsQ& aLHS, const LhsQ& aRHS) const
+    bool operator()(const LhsUnitsT& aLHS, const LhsUnitsT& aRHS) const
     {
         return aLHS.value() < aRHS.value();
     }
@@ -508,12 +508,12 @@ operator +
     const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
 )
 {
-    using CommonQuantity_t = std::common_type_t
+    using CommonUnits_t = std::common_type_t
     <
         units_t<VALUE1, RATIO1, QUANTITY>,
         units_t<VALUE2, RATIO2, QUANTITY>
     >;
-    return CommonQuantity_t{CommonQuantity_t{aLHS}.value() + CommonQuantity_t{aRHS}.value()};
+    return CommonUnits_t{CommonUnits_t{aLHS}.value() + CommonUnits_t{aRHS}.value()};
 }
 
 //------------------------------------------------------------------------------
@@ -589,11 +589,11 @@ typename std::enable_if
 >::type
 operator *
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aQuantity,
+    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
     const VALUE2& aScalar
 )
 {
-    return aQuantity * units_t<VALUE2, std::ratio<1>, none>{aScalar};
+    return aUnits * units_t<VALUE2, std::ratio<1>, none>{aScalar};
 }
 
 //------------------------------------------------------------------------------
@@ -619,10 +619,10 @@ typename std::enable_if
 operator *
 (
     const VALUE2& aScalar,
-    const units_t<VALUE1, RATIO, QUANTITY>& aQuantity
+    const units_t<VALUE1, RATIO, QUANTITY>& aUnits
 )
 {
-    return aQuantity * aScalar;
+    return aUnits * aScalar;
 }
 
 template
@@ -702,17 +702,17 @@ constexpr
 typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
 operator /
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aQuantity,
+    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
     const VALUE2& aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = units_t<ResultValue_t, RATIO, QUANTITY>;
-    return Result_t{Result_t{aQuantity}.value() / static_cast<ResultValue_t>(aScalar)};
+    return Result_t{Result_t{aUnits}.value() / static_cast<ResultValue_t>(aScalar)};
 }
 
 //------------------------------------------------------------------------------
-// divide units_t by units_t, same units
+// divide units_t by units_t, same quantity_t
 template
 <
     typename QUANTITY,
@@ -730,12 +730,12 @@ operator /
     const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
 )
 {
-    using CommonQuantity_t = std::common_type_t
+    using CommonUnits_t = std::common_type_t
     <
         units_t<VALUE1, RATIO1, QUANTITY>,
         units_t<VALUE2, RATIO2, QUANTITY>
     >;
-    return CommonQuantity_t{aLHS}.value() / CommonQuantity_t{aRHS}.value();
+    return CommonUnits_t{aLHS}.value() / CommonUnits_t{aRHS}.value();
 }
 
 template
@@ -797,11 +797,11 @@ auto
 operator /
 (
     const VALUE2& aScalar,
-    const units_t<VALUE1, RATIO, QUANTITY>& aQuantity
+    const units_t<VALUE1, RATIO, QUANTITY>& aUnits
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    return units_t<ResultValue_t, std::ratio<1>, none>{aScalar} / aQuantity;
+    return units_t<ResultValue_t, std::ratio<1>, none>{aScalar} / aUnits;
 }
 
 //------------------------------------------------------------------------------
@@ -818,13 +818,13 @@ constexpr
 typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
 operator%
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aQuantity,
+    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
     const VALUE2& aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = units_t<ResultValue_t, RATIO, QUANTITY>;
-    return Result_t{Result_t{aQuantity}.value() % static_cast<ResultValue_t>(aScalar)};
+    return Result_t{Result_t{aUnits}.value() % static_cast<ResultValue_t>(aScalar)};
 }
 
 template
