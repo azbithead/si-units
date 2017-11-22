@@ -24,6 +24,13 @@ void si::run_math_tests()
 {
     using namespace si;
 
+    // absolute
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    assert( absolute(int_meters{-1}) == int_meters{1} );
+    assert( absolute(meters<>{-1.0}) == meters<>{1.0} );
+    }
+
     // sqrt
     {
     auto theValue = sqrt(seconds<std::mega>{4.0});

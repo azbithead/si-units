@@ -9,6 +9,24 @@
 namespace si
 {
 
+//------------------------------------------------------------------------------
+// absolute value of a units_t
+template
+<
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY
+>
+inline
+units_t<VALUE, RATIO, QUANTITY>
+absolute
+(
+    units_t<VALUE, RATIO, QUANTITY> aUnits
+)
+{
+    return units_t<VALUE, RATIO, QUANTITY>{std::abs(aUnits.value())};
+}
+
 template
 <
     typename VALUE,
