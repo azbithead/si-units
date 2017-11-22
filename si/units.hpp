@@ -902,6 +902,73 @@ sqrt
     return Result_t{std::sqrt(aQuantity.value())};
 }
 
+template
+<
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+struct power_result_impl;
+
+template
+<
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY
+>
+struct power_result_impl<VALUE, RATIO, QUANTITY, 0>
+{
+    using type = units_t<VALUE, std::ratio<1>, scalar>;
+};
+
+template
+<
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+struct power_result_impl
+{
+    using temp = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT-1>::type;
+    using type = units_t
+    <
+        VALUE,
+        std::ratio_multiply<RATIO, typename temp::ratio_t>,
+        multiply_quantity<QUANTITY, typename temp::quantity_t>
+    >;
+};
+
+template
+<
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+using power_result_t = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT>::type;
+
+//------------------------------------------------------------------------------
+// raise units_t to a power
+template
+<
+    std::intmax_t EXPONENT,
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY
+>
+inline
+power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
+pow
+(
+    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
+)
+{
+    using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
+    return Result_t{std::pow(aQuantity.value(), EXPONENT)};
+}
+
 //==============================================================================
 // Some useful si::units_t types
 template< typename RATIO = std::ratio<1>, typename VALUE = double >

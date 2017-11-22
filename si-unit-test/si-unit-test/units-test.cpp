@@ -242,4 +242,10 @@ void si::run_units_tests()
     auto theExpectedResult = seconds<std::kilo>{2.0};
     assert( theValue == theExpectedResult );
     }
+
+    // pow
+    {
+    auto theValue = seconds<>{3.0};
+    assert( pow<2>(theValue) == (theValue * theValue) );
+    }
 }
