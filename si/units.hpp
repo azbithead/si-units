@@ -66,7 +66,7 @@ template
 struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, true>
 {
     constexpr
-    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
+    ToUnitsT operator()(FromUnitsT aFromUnits) const
     {
         return ToUnitsT
         {
@@ -84,7 +84,7 @@ template
 struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, false>
 {
     constexpr
-    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
+    ToUnitsT operator()(FromUnitsT aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
@@ -112,7 +112,7 @@ template
 struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, true>
 {
     constexpr
-    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
+    ToUnitsT operator()(FromUnitsT aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
@@ -140,7 +140,7 @@ template
 struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, false>
 {
     constexpr
-    ToUnitsT operator()(const FromUnitsT& aFromUnits) const
+    ToUnitsT operator()(FromUnitsT aFromUnits) const
     {
         using ResultValue_t = std::common_type_t
         <
@@ -183,7 +183,7 @@ typename std::enable_if
     is_units_t<ToUnitsT> && std::is_same<typename ToUnitsT::quantity_t,QUANTITY>::value,
     ToUnitsT
 >::type
-units_cast(const units_t<VALUE, RATIO, QUANTITY>& aFromUnits)
+units_cast(units_t<VALUE, RATIO, QUANTITY> aFromUnits)
 {
     return units_cast_impl
     <
@@ -263,12 +263,6 @@ public:
     static constexpr auto ratio = ratio_t{};
     static constexpr auto quantity = quantity_t{};
 
-private:
-
-    value_t mValue;
-
-public:
-
     //--------------------------------------------------------------------------
     constexpr
     units_t
@@ -291,15 +285,7 @@ public:
     explicit
     units_t
     (
-        const VALUE2& aValue,
-        typename std::enable_if
-        <
-            is_convertible_v<VALUE2, value_t> &&
-            (
-                std::is_floating_point<value_t>::value ||
-                !std::is_floating_point<VALUE2>::value
-            )
-        >::type* = 0
+        VALUE2 aValue
     )
     : mValue{aValue}
     {
@@ -313,7 +299,7 @@ public:
     constexpr
     units_t
     (
-        const units_t<VALUE2, RATIO2, QUANTITY>& aUnits,
+        units_t<VALUE2, RATIO2, QUANTITY> aUnits,
         typename std::enable_if
         <
             no_overflow<RATIO2, ratio_t>::value &&
@@ -343,25 +329,30 @@ public:
     units_t operator++(int) {return units_t{mValue++};}
     units_t& operator--() {--mValue; return *this;}
     units_t operator--(int) {return units_t{mValue--};}
-    units_t& operator+=(const units_t& rhs) {mValue += rhs.value(); return *this;}
-    units_t& operator-=(const units_t& rhs) {mValue -= rhs.value(); return *this;}
-    units_t& operator*=(const value_t& rhs) {mValue *= rhs; return *this;}
-    units_t& operator/=(const value_t& rhs) {mValue /= rhs; return *this;}
-    units_t& operator%=(const value_t& rhs) {mValue %= rhs; return *this;}
-    units_t& operator%=(const units_t& rhs) {mValue %= rhs.value(); return *this;}
+    units_t& operator+=(units_t rhs) {mValue += rhs.value(); return *this;}
+    units_t& operator-=(units_t rhs) {mValue -= rhs.value(); return *this;}
+    units_t& operator*=(value_t rhs) {mValue *= rhs; return *this;}
+    units_t& operator/=(value_t rhs) {mValue /= rhs; return *this;}
+    units_t& operator%=(value_t rhs) {mValue %= rhs; return *this;}
+    units_t& operator%=(units_t rhs) {mValue %= rhs.value(); return *this;}
 
     //--------------------------------------------------------------------------
     // Special values
     static constexpr units_t zero() {return units_t{units_values<value_t>::zero()};}
     static constexpr units_t min() {return units_t{units_values<value_t>::min()};}
     static constexpr units_t max() {return units_t{units_values<value_t>::max()};}
+
+private:
+
+    value_t mValue;
+
 }; // end of class units_t
 
 template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_eq_impl
 {
     constexpr
-    bool operator()(const LhsUnitsT& aLHS, const RhsUnitsT& aRHS) const
+    bool operator()(LhsUnitsT aLHS, RhsUnitsT aRHS) const
     {
         using CommonUnits_t = std::common_type_t<LhsUnitsT, RhsUnitsT>;
         return CommonUnits_t{aLHS}.value() == CommonUnits_t{aRHS}.value();
@@ -372,7 +363,7 @@ template <typename LhsUnitsT>
 struct units_eq_impl<LhsUnitsT, LhsUnitsT>
 {
     constexpr
-    bool operator()(const LhsUnitsT& aLHS, const LhsUnitsT& aRHS) const
+    bool operator()(LhsUnitsT aLHS, LhsUnitsT aRHS) const
     {
         return aLHS.value() == aRHS.value();
     }
@@ -382,7 +373,7 @@ template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_lt_impl
 {
     constexpr
-    bool operator()(const LhsUnitsT& aLHS, const RhsUnitsT& aRHS) const
+    bool operator()(LhsUnitsT aLHS, RhsUnitsT aRHS) const
     {
         using CommonUnits_t = std::common_type_t<LhsUnitsT, RhsUnitsT>;
         return CommonUnits_t{aLHS}.value() < CommonUnits_t{aRHS}.value();
@@ -393,7 +384,7 @@ template <typename LhsUnitsT>
 struct units_lt_impl<LhsUnitsT, LhsUnitsT>
 {
     constexpr
-    bool operator()(const LhsUnitsT& aLHS, const LhsUnitsT& aRHS) const
+    bool operator()(LhsUnitsT aLHS, LhsUnitsT aRHS) const
     {
         return aLHS.value() < aRHS.value();
     }
@@ -407,8 +398,8 @@ constexpr
 bool
 operator ==
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return units_eq_impl
@@ -426,8 +417,8 @@ constexpr
 bool
 operator !=
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return !(aLHS == aRHS);
@@ -441,8 +432,9 @@ constexpr
 bool
 operator <
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS)
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+)
 {
     return units_lt_impl
     <
@@ -459,8 +451,8 @@ constexpr
 bool
 operator >
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return aRHS < aLHS;
@@ -474,8 +466,8 @@ constexpr
 bool
 operator <=
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return !(aRHS < aLHS);
@@ -489,8 +481,8 @@ constexpr
 bool
 operator >=
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return !(aLHS < aRHS);
@@ -504,8 +496,8 @@ constexpr
 auto
 operator +
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     using CommonUnits_t = std::common_type_t
@@ -524,8 +516,8 @@ constexpr
 auto
 operator -
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     return aLHS + (-aRHS);
@@ -547,8 +539,8 @@ constexpr
 auto
 operator *
 (
-    const units_t<VALUE1, RATIO1, QUANTITY1>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY2>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
@@ -589,8 +581,8 @@ typename std::enable_if
 >::type
 operator *
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
-    const VALUE2& aScalar
+    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    VALUE2 aScalar
 )
 {
     return aUnits * units_t<VALUE2, std::ratio<1>, none>{aScalar};
@@ -618,8 +610,8 @@ typename std::enable_if
 >::type
 operator *
 (
-    const VALUE2& aScalar,
-    const units_t<VALUE1, RATIO, QUANTITY>& aUnits
+    VALUE2 aScalar,
+    units_t<VALUE1, RATIO, QUANTITY> aUnits
 )
 {
     return aUnits * aScalar;
@@ -702,8 +694,8 @@ constexpr
 typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
 operator /
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
-    const VALUE2& aScalar
+    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    VALUE2 aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
@@ -726,8 +718,8 @@ constexpr
 auto
 operator /
 (
-    const units_t<VALUE1, RATIO1, QUANTITY>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY> aRHS
 )
 {
     using CommonUnits_t = std::common_type_t
@@ -774,8 +766,8 @@ typename std::enable_if
 >::type
 operator /
 (
-    const units_t<VALUE1, RATIO1, QUANTITY1>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY2>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
 )
 {
     using Result_t = diff_units_result_t<VALUE1, RATIO1, QUANTITY1, VALUE2, RATIO2, QUANTITY2>;
@@ -796,8 +788,8 @@ constexpr
 auto
 operator /
 (
-    const VALUE2& aScalar,
-    const units_t<VALUE1, RATIO, QUANTITY>& aUnits
+    VALUE2 aScalar,
+    units_t<VALUE1, RATIO, QUANTITY> aUnits
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
@@ -818,8 +810,8 @@ constexpr
 typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
 operator%
 (
-    const units_t<VALUE1, RATIO, QUANTITY>& aUnits,
-    const VALUE2& aScalar
+    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    VALUE2 aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
@@ -858,8 +850,8 @@ constexpr
 mod_result<VALUE1, RATIO1, QUANTITY1, VALUE2, RATIO2>
 operator%
 (
-    const units_t<VALUE1, RATIO1, QUANTITY1>& aLHS,
-    const units_t<VALUE2, RATIO2, QUANTITY2>& aRHS
+    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
+    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
 )
 {
     return aLHS - (aRHS * (aLHS / aRHS));

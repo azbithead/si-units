@@ -18,7 +18,7 @@ inline
 std::basic_string<CharT>
 basic_string_from
 (
-    const units_t<ValueT, RatioT, QuantityT>& aUnits
+    units_t<ValueT, RatioT, QuantityT> aUnits
 )
 {
     std::basic_string<CharT> theResult;
@@ -51,7 +51,7 @@ inline
 std::string
 string_from
 (
-    const units_t<ValueT, RatioT, QuantityT>& aUnits
+    units_t<ValueT, RatioT, QuantityT> aUnits
 )
 {
     return basic_string_from<char>(aUnits);
@@ -67,7 +67,7 @@ inline
 std::wstring
 wstring_from
 (
-    const units_t<ValueT, RatioT, QuantityT>& aUnits
+    units_t<ValueT, RatioT, QuantityT> aUnits
 )
 {
     return basic_string_from<wchar_t>(aUnits);

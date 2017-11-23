@@ -58,7 +58,7 @@ inline
 sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>
 sqrt
 (
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
+    units_t<VALUE, RATIO, QUANTITY> aQuantity
 )
 {
     using Result_t = sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>;
