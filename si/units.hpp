@@ -285,7 +285,8 @@ public:
     explicit
     units_t
     (
-        VALUE2 aValue
+        VALUE2 aValue,
+        typename std::enable_if<std::is_arithmetic<VALUE2>::value>::type* = nullptr
     )
     : mValue{aValue}
     {
@@ -310,7 +311,7 @@ public:
                     !std::is_floating_point<VALUE2>::value
                 )
             )
-        >::type* = 0
+        >::type* = nullptr
     )
     : mValue{units_cast<units_t>(aUnits).value()}
     {
