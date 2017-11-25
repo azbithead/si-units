@@ -407,7 +407,7 @@ operator ==
     <
         units_t<VALUE1, RATIO1, QUANTITY>,
         units_t<VALUE2, RATIO2, QUANTITY>
-    >()(aLHS, aRHS);
+    >{}(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
@@ -441,7 +441,7 @@ operator <
     <
         units_t<VALUE1, RATIO1, QUANTITY>,
         units_t<VALUE2, RATIO2, QUANTITY>
-    >()(aLHS, aRHS);
+    >{}(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
@@ -620,12 +620,12 @@ operator *
 
 template
 <
-    typename QUANTITY,
+    typename UNITS,
     typename VALUE,
     bool = is_convertible_v
     <
         VALUE,
-        std::common_type_t<typename QUANTITY::value_t, VALUE>
+        std::common_type_t<typename UNITS::value_t, VALUE>
     >
 >
 struct units_divide_helper
