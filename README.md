@@ -38,7 +38,7 @@ using speed = si::divide_units<si::length, si::time>; // same as si::quantity_t<
 
 ## si::units_t
 
-`si::units_t` (see si::units.hpp) is a class template that takes three template parameters:
+`si::units_t` (see si/units.hpp) is a class template that takes three template parameters:
 
 * QUANTITY: an `si::quantity_t`
 * VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic<VALUE> == true
