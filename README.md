@@ -33,7 +33,7 @@ using length = si::quantity_t<0, 1>;
 Speed is defined as length or distance divided by time. Expressed as `si::quantity_t` that would be:
 
 ```c++
-using speed = si::divide_units<si::length, si::time>; // same as si::quantity_t<0, 1, -1>
+using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity_t<0, 1, -1>
 ```
 
 ## si::units_t
@@ -119,6 +119,12 @@ You may be thinking that the value 0.909 * 9/2500 seconds is not very useful. It
 
 ```c++
 auto theMsecs = si::units_cast<si::seconds<std::milli>>(theTime);
+```
+
+Or, here's an even easier way:
+
+```c++
+auto theMsecs = si::seconds<std::milli>{theLength / theSpeed};
 ```
 
 where:
