@@ -79,9 +79,9 @@ void si::run_string_tests()
         assert_literal( TestQuantity_t, "kg\u00B2/s\u2074");
     }
 
-    assert_literal(std::ratio<1>, "1");
-    assert_literal(std::kilo, "1000");
-    assert_literal(std::micro, "1/1000000");
+    assert_literal(std::ratio<1>, "");
+    assert_literal(std::kilo, "10\u00B3");
+    assert_literal(std::micro, "10\u207B\u2076");
     {
         using TestRatio_t = std::ratio<5,18>;
         assert_literal(TestRatio_t, "5/18");
@@ -93,7 +93,7 @@ void si::run_string_tests()
     }
     {
         using theSuffixT = units_t<int,std::milli,none>;
-        assert_literal(theSuffixT, "1/1000");
+        assert_literal(theSuffixT, "10\u207B\u00B3");
     }
     {
         using theSuffixT = units_t<int,std::ratio<1>,mass>;
@@ -101,13 +101,13 @@ void si::run_string_tests()
     }
     {
         using theSuffixT = units_t<int,std::milli,luminous_intensity>;
-        assert_literal(theSuffixT, "1/1000 cd");
+        assert_literal(theSuffixT, "10\u207B\u00B3 cd");
     }
 
     {
         static constexpr auto theTestUnits = units_t<int,std::milli,luminous_intensity>{5};
         std::ostringstream theStream;
         theStream << theTestUnits;
-        assert(theStream.str(), "5·1/1000 cd");
+        assert(theStream.str(), "5·10\u207B\u00B3 cd");
     }
 }

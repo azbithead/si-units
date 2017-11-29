@@ -14,6 +14,7 @@ STRING_CONST(one, "1");
 STRING_CONST(space, " ");
 STRING_CONST(divide_operator, "/");
 STRING_CONST(multiply_operator, "·");
+STRING_CONST(superscript_minus, "\u207B");
 
 constexpr auto digit_count = 10;
 

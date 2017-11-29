@@ -16,16 +16,22 @@ basic_string_from_exponent
 )
 {
     std::basic_string<CharT> theResult;
+    std::basic_string<CharT> theSign;
 
-    if( aExponent > 1 )
+    if( aExponent < 0 )
     {
-        do
-        {
-            theResult = superscript_digit<CharT>[aExponent % 10] + theResult;
-            aExponent /= 10;
-        }
-        while( aExponent > 0 );
+        theSign = si::superscript_minus<CharT>;
+        aExponent = -aExponent;
     }
+
+    do
+    {
+        theResult = si::superscript_digit<CharT>[aExponent % 10] + theResult;
+        aExponent /= 10;
+    }
+    while( aExponent > 0 );
+
+    theResult = theSign + theResult;
 
     return theResult;
 }
@@ -59,6 +65,47 @@ basic_string_from<wchar_t>
     return std::to_wstring(aValue);
 }
 
+struct scientific
+{
+    constexpr
+    scientific
+    (
+        std::intmax_t aValue
+    )
+    : mantissa{aValue}, exponent{0}
+    {
+        if( mantissa > 0 )
+        {
+            while( (mantissa % 10) == 0 )
+            {
+                mantissa /= 10;
+                ++exponent;
+            }
+        }
+    }
+
+    std::intmax_t mantissa;
+    std::intmax_t exponent;
+};
+
+template< typename CharT >
+inline
+std::basic_string<CharT>
+basic_string_from
+(
+    scientific aScientific
+)
+{
+    std::basic_string<CharT> theResult = si::basic_string_from<CharT>(aScientific.mantissa);
+
+    if( aScientific.exponent )
+    {
+        theResult += si::multiply_operator<CharT> + si::basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(aScientific.exponent);
+    }
+
+    return theResult;
+}
+
 template
 <
     typename CharT,
@@ -72,10 +119,43 @@ basic_string_from
     std::ratio<Num,Den> aRatio
 )
 {
-    auto theResult = basic_string_from<CharT>(aRatio.num);
-    if( aRatio.den != 1 )
+    std::basic_string<CharT> theResult;
+
+    if( aRatio.num != aRatio.den )
     {
-        theResult += divide_operator<CharT> + basic_string_from<CharT>(aRatio.den);
+        constexpr auto theNum = scientific{aRatio.num};
+        auto theDen = scientific{aRatio.den};
+        theDen.exponent = -theDen.exponent;
+
+        if( theNum.mantissa != theDen.mantissa )
+        {
+            theResult = basic_string_from<CharT>(theNum.mantissa);
+        }
+
+        if( theDen.mantissa != 1 )
+        {
+            theResult += si::divide_operator<CharT> + basic_string_from<CharT>(theDen.mantissa);
+        }
+
+        if( theNum.exponent != 0 )
+        {
+            if( !theResult.empty() )
+            {
+                theResult += si::multiply_operator<CharT>;
+            }
+
+            theResult += si::basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theNum.exponent);
+        }
+
+        if( theDen.exponent != 0 )
+        {
+            if( !theResult.empty() )
+            {
+                theResult += si::multiply_operator<CharT>;
+            }
+
+            theResult += si::basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theDen.exponent);
+        }
     }
 
     return theResult;
