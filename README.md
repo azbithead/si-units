@@ -151,10 +151,10 @@ std::cout << theMsecs.value() << " " << si::string_from(theMsecs) << "\n";
 Output:
 
 ```
-50 1/1000·m
-55 5/18·m/s
-0.909091 9/2500·s
-3.27273 1/1000·s
+50 10⁻³ m
+55 5/18 m/s
+0.909091 9/25·10⁻² s
+3.27273 10⁻³ s
 ```
 
 ## Streaming
