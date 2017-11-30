@@ -229,7 +229,7 @@ template
 constexpr
 inline
 power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
-pow
+exponentiate
 (
     const units_t<VALUE, RATIO, QUANTITY>& aQuantity
 )

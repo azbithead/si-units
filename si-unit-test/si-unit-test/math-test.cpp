@@ -63,16 +63,16 @@ void si::run_math_tests()
     assert( theValue == theExpectedResult );
     }
 
-    // pow floating point
+    // exponentiate floating point
     {
     auto theValue = seconds<>{3.0};
-    assert( pow<2>(theValue) == (theValue * theValue) );
+    assert( exponentiate<2>(theValue) == (theValue * theValue) );
     }
 
-    // pow integer
+    // exponentiate integer
     {
     auto theValue = seconds<std::ratio<1>,int>{2};
-    assert( pow<3>(theValue) == (theValue * theValue * theValue) );
+    assert( exponentiate<3>(theValue) == (theValue * theValue * theValue) );
     }
 
     static constexpr auto theHalfPi = radians<std::ratio<1,2>>{3.14159};
