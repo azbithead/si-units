@@ -12,7 +12,7 @@ static_assert( !is_quantity< int >, "" );
 static_assert( is_quantity< none >, "" );
 static_assert( is_quantity< mass >, "" );
 static_assert( is_quantity< distance >, "" );
-static_assert( is_quantity< time >, "" );
+static_assert( is_quantity< si::time >, "" );
 static_assert( is_quantity< current >, "" );
 static_assert( is_quantity< const temperature >, "" );
 static_assert( is_quantity< volatile luminous_intensity >, "" );

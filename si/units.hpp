@@ -3,6 +3,7 @@
 #include <ratio>
 #include <limits>
 #include <cmath>
+#include <chrono>
 
 #include "quantity.hpp"
 #include "ratio/is-ratio.hpp"
@@ -190,6 +191,28 @@ units_cast(units_t<VALUE, RATIO, QUANTITY> aFromUnits)
         units_t<VALUE, RATIO, QUANTITY>,
         ToUnitsT
     >()(aFromUnits);
+}
+
+//------------------------------------------------------------------------------
+/// Convert a std::chrono::duration to si::seconds.
+template <typename ToUnitsT, typename REP, typename PERIOD>
+inline
+constexpr
+typename std::enable_if
+<
+    is_units_t<ToUnitsT>,
+    ToUnitsT
+>::type
+units_cast
+(
+    std::chrono::duration<REP, PERIOD> aFromDuration
+)
+{
+    return units_cast_impl
+    <
+        units_t<REP, PERIOD, si::time>,
+        ToUnitsT
+    >()(units_t<REP, PERIOD, si::time>{aFromDuration.count()});
 }
 
 // some special units_t values
