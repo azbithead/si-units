@@ -41,6 +41,9 @@ static_assert( units_cast<mm_t>( m_t{5} ).value() == 5000, "" );
 static_assert( units_cast<m_t>( units_t<int, std::ratio<3,2>, distance>{2} ).value() == 3, "" );
 static_assert( units_cast<seconds<>>( std::chrono::milliseconds{500} ).value() == 0.5, "" );
 
+// duration_cast
+static_assert( duration_cast<std::chrono::milliseconds>( minutes<>{0.5} ).count() == 30000, "" );
+
 // is_ratio
 static_assert( !si::ratio::is_ratio<int>, "" );
 static_assert( si::ratio::is_ratio<std::ratio<1>>, "" );

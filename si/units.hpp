@@ -215,6 +215,31 @@ units_cast
     >()(units_t<REP, PERIOD, si::time>{aFromDuration.count()});
 }
 
+template <typename aType>
+struct is_duration : std::false_type {};
+
+template <typename REP, typename PERIOD>
+struct is_duration<std::chrono::duration<REP, PERIOD>> : std::true_type {};
+
+//------------------------------------------------------------------------------
+/// Convert an si::seconds to a std::chrono::duration.
+template<typename ToDurationT, typename VALUE, typename RATIO>
+inline
+constexpr
+typename std::enable_if
+<
+    is_duration<ToDurationT>::value,
+    ToDurationT
+>::type
+duration_cast
+(
+    units_t<VALUE, RATIO, si::time> aUnits
+)
+{
+    using Result_t = units_t<typename ToDurationT::rep, typename ToDurationT::period, si::time>;
+    return ToDurationT{units_cast<Result_t>(aUnits).value()};
+}
+
 // some special units_t values
 template <typename VALUE>
 struct units_values
