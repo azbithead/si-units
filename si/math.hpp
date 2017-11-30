@@ -18,6 +18,7 @@ template
     typename QUANTITY
 >
 inline
+constexpr
 units_t<VALUE, RATIO, QUANTITY>
 absolute
 (
@@ -25,6 +26,90 @@ absolute
 )
 {
     return units_t<VALUE, RATIO, QUANTITY>{std::abs(aUnits.value())};
+}
+
+//------------------------------------------------------------------------------
+// floor of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    typename = std::enable_if_t<is_units_t<RESULT>>
+>
+inline
+constexpr
+RESULT
+floor
+(
+    units_t<VALUE, RATIO, QUANTITY> aUnits
+)
+{
+    auto theResult = units_cast<RESULT>(aUnits);
+    return RESULT{static_cast<typename RESULT::value_t>(std::floor(theResult.value()))};
+}
+
+//------------------------------------------------------------------------------
+// ceiling of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    typename = std::enable_if_t<is_units_t<RESULT>>
+>
+inline
+constexpr
+RESULT
+ceiling
+(
+    units_t<VALUE, RATIO, QUANTITY> aUnits
+)
+{
+    auto theResult = units_cast<RESULT>(aUnits);
+    if( theResult < aUnits )
+    {
+        theResult += RESULT{static_cast<typename RESULT::value_t>(1)};
+    }
+    return RESULT{static_cast<typename RESULT::value_t>(std::ceil(theResult.value()))};
+}
+
+//------------------------------------------------------------------------------
+// round of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename RATIO,
+    typename QUANTITY,
+    typename = std::enable_if_t
+    <
+        is_units_t<RESULT> &&
+        !std::is_floating_point<typename RESULT::value_t>::value
+    >
+>
+inline
+constexpr
+RESULT
+round
+(
+    units_t<VALUE, RATIO, QUANTITY> aUnits
+)
+{
+    RESULT t0 = si::floor<RESULT>(aUnits);
+    RESULT t1 = t0 + RESULT{1};
+    auto diff0 = aUnits - t0;
+    auto diff1 = t1 - aUnits;
+    if (diff0 == diff1) {
+        if (t0.value() & 1)
+            return t1;
+        return t0;
+    } else if (diff0 < diff1) {
+        return t0;
+    }
+    return t1;
 }
 
 template

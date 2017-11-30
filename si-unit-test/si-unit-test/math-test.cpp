@@ -31,6 +31,31 @@ void si::run_math_tests()
     assert( absolute(meters<>{-1.0}) == meters<>{1.0} );
     }
 
+    // floor
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    using int_kilometers = meters<std::kilo,int>;
+    assert( floor<int_kilometers>(int_meters{1500}) == int_kilometers{1} );
+    assert( floor<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{1.0} );
+    }
+
+    // ceiling
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    using int_kilometers = meters<std::kilo,int>;
+    assert( ceiling<int_kilometers>(int_meters{1500}) == int_kilometers{2} );
+    assert( ceiling<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{2.0} );
+    }
+
+    // round
+    {
+    using int_kilometers = meters<std::kilo,int>;
+    assert( round<int_kilometers>(meters<>{1499.0}) == int_kilometers{1} );
+    assert( round<int_kilometers>(meters<>{1501.0}) == int_kilometers{2} );
+    assert( round<int_kilometers>(meters<>{1500.0}) == int_kilometers{2} );
+    assert( round<int_kilometers>(meters<>{2500.0}) == int_kilometers{2} );
+    }
+
     // sqrt
     {
     auto theValue = sqrt(seconds<std::mega>{4.0});
