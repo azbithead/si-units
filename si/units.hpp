@@ -919,14 +919,23 @@ using kilograms = units_t<VALUE, INTERVAL, mass>;
 template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
 using seconds = units_t<VALUE, INTERVAL, time>;
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using minutes = seconds<std::ratio_multiply<INTERVAL, std::ratio<60>>, VALUE>;
+template< typename VALUE = double >
+using minutes = seconds<std::ratio<60>, VALUE>;
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using hours = minutes<std::ratio_multiply<INTERVAL, std::ratio<60>>, VALUE>;
+template< typename VALUE = double >
+using hours = seconds<std::ratio<60*60>, VALUE>;
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using days = hours<std::ratio_multiply<INTERVAL, std::ratio<24>>, VALUE>;
+template< typename VALUE = double >
+using days = seconds<std::ratio<24*60*60>, VALUE>;
+
+template< typename VALUE = double >
+using milliseconds = seconds<std::milli, VALUE>;
+
+template< typename VALUE = double >
+using microseconds = seconds<std::micro, VALUE>;
+
+template< typename VALUE = double >
+using nanoseconds = seconds<std::nano, VALUE>;
 
 template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
 using amperes = units_t<VALUE, INTERVAL, current>;
