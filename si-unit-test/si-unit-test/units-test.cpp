@@ -59,7 +59,7 @@ static_assert( is_same_v<m_t::quantity_t, distance>, "" );
 static_assert( is_same_v<m_t::value_t, int>, "" );
 
 // ratio
-static_assert( is_same_v<mm_t::ratio_t, std::milli>, "" );
+static_assert( is_same_v<mm_t::interval_t, std::milli>, "" );
 
 // unary +
 static_assert( +m_t{ 1 } == m_t{ 1 }, "" );

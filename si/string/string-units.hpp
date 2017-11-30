@@ -11,20 +11,20 @@ template
 <
     typename CharT,
     typename ValueT,
-    typename RatioT,
+    typename IntervalT,
     typename QuantityT
 >
 inline
 std::basic_string<CharT>
 basic_string_from
 (
-    units_t<ValueT, RatioT, QuantityT> aUnits
+    units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
     std::basic_string<CharT> theResult;
-    if( aUnits.ratio.num != aUnits.ratio.den )
+    if( aUnits.interval.num != aUnits.interval.den )
     {
-        theResult = basic_string_from<CharT>(aUnits.ratio);
+        theResult = basic_string_from<CharT>(aUnits.interval);
     }
 
     const auto theQuantityString = basic_string_from<CharT>(aUnits.quantity);
@@ -44,14 +44,14 @@ basic_string_from
 template
 <
     typename ValueT,
-    typename RatioT,
+    typename IntervalT,
     typename QuantityT
 >
 inline
 std::string
 string_from
 (
-    units_t<ValueT, RatioT, QuantityT> aUnits
+    units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
     return basic_string_from<char>(aUnits);
@@ -60,14 +60,14 @@ string_from
 template
 <
     typename ValueT,
-    typename RatioT,
+    typename IntervalT,
     typename QuantityT
 >
 inline
 std::wstring
 wstring_from
 (
-    units_t<ValueT, RatioT, QuantityT> aUnits
+    units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
     return basic_string_from<wchar_t>(aUnits);

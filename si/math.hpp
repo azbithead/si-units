@@ -14,18 +14,18 @@ namespace si
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY
 >
 inline
 constexpr
-units_t<VALUE, RATIO, QUANTITY>
+units_t<VALUE, INTERVAL, QUANTITY>
 absolute
 (
-    units_t<VALUE, RATIO, QUANTITY> aUnits
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
 )
 {
-    return units_t<VALUE, RATIO, QUANTITY>{std::abs(aUnits.value())};
+    return units_t<VALUE, INTERVAL, QUANTITY>{std::abs(aUnits.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ template
 <
     typename RESULT,
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename = std::enable_if_t<is_units_t<RESULT>>
 >
@@ -43,7 +43,7 @@ constexpr
 RESULT
 floor
 (
-    units_t<VALUE, RATIO, QUANTITY> aUnits
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
 )
 {
     auto theResult = units_cast<RESULT>(aUnits);
@@ -56,7 +56,7 @@ template
 <
     typename RESULT,
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename = std::enable_if_t<is_units_t<RESULT>>
 >
@@ -65,7 +65,7 @@ constexpr
 RESULT
 ceiling
 (
-    units_t<VALUE, RATIO, QUANTITY> aUnits
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
 )
 {
     auto theResult = units_cast<RESULT>(aUnits);
@@ -82,7 +82,7 @@ template
 <
     typename RESULT,
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename = std::enable_if_t
     <
@@ -95,7 +95,7 @@ constexpr
 RESULT
 round
 (
-    units_t<VALUE, RATIO, QUANTITY> aUnits
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
 )
 {
     RESULT t0 = si::floor<RESULT>(aUnits);
@@ -115,7 +115,7 @@ round
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename EPSILON
 >
@@ -125,7 +125,7 @@ using sqrt_result_t = typename std::enable_if
     units_t
     <
         VALUE,
-        typename ratio::ratio_sqrt<RATIO, EPSILON>::type,
+        typename ratio::ratio_sqrt<INTERVAL, EPSILON>::type,
         root_quantity<QUANTITY, 2>
     >
 >::type;
@@ -135,25 +135,25 @@ using sqrt_result_t = typename std::enable_if
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename EPSILON = std::ratio<1,10000000000000>
 >
 inline
-sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>
+sqrt_result_t<VALUE, INTERVAL, QUANTITY, EPSILON>
 square_root
 (
-    units_t<VALUE, RATIO, QUANTITY> aQuantity
+    units_t<VALUE, INTERVAL, QUANTITY> aQuantity
 )
 {
-    using Result_t = sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>;
+    using Result_t = sqrt_result_t<VALUE, INTERVAL, QUANTITY, EPSILON>;
     return Result_t{std::sqrt(aQuantity.value())};
 }
 
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     std::intmax_t EXPONENT
 >
@@ -162,10 +162,10 @@ struct power_result_impl;
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY
 >
-struct power_result_impl<VALUE, RATIO, QUANTITY, 0>
+struct power_result_impl<VALUE, INTERVAL, QUANTITY, 0>
 {
     using type = units_t<VALUE, std::ratio<1>, none>;
 };
@@ -173,17 +173,17 @@ struct power_result_impl<VALUE, RATIO, QUANTITY, 0>
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     std::intmax_t EXPONENT
 >
 struct power_result_impl
 {
-    using temp = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT-1>::type;
+    using temp = typename power_result_impl<VALUE, INTERVAL, QUANTITY, EXPONENT-1>::type;
     using type = units_t
     <
         VALUE,
-        std::ratio_multiply<RATIO, typename temp::ratio_t>,
+        std::ratio_multiply<INTERVAL, typename temp::interval_t>,
         multiply_quantity<QUANTITY, typename temp::quantity_t>
     >;
 };
@@ -191,11 +191,11 @@ struct power_result_impl
 template
 <
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     std::intmax_t EXPONENT
 >
-using power_result_t = typename power_result_impl<VALUE, RATIO, QUANTITY, EXPONENT>::type;
+using power_result_t = typename power_result_impl<VALUE, INTERVAL, QUANTITY, EXPONENT>::type;
 
 template< typename VALUE >
 constexpr
@@ -223,18 +223,18 @@ template
 <
     std::intmax_t EXPONENT,
     typename VALUE,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY
 >
 constexpr
 inline
-power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>
+power_result_t<VALUE, INTERVAL, QUANTITY, EXPONENT>
 exponentiate
 (
-    const units_t<VALUE, RATIO, QUANTITY>& aQuantity
+    const units_t<VALUE, INTERVAL, QUANTITY>& aQuantity
 )
 {
-    using Result_t = power_result_t<VALUE, RATIO, QUANTITY, EXPONENT>;
+    using Result_t = power_result_t<VALUE, INTERVAL, QUANTITY, EXPONENT>;
     return Result_t{value_pow(aQuantity.value(), EXPONENT)};
 }
 
@@ -243,13 +243,13 @@ exponentiate
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 scalar<>
 sine
 (
-    radians<RATIO, VALUE> aRadians
+    radians<INTERVAL, VALUE> aRadians
 )
 {
     const auto theBaseRadians = units_cast<radians<>>(aRadians);
@@ -261,13 +261,13 @@ sine
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 scalar<>
 cosine
 (
-    radians<RATIO, VALUE> aRadians
+    radians<INTERVAL, VALUE> aRadians
 )
 {
     const auto theBaseRadians = units_cast<radians<>>(aRadians);
@@ -279,13 +279,13 @@ cosine
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 scalar<>
 tangent
 (
-    radians<RATIO, VALUE> aRadians
+    radians<INTERVAL, VALUE> aRadians
 )
 {
     const auto theBaseRadians = units_cast<radians<>>(aRadians);
@@ -297,13 +297,13 @@ tangent
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 radians<>
 arc_sine
 (
-    scalar<RATIO, VALUE> aScalar
+    scalar<INTERVAL, VALUE> aScalar
 )
 {
     const auto theBaseScalar = units_cast<scalar<>>(aScalar);
@@ -315,13 +315,13 @@ arc_sine
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 radians<>
 arc_cosine
 (
-    scalar<RATIO, VALUE> aScalar
+    scalar<INTERVAL, VALUE> aScalar
 )
 {
     const auto theBaseScalar = units_cast<scalar<>>(aScalar);
@@ -333,13 +333,13 @@ arc_cosine
 template
 <
     typename VALUE,
-    typename RATIO
+    typename INTERVAL
 >
 inline
 radians<>
 arc_tangent
 (
-    scalar<RATIO, VALUE> aScalar
+    scalar<INTERVAL, VALUE> aScalar
 )
 {
     const auto theBaseScalar = units_cast<scalar<>>(aScalar);

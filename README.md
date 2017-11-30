@@ -41,8 +41,8 @@ using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity
 `si::units_t` (see si/units.hpp) is a class template that takes three template parameters:
 
 * QUANTITY: an `si::quantity_t`
-* VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic<VALUE> == true
-* RATIO: std::ratio representing the amount of QUANTITY per VALUE in these units
+* VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic\<VALUE\> == true
+* INTERVAL: std::ratio representing the amount of QUANTITY per VALUE in these units
 
 `si::units_t` is a very lightweight class both in terms of memory usage and runtime performance. The memory usage of an `si::units_t` object is exactly equal to sizeof(VALUE). Only operations involving the VALUE component are done at runtime. All other operations are done at compile time.
 
@@ -50,16 +50,16 @@ using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity
 
 Note that VALUE can be either an integral or floating point type. If an integral type is chosen, all mathematical and conversion operations will produce truncated results where appropriate just as they would in such operations on the raw VALUE type.
 
-The library defines type aliases for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and RATIO defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
+The library defines type aliases for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and INTERVAL defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
 
 ```c++
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using kilograms = si::units_t<VALUE, RATIO, mass>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using kilograms = si::units_t<VALUE, INTERVAL, mass>;
 ```
 
 ### Example 1
 
-An `si::units_t` of 50 millimeters has value = 50, ratio = 1/1000 and `si::quantity_t` with length exponent = 1.
+An `si::units_t` of 50 millimeters has value = 50, interval = 1/1000 and `si::quantity_t` with length exponent = 1.
 
 An `si::units_t` can be thought of as the product of multiplying all of its components. In this example that would be 50 * (1/1000) * (length^1). If we perform that math on a calculator, we see that 50 millimeters is equal to 0.05 meters, expressed in SI base units.
 
@@ -73,17 +73,17 @@ where:
 
 ```c++
 theLength.value() == 50.0 
-&& theLength.ratio == std::milli{} // == std::ratio<1,1000>{}
+&& theLength.interval == std::milli{} // == std::ratio<1,1000>{}
 && theLength.quantity == si::length{} // == si::quantity_t<0, 1>{}
 ```
 
 ### Example 2
 
-An `si::units_t` of 55 kilometers/hour has value = 55, ratio = 1000/3600 and `si::quantity_t` with length exponent = 1 and time exponent = -1.
+An `si::units_t` of 55 kilometers/hour has value = 55, interval = 1000/3600 and `si::quantity_t` with length exponent = 1 and time exponent = -1.
 
-Let’s break that down. The value component should be self evident. The ratio component has a numerator of 1000. That represents the kilo part of kilometers. The ratio denominator equals the number of seconds in one hour or 3600. The 3600 is in the denominator because “hour” is in the denominator of the desired units. The length exponent is 1 as noted in example 1. The time exponent is -1, again because “hour” is in the denominator of the desired units.
+Let’s break that down. The value component should be self evident. The interval component has a numerator of 1000. That represents the kilo part of kilometers. The interval denominator equals the number of seconds in one hour or 3600. The 3600 is in the denominator because “hour” is in the denominator of the desired units. The length exponent is 1 as noted in example 1. The time exponent is -1, again because “hour” is in the denominator of the desired units.
 
-Expressing this quantity as a product gives 55 * (1000/3600) * (length^1*time^-1). Again, using a calculator, we find that 55 kilometers/hour is equal to approximately 15.28 meters/second. Note that we said “approximately”, however this `si::units_t` will actually not lose any precision due to the use of the ratio.
+Expressing this quantity as a product gives 55 * (1000/3600) * (length^1*time^-1). Again, using a calculator, we find that 55 kilometers/hour is equal to approximately 15.28 meters/second. Note that we said “approximately”, however this `si::units_t` will actually not lose any precision due to the use of the interval.
 
 The easiest way to declare the variable containing 55 kilometers/hour is:
 
@@ -95,7 +95,7 @@ where:
 
 ```c++
 theSpeed.value() == 55.0
-&& theSpeed.ratio == std::ratio<5, 18>{} // automatically reduced from std::ratio<1000, 3600>{}
+&& theSpeed.interval == std::ratio<5, 18>{} // automatically reduced from std::ratio<1000, 3600>{}
 && theSpeed.quantity == si::quantity_t<0, 1, -1>{} // == si::length{} / si::time{}
 ```
 
@@ -111,7 +111,7 @@ where:
 
 ```c++
 theTime.value == 0.90909090909090906
-&& theTime.ratio == std::ratio<9, 2500>{} // == std::ratio<1, 1000>{} / std::ratio<5, 18>{}
+&& theTime.interval == std::ratio<9, 2500>{} // == std::ratio<1, 1000>{} / std::ratio<5, 18>{}
 && theTime.quantity == si::time{} // == si::length{} / (si::length{} / si::time{})
 ```
 
@@ -131,12 +131,12 @@ where:
 
 ```c++
 theMsecs.value == 3.2727272727272725
-&& theMsecs.ratio == std::milli{}
+&& theMsecs.interval == std::milli{}
 && theMsecs.quantity == si::time{}
 ```
 ## Conversion to String
 
-The library provides functions to convert `si::quantity_t` and `si::units_t` to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for `si::units_t` only output the RATIO and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an `si::units_t` object. When converting an `si::quantity_t`, an abbreviation for a derived SI unit will be output when possible.
+The library provides functions to convert `si::quantity_t` and `si::units_t` to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for `si::units_t` only output the INTERVAL and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an `si::units_t` object. When converting an `si::quantity_t`, an abbreviation for a derived SI unit will be output when possible.
 
 ### Example
 

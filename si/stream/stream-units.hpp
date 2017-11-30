@@ -8,21 +8,21 @@ template
 <
     typename CharT,
     typename ValueT,
-    typename RatioT,
+    typename IntervalT,
     typename QuantityT
 >
 std::basic_ostream<CharT>&
 operator <<
 (
     std::basic_ostream<CharT>& aStream,
-    si::units_t<ValueT, RatioT, QuantityT> aUnits
+    si::units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
     aStream << aUnits.value();
 
-    if( aUnits.ratio.num != aUnits.ratio.den )
+    if( aUnits.interval.num != aUnits.interval.den )
     {
-        aStream << si::multiply_operator<CharT> << si::basic_string_from<CharT>(aUnits.ratio);
+        aStream << si::multiply_operator<CharT> << si::basic_string_from<CharT>(aUnits.interval);
     }
 
     return aStream << si::space<CharT> << si::basic_string_from<CharT>(aUnits.quantity);

@@ -14,7 +14,7 @@ namespace si
 {
 
 // Forward declaration
-template <typename VALUE, typename RATIO, typename QUANTITY > class units_t;
+template <typename VALUE, typename INTERVAL, typename QUANTITY > class units_t;
 
 } // end of namespace si
 
@@ -24,20 +24,20 @@ template
 <
     typename QUANTITY,
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename VALUE2,
-    typename RATIO2
+    typename INTERVAL2
 >
 struct std::common_type
 <
-    si::units_t<VALUE1, RATIO1, QUANTITY>,
-    si::units_t<VALUE2, RATIO2, QUANTITY>
+    si::units_t<VALUE1, INTERVAL1, QUANTITY>,
+    si::units_t<VALUE2, INTERVAL2, QUANTITY>
 >
 {
     using type = si::units_t
     <
         std::common_type_t<VALUE1, VALUE2>,
-        si::ratio::ratio_gcd<RATIO1, RATIO2>,
+        si::ratio::ratio_gcd<INTERVAL1, INTERVAL2>,
         QUANTITY
     >;
 };
@@ -49,22 +49,22 @@ template
 <
     typename FromUnitsT,
     typename ToUnitsT,
-    typename RATIO = typename std::ratio_divide
+    typename INTERVAL = typename std::ratio_divide
     <
-        typename FromUnitsT::ratio_t,
-        typename ToUnitsT::ratio_t
+        typename FromUnitsT::interval_t,
+        typename ToUnitsT::interval_t
     >::type,
-    bool = RATIO::num == 1,
-    bool = RATIO::den == 1>
+    bool = INTERVAL::num == 1,
+    bool = INTERVAL::den == 1>
 struct units_cast_impl;
 
 template
 <
     typename FromUnitsT,
     typename ToUnitsT,
-    typename RATIO
+    typename INTERVAL
 >
-struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, true>
+struct units_cast_impl<FromUnitsT, ToUnitsT, INTERVAL, true, true>
 {
     constexpr
     ToUnitsT operator()(FromUnitsT aFromUnits) const
@@ -80,9 +80,9 @@ template
 <
     typename FromUnitsT,
     typename ToUnitsT,
-    typename RATIO
+    typename INTERVAL
 >
-struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, false>
+struct units_cast_impl<FromUnitsT, ToUnitsT, INTERVAL, true, false>
 {
     constexpr
     ToUnitsT operator()(FromUnitsT aFromUnits) const
@@ -98,7 +98,7 @@ struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, true, false>
             static_cast<typename ToUnitsT::value_t>
             (
                 static_cast<ResultValue_t>(aFromUnits.value()) /
-                static_cast<ResultValue_t>(RATIO::den)
+                static_cast<ResultValue_t>(INTERVAL::den)
             )
         };
     }
@@ -108,9 +108,9 @@ template
 <
     typename FromUnitsT,
     typename ToUnitsT,
-    typename RATIO
+    typename INTERVAL
 >
-struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, true>
+struct units_cast_impl<FromUnitsT, ToUnitsT, INTERVAL, false, true>
 {
     constexpr
     ToUnitsT operator()(FromUnitsT aFromUnits) const
@@ -126,7 +126,7 @@ struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, true>
             static_cast<typename ToUnitsT::value_t>
             (
                 static_cast<ResultValue_t>(aFromUnits.value()) *
-                static_cast<ResultValue_t>(RATIO::num)
+                static_cast<ResultValue_t>(INTERVAL::num)
             )
         };
     }
@@ -136,9 +136,9 @@ template
 <
     typename FromUnitsT,
     typename ToUnitsT,
-    typename RATIO
+    typename INTERVAL
 >
-struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, false>
+struct units_cast_impl<FromUnitsT, ToUnitsT, INTERVAL, false, false>
 {
     constexpr
     ToUnitsT operator()(FromUnitsT aFromUnits) const
@@ -154,8 +154,8 @@ struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, false>
             static_cast<typename ToUnitsT::value_t>
             (
                 static_cast<ResultValue_t>(aFromUnits.value()) *
-                static_cast<ResultValue_t>(RATIO::num) /
-                static_cast<ResultValue_t>(RATIO::den)
+                static_cast<ResultValue_t>(INTERVAL::num) /
+                static_cast<ResultValue_t>(INTERVAL::den)
             )
         };
     }
@@ -164,8 +164,8 @@ struct units_cast_impl<FromUnitsT, ToUnitsT, RATIO, false, false>
 template <typename aType>
 struct is_units_impl : std::false_type {};
 
-template <typename QUANTITY, typename VALUE, typename RATIO>
-struct is_units_impl<units_t<VALUE, RATIO, QUANTITY>> : std::true_type {};
+template <typename QUANTITY, typename VALUE, typename INTERVAL>
+struct is_units_impl<units_t<VALUE, INTERVAL, QUANTITY>> : std::true_type {};
 
 //------------------------------------------------------------------------------
 /// true if aType is an si::units_t, false otherwise
@@ -176,7 +176,7 @@ constexpr bool is_units_t = is_units_impl<typename std::decay<aType>::type>::val
 //------------------------------------------------------------------------------
 /// Convert an si::units_t to another si::units_t type.
 /// Both types must have the same si::quantity_t type.
-template <typename ToUnitsT, typename QUANTITY, typename VALUE, typename RATIO>
+template <typename ToUnitsT, typename QUANTITY, typename VALUE, typename INTERVAL>
 inline
 constexpr
 typename std::enable_if
@@ -184,11 +184,11 @@ typename std::enable_if
     is_units_t<ToUnitsT> && std::is_same<typename ToUnitsT::quantity_t,QUANTITY>::value,
     ToUnitsT
 >::type
-units_cast(units_t<VALUE, RATIO, QUANTITY> aFromUnits)
+units_cast(units_t<VALUE, INTERVAL, QUANTITY> aFromUnits)
 {
     return units_cast_impl
     <
-        units_t<VALUE, RATIO, QUANTITY>,
+        units_t<VALUE, INTERVAL, QUANTITY>,
         ToUnitsT
     >()(aFromUnits);
 }
@@ -223,7 +223,7 @@ struct is_duration<std::chrono::duration<REP, PERIOD>> : std::true_type {};
 
 //------------------------------------------------------------------------------
 /// Convert an si::seconds to a std::chrono::duration.
-template<typename ToDurationT, typename VALUE, typename RATIO>
+template<typename ToDurationT, typename VALUE, typename INTERVAL>
 inline
 constexpr
 typename std::enable_if
@@ -233,7 +233,7 @@ typename std::enable_if
 >::type
 duration_cast
 (
-    units_t<VALUE, RATIO, si::time> aUnits
+    units_t<VALUE, INTERVAL, si::time> aUnits
 )
 {
     using Result_t = units_t<typename ToDurationT::rep, typename ToDurationT::period, si::time>;
@@ -256,12 +256,12 @@ constexpr bool is_convertible_v = std::is_convertible<From, To>::value;
 
 //------------------------------------------------------------------------------
 /// Class si::units_t represents a numeric value with associated SI units.
-template <typename VALUE, typename RATIO, typename QUANTITY>
+template <typename VALUE, typename INTERVAL, typename QUANTITY>
 class units_t
 {
     static_assert(std::is_arithmetic<VALUE>::value, "VALUE must be an arithmetic type");
-    static_assert(ratio::is_ratio<RATIO>, "RATIO must be of type std::ratio");
-    static_assert(std::ratio_greater<RATIO, std::ratio<0>>::value, "RATIO must be positive");
+    static_assert(ratio::is_ratio<INTERVAL>, "INTERVAL must be of type std::ratio");
+    static_assert(std::ratio_greater<INTERVAL, std::ratio<0>>::value, "INTERVAL must be positive");
     static_assert(is_quantity<QUANTITY>, "QUANTITY must be of type si::quantity_t" );
 
     template <typename _R1, typename _R2>
@@ -303,12 +303,12 @@ public:
     /// Type aliases
     using quantity_t = QUANTITY;
     using value_t = VALUE;
-    using ratio_t = typename RATIO::type;
+    using interval_t = typename INTERVAL::type;
 
 
     //--------------------------------------------------------------------------
     /// Static member constants
-    static constexpr auto ratio = ratio_t{};
+    static constexpr auto interval = interval_t{};
     static constexpr auto quantity = quantity_t{};
 
     //--------------------------------------------------------------------------
@@ -341,21 +341,21 @@ public:
     }
 
     //--------------------------------------------------------------------------
-    /// Initialize a units_t from another units_t possibly having different value_t and ratio_t types but the same quantity_t type.
+    /// Initialize a units_t from another units_t possibly having different value_t and interval_t types but the same quantity_t type.
     /// This constructor will not be chosen by the compiler if it would result in overflow or loss of precision.
     /// @param aUnits the units_t that will be converted to this units_t
-    template <typename VALUE2, typename RATIO2>
+    template <typename VALUE2, typename INTERVAL2>
     constexpr
     units_t
     (
-        units_t<VALUE2, RATIO2, QUANTITY> aUnits,
+        units_t<VALUE2, INTERVAL2, QUANTITY> aUnits,
         typename std::enable_if
         <
-            no_overflow<RATIO2, ratio_t>::value &&
+            no_overflow<INTERVAL2, interval_t>::value &&
             (
                 std::is_floating_point<value_t>::value ||
                 (
-                    no_overflow<RATIO2, ratio_t>::type::den == 1 &&
+                    no_overflow<INTERVAL2, interval_t>::type::den == 1 &&
                     !std::is_floating_point<VALUE2>::value
                 )
             )
@@ -440,33 +440,33 @@ struct units_lt_impl<LhsUnitsT, LhsUnitsT>
 
 //------------------------------------------------------------------------------
 /// units_t ==
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator ==
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return units_eq_impl
     <
-        units_t<VALUE1, RATIO1, QUANTITY>,
-        units_t<VALUE2, RATIO2, QUANTITY>
+        units_t<VALUE1, INTERVAL1, QUANTITY>,
+        units_t<VALUE2, INTERVAL2, QUANTITY>
     >{}(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
 // units_t !=
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator !=
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return !(aLHS == aRHS);
@@ -474,33 +474,33 @@ operator !=
 
 //------------------------------------------------------------------------------
 // units_t <
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator <
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return units_lt_impl
     <
-        units_t<VALUE1, RATIO1, QUANTITY>,
-        units_t<VALUE2, RATIO2, QUANTITY>
+        units_t<VALUE1, INTERVAL1, QUANTITY>,
+        units_t<VALUE2, INTERVAL2, QUANTITY>
     >{}(aLHS, aRHS);
 }
 
 //------------------------------------------------------------------------------
 // units_t >
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator >
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return aRHS < aLHS;
@@ -508,14 +508,14 @@ operator >
 
 //------------------------------------------------------------------------------
 // units_t <=
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator <=
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return !(aRHS < aLHS);
@@ -523,14 +523,14 @@ operator <=
 
 //------------------------------------------------------------------------------
 // units_t >=
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 bool
 operator >=
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return !(aLHS < aRHS);
@@ -538,34 +538,34 @@ operator >=
 
 //------------------------------------------------------------------------------
 // units_t +
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 auto
 operator +
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     using CommonUnits_t = std::common_type_t
     <
-        units_t<VALUE1, RATIO1, QUANTITY>,
-        units_t<VALUE2, RATIO2, QUANTITY>
+        units_t<VALUE1, INTERVAL1, QUANTITY>,
+        units_t<VALUE2, INTERVAL2, QUANTITY>
     >;
     return CommonUnits_t{CommonUnits_t{aLHS}.value() + CommonUnits_t{aRHS}.value()};
 }
 
 //------------------------------------------------------------------------------
 // units_t -
-template <typename QUANTITY, typename VALUE1, typename RATIO1, typename VALUE2, typename RATIO2>
+template <typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>
 inline
 constexpr
 auto
 operator -
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     return aLHS + (-aRHS);
@@ -577,25 +577,25 @@ template
 <
     typename QUANTITY1,
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename QUANTITY2,
     typename VALUE2,
-    typename RATIO2
+    typename INTERVAL2
 >
 inline
 constexpr
 auto
 operator *
 (
-    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY1> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY2> aRHS
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
     using Result_t = units_t
     <
         ResultValue_t,
-        std::ratio_multiply<RATIO1, RATIO2>,
+        std::ratio_multiply<INTERVAL1, INTERVAL2>,
         multiply_quantity<QUANTITY1, QUANTITY2>
     >;
 
@@ -609,7 +609,7 @@ operator *
 
 //------------------------------------------------------------------------------
 // units_t * scalar
-template <typename VALUE1, typename RATIO, typename QUANTITY, typename VALUE2>
+template <typename VALUE1, typename INTERVAL, typename QUANTITY, typename VALUE2>
 inline
 constexpr
 typename std::enable_if
@@ -623,13 +623,13 @@ typename std::enable_if
     units_t
     <
         std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
+        INTERVAL,
         QUANTITY
     >
 >::type
 operator *
 (
-    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    units_t<VALUE1, INTERVAL, QUANTITY> aUnits,
     VALUE2 aScalar
 )
 {
@@ -638,7 +638,7 @@ operator *
 
 //------------------------------------------------------------------------------
 // scalar * units_t
-template <typename VALUE1, typename RATIO, typename QUANTITY, typename VALUE2>
+template <typename VALUE1, typename INTERVAL, typename QUANTITY, typename VALUE2>
 inline
 constexpr
 typename std::enable_if
@@ -652,14 +652,14 @@ typename std::enable_if
     units_t
     <
         std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
+        INTERVAL,
         QUANTITY
     >
 >::type
 operator *
 (
     VALUE2 aScalar,
-    units_t<VALUE1, RATIO, QUANTITY> aUnits
+    units_t<VALUE1, INTERVAL, QUANTITY> aUnits
 )
 {
     return aUnits * aScalar;
@@ -682,13 +682,13 @@ struct units_divide_helper
 template
 <
     typename VALUE1,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename VALUE2
 >
 struct units_divide_helper
 <
-    units_t<VALUE1, RATIO, QUANTITY>,
+    units_t<VALUE1, INTERVAL, QUANTITY>,
     VALUE2,
     true
 >
@@ -696,7 +696,7 @@ struct units_divide_helper
     using type = units_t
     <
         std::common_type_t<VALUE1, VALUE2>,
-        RATIO,
+        INTERVAL,
         QUANTITY
     >;
 };
@@ -714,17 +714,17 @@ struct units_divide_result_t
 template
 <
     typename VALUE1,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename VALUE2
 >
 struct units_divide_result_t
 <
-    units_t<VALUE1, RATIO, QUANTITY>,
+    units_t<VALUE1, INTERVAL, QUANTITY>,
     VALUE2,
     false
 >
-: units_divide_helper<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>
+: units_divide_helper<units_t<VALUE1, INTERVAL, QUANTITY>, VALUE2>
 {
 };
 
@@ -733,21 +733,21 @@ struct units_divide_result_t
 template
 <
     typename VALUE1,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename VALUE2
 >
 inline
 constexpr
-typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
+typename units_divide_result_t<units_t<VALUE1, INTERVAL, QUANTITY>, VALUE2>::type
 operator /
 (
-    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    units_t<VALUE1, INTERVAL, QUANTITY> aUnits,
     VALUE2 aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    using Result_t = units_t<ResultValue_t, RATIO, QUANTITY>;
+    using Result_t = units_t<ResultValue_t, INTERVAL, QUANTITY>;
     return Result_t{Result_t{aUnits}.value() / static_cast<ResultValue_t>(aScalar)};
 }
 
@@ -757,23 +757,23 @@ template
 <
     typename QUANTITY,
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename VALUE2,
-    typename RATIO2
+    typename INTERVAL2
 >
 inline
 constexpr
 auto
 operator /
 (
-    units_t<VALUE1, RATIO1, QUANTITY> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY> aRHS
 )
 {
     using CommonUnits_t = std::common_type_t
     <
-        units_t<VALUE1, RATIO1, QUANTITY>,
-        units_t<VALUE2, RATIO2, QUANTITY>
+        units_t<VALUE1, INTERVAL1, QUANTITY>,
+        units_t<VALUE2, INTERVAL2, QUANTITY>
     >;
     return CommonUnits_t{aLHS}.value() / CommonUnits_t{aRHS}.value();
 }
@@ -781,16 +781,16 @@ operator /
 template
 <
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename QUANTITY1,
     typename VALUE2,
-    typename RATIO2,
+    typename INTERVAL2,
     typename QUANTITY2
 >
 using diff_units_result_t = units_t
 <
     std::common_type_t<VALUE1, VALUE2>,
-    std::ratio_divide<RATIO1, RATIO2>,
+    std::ratio_divide<INTERVAL1, INTERVAL2>,
     divide_quantity<QUANTITY1, QUANTITY2>
 >;
 
@@ -800,25 +800,25 @@ template
 <
     typename QUANTITY1,
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename QUANTITY2,
     typename VALUE2,
-    typename RATIO2
+    typename INTERVAL2
 >
 inline
 constexpr
 typename std::enable_if
 <
     !std::is_same<QUANTITY1,QUANTITY2>::value,
-    diff_units_result_t<VALUE1, RATIO1, QUANTITY1, VALUE2, RATIO2, QUANTITY2>
+    diff_units_result_t<VALUE1, INTERVAL1, QUANTITY1, VALUE2, INTERVAL2, QUANTITY2>
 >::type
 operator /
 (
-    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY1> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY2> aRHS
 )
 {
-    using Result_t = diff_units_result_t<VALUE1, RATIO1, QUANTITY1, VALUE2, RATIO2, QUANTITY2>;
+    using Result_t = diff_units_result_t<VALUE1, INTERVAL1, QUANTITY1, VALUE2, INTERVAL2, QUANTITY2>;
     return Result_t{aLHS.value() / aRHS.value()};
 }
 
@@ -827,7 +827,7 @@ operator /
 template
 <
     typename VALUE1,
-    typename RATIO,
+    typename INTERVAL,
     typename QUANTITY,
     typename VALUE2
 >
@@ -837,7 +837,7 @@ auto
 operator /
 (
     VALUE2 aScalar,
-    units_t<VALUE1, RATIO, QUANTITY> aUnits
+    units_t<VALUE1, INTERVAL, QUANTITY> aUnits
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
@@ -850,35 +850,35 @@ template
 <
     typename QUANTITY,
     typename VALUE1,
-    typename RATIO,
+    typename INTERVAL,
     typename VALUE2
 >
 inline
 constexpr
-typename units_divide_result_t<units_t<VALUE1, RATIO, QUANTITY>, VALUE2>::type
+typename units_divide_result_t<units_t<VALUE1, INTERVAL, QUANTITY>, VALUE2>::type
 operator%
 (
-    units_t<VALUE1, RATIO, QUANTITY> aUnits,
+    units_t<VALUE1, INTERVAL, QUANTITY> aUnits,
     VALUE2 aScalar
 )
 {
     using ResultValue_t = std::common_type_t<VALUE1, VALUE2>;
-    using Result_t = units_t<ResultValue_t, RATIO, QUANTITY>;
+    using Result_t = units_t<ResultValue_t, INTERVAL, QUANTITY>;
     return Result_t{Result_t{aUnits}.value() % static_cast<ResultValue_t>(aScalar)};
 }
 
 template
 <
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename QUANTITY1,
     typename VALUE2,
-    typename RATIO2
+    typename INTERVAL2
 >
 using mod_result = units_t
 <
     std::common_type_t<VALUE1, VALUE2>,
-    std::ratio_divide<RATIO1, RATIO2>,
+    std::ratio_divide<INTERVAL1, INTERVAL2>,
     QUANTITY1
 >;
 
@@ -887,19 +887,19 @@ using mod_result = units_t
 template
 <
     typename VALUE1,
-    typename RATIO1,
+    typename INTERVAL1,
     typename QUANTITY1,
     typename VALUE2,
-    typename RATIO2,
+    typename INTERVAL2,
     typename QUANTITY2
 >
 inline
 constexpr
-mod_result<VALUE1, RATIO1, QUANTITY1, VALUE2, RATIO2>
+mod_result<VALUE1, INTERVAL1, QUANTITY1, VALUE2, INTERVAL2>
 operator%
 (
-    units_t<VALUE1, RATIO1, QUANTITY1> aLHS,
-    units_t<VALUE2, RATIO2, QUANTITY2> aRHS
+    units_t<VALUE1, INTERVAL1, QUANTITY1> aLHS,
+    units_t<VALUE2, INTERVAL2, QUANTITY2> aRHS
 )
 {
     return aLHS - (aRHS * (aLHS / aRHS));
@@ -907,85 +907,85 @@ operator%
 
 //==============================================================================
 // Some useful si::units_t types
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using scalar = units_t<VALUE, RATIO, none>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using scalar = units_t<VALUE, INTERVAL, none>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using meters = units_t<VALUE, RATIO, length>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using meters = units_t<VALUE, INTERVAL, length>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using kilograms = units_t<VALUE, RATIO, mass>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using kilograms = units_t<VALUE, INTERVAL, mass>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using seconds = units_t<VALUE, RATIO, time>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using seconds = units_t<VALUE, INTERVAL, time>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using minutes = seconds<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using minutes = seconds<std::ratio_multiply<INTERVAL, std::ratio<60>>, VALUE>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using hours = minutes<std::ratio_multiply<RATIO, std::ratio<60>>, VALUE>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using hours = minutes<std::ratio_multiply<INTERVAL, std::ratio<60>>, VALUE>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using days = hours<std::ratio_multiply<RATIO, std::ratio<24>>, VALUE>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using days = hours<std::ratio_multiply<INTERVAL, std::ratio<24>>, VALUE>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using amperes = units_t<VALUE, RATIO, current>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using amperes = units_t<VALUE, INTERVAL, current>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using kelvins = units_t<VALUE, RATIO, temperature>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using kelvins = units_t<VALUE, INTERVAL, temperature>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using candelas = units_t<VALUE, RATIO, luminous_intensity>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using candelas = units_t<VALUE, INTERVAL, luminous_intensity>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using radians = units_t<VALUE, RATIO, angle>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using radians = units_t<VALUE, INTERVAL, angle>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using steradians = units_t<VALUE, RATIO, solid_angle>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using steradians = units_t<VALUE, INTERVAL, solid_angle>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using hertz = units_t<VALUE, RATIO, frequency>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using hertz = units_t<VALUE, INTERVAL, frequency>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using newtons = units_t<VALUE, RATIO, force>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using newtons = units_t<VALUE, INTERVAL, force>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using coulombs = units_t<VALUE, RATIO, charge>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using coulombs = units_t<VALUE, INTERVAL, charge>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lux = units_t<VALUE, RATIO, illuminance>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using lux = units_t<VALUE, INTERVAL, illuminance>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using pascals = units_t<VALUE, RATIO, pressure>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using pascals = units_t<VALUE, INTERVAL, pressure>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using joules = units_t<VALUE, RATIO, energy>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using joules = units_t<VALUE, INTERVAL, energy>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using watts = units_t<VALUE, RATIO, power>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using watts = units_t<VALUE, INTERVAL, power>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using volts = units_t<VALUE, RATIO, voltage>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using volts = units_t<VALUE, INTERVAL, voltage>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using farads = units_t<VALUE, RATIO, capacitance>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using farads = units_t<VALUE, INTERVAL, capacitance>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using ohms = units_t<VALUE, RATIO, impedance>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using ohms = units_t<VALUE, INTERVAL, impedance>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using siemens = units_t<VALUE, RATIO, conductance>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using siemens = units_t<VALUE, INTERVAL, conductance>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using webers = units_t<VALUE, RATIO, magnetic_flux>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using webers = units_t<VALUE, INTERVAL, magnetic_flux>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using teslas = units_t<VALUE, RATIO, magnetic_flux_density>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using teslas = units_t<VALUE, INTERVAL, magnetic_flux_density>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using henries = units_t<VALUE, RATIO, inductance>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using henries = units_t<VALUE, INTERVAL, inductance>;
 
-template< typename RATIO = std::ratio<1>, typename VALUE = double >
-using lumens = units_t<VALUE, RATIO, luminous_flux>;
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using lumens = units_t<VALUE, INTERVAL, luminous_flux>;
 
 } // end of namespace si
