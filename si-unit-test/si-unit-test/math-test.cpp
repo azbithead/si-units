@@ -75,11 +75,11 @@ void si::run_math_tests()
     assert( exponentiate<3>(theValue) == (theValue * theValue * theValue) );
     }
 
-    static constexpr auto theHalfPi = radians<std::ratio<1,2>>{3.14159};
+    static constexpr auto theHalfPi = radians<>{3.14159 / 2.0};
 
     // sin
     {
-    assert( sine(theHalfPi) == scalar<>{std::sin(theHalfPi.expand())} );
+    assert( sine(theHalfPi) == scalar<>{std::sin(theHalfPi.value())} );
     }
 
     // cosine
@@ -89,7 +89,7 @@ void si::run_math_tests()
 
     // tangent
     {
-    assert( tangent(-theHalfPi) == scalar<>{std::tan(-theHalfPi.expand())} );
+    assert( tangent(-theHalfPi) == scalar<>{std::tan(-theHalfPi.value())} );
     }
 
     // arc sine

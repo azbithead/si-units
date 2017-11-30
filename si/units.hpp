@@ -320,7 +320,6 @@ public:
     //--------------------------------------------------------------------------
     // Accessor function
     constexpr value_t value() const {return mValue;}
-    constexpr value_t expand() const {return mValue * ratio.num / ratio.den;}
 
     //--------------------------------------------------------------------------
     // Arithmetic functions

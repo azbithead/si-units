@@ -252,7 +252,8 @@ sine
     radians<RATIO, VALUE> aRadians
 )
 {
-    return scalar<>{std::sin(aRadians.expand())};
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::sin(theBaseRadians.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -269,7 +270,8 @@ cosine
     radians<RATIO, VALUE> aRadians
 )
 {
-    return scalar<>{std::cos(aRadians.expand())};
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::cos(theBaseRadians.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -286,7 +288,8 @@ tangent
     radians<RATIO, VALUE> aRadians
 )
 {
-    return scalar<>{std::tan(aRadians.expand())};
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::tan(theBaseRadians.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -303,7 +306,8 @@ arc_sine
     scalar<RATIO, VALUE> aScalar
 )
 {
-    return radians<>{std::asin(aScalar.expand())};
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::asin(theBaseScalar.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -320,7 +324,8 @@ arc_cosine
     scalar<RATIO, VALUE> aScalar
 )
 {
-    return radians<>{std::acos(aScalar.expand())};
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::acos(theBaseScalar.value())};
 }
 
 //------------------------------------------------------------------------------
@@ -337,7 +342,8 @@ arc_tangent
     scalar<RATIO, VALUE> aScalar
 )
 {
-    return radians<>{std::atan(aScalar.expand())};
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::atan(theBaseScalar.value())};
 }
 
 } // end of namespace si
