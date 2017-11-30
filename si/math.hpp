@@ -141,7 +141,7 @@ template
 >
 inline
 sqrt_result_t<VALUE, RATIO, QUANTITY, EPSILON>
-sqrt
+square_root
 (
     units_t<VALUE, RATIO, QUANTITY> aQuantity
 )

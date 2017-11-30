@@ -56,9 +56,9 @@ void si::run_math_tests()
     assert( round<int_kilometers>(meters<>{2500.0}) == int_kilometers{2} );
     }
 
-    // sqrt
+    // square_root
     {
-    auto theValue = sqrt(seconds<std::mega>{4.0});
+    auto theValue = square_root(seconds<std::mega>{4.0});
     auto theExpectedResult = seconds<std::kilo>{2.0};
     assert( theValue == theExpectedResult );
     }
