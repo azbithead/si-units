@@ -13,7 +13,7 @@ class units_t;
 
 ## Member types
 Member type | Definition
-----------------------------
+------------|-----------
 quantity_t | QUANTITY
 value_t | VALUE
 interval_t | typename INTERVAL::type
