@@ -12,7 +12,7 @@ class units_t;
 ```
 Class template `si::units_t` represents a physical quantity measured in SI base units.
 
-It consists of a value of type `VALUE`, an interval of type `INTERVAL` and a quantity of type `QUANTITY`. `std::is_arithmetic<VALUE>::value` must evaluate to `true`. The interval is a compile-time rational constant representing one unit of quantity. `INTERVAL` must be of type [`std::ratio`](http://en.cppreference.com/w/cpp/numeric/ratio/ratio). Finally, `QUANTITY` must be of type [`si::quantity_t`](quantity_t.md).
+It consists of a value of type `VALUE`, an interval of type `INTERVAL` and a quantity of type `QUANTITY`. [`std::is_arithmetic<VALUE>::value`](http://en.cppreference.com/w/cpp/types/is_arithmetic) must evaluate to `true`. The interval is a compile-time rational constant representing one unit of quantity. `INTERVAL` must be of type [`std::ratio`](http://en.cppreference.com/w/cpp/numeric/ratio/ratio). Finally, `QUANTITY` must be of type [`si::quantity_t`](quantity_t.md).
 	
 The only data stored in a `units_t` is a value of type `VALUE`. If `VALUE` is floating point, then the `units_t` can represent fractions of intervals. `QUANTITY` is included as part of the `units_t`'s type, and is only used when converting between different `units_t`.
 
@@ -45,11 +45,11 @@ Function | Description
 ## Non-member functions
 Function | Description
 ---------|------------
-`std::common_type<si::units_t>` | specializes the `std::common_type` trait
+`std::common_type<si::units_t>` | specializes the [`std::common_type`](http://en.cppreference.com/w/cpp/types/common_type) trait
 `operator+`<br>`operator-`<br>`operator\*`<br>`operator/`<br>`operator%` | implements arithmetic operations with `units_t` as arguments
 `operator==`<br>`operator!=`<br>`operator<`<br>`operator<=`<br>`operator>`<br>`operator>=` | compares two `units_t``
 `units_cast` | converts a `units_t` to another with a different `interval_t`
-`duration_cast` | converts `seconds` to `std::chrono::duration`
+`duration_cast` | converts `seconds` to [`std::chrono::duration`](http://en.cppreference.com/w/cpp/chrono/duration)
 `absolute` | returns the absolute value of a `units_t``
 `floor` | converts a `units_t` to another, rounding down
 `ceiling` | converts a `units_t` to another, rounding up
@@ -61,9 +61,9 @@ Function | Description
 `arc_sine` | returns `radians` given a sine scalar
 `arc_cosine` | returns `radians` given a cosine scalar
 `arc_tangent` | returns `radians` given a tangent scalar
-`basic_string_from` | returns `std::basic_string` containing representations of `interval` and `quantity`
-`string_from` | returns `std::string` containing representations of `interval` and `quantity`
-`wstring_from` | returns `std::wstring` containing representations of `interval` and `quantity`
+`basic_string_from` | returns [`std::basic_string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representations of `interval` and `quantity`
+`string_from` | returns [`std::string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representations of `interval` and `quantity`
+`wstring_from` | returns [`std::wstring`](http://en.cppreference.com/w/cpp/string/basic_string) containing representations of `interval` and `quantity`
 `operator <<` | outputs string representation to a `std::ostream`
 
 ## Helper types
