@@ -19,9 +19,9 @@ The only data stored in a `units_t` is a value of type VALUE. If VALUE is floati
 ## Member types
 Member type | Definition
 ------------|-----------
-_**quantity\_t**_ | QUANTITY
-_**value\_t**_ | VALUE
-_**interval\_t**_ | typename INTERVAL::type
+`quantity_t` | `QUANTITY`
+`value_t` | `VALUE`
+`interval_t` | `typename INTERVAL::type`
 ## Member objects
 Member | Description
 ----------------------------------------|-----------------------------------------------------
@@ -45,15 +45,15 @@ _**max [static]**_ | returns the special `units_t` value max
 Function | Description
 ---------|------------
 _**std::common\_type\<si::units\_t\>**_ | specializes the std::common_type trait
-_**operator+<br>operator-<br>operator\*<br>operator/<br>operator%**_ | implements arithmetic operations with units_t as arguments
+_**operator+<br>operator-<br>operator\*<br>operator/<br>operator%**_ | implements arithmetic operations with `units_t` as arguments
 _**operator==<br>operator!=<br>operator\<<br>operator\<=<br>operator\><br>operator\>=**_ | compares two units_t
-_**units\_cast**_ | converts a units_t to another with a different interval_t
+_**units\_cast**_ | converts a `units_t` to another with a different interval_t
 _**duration\_cast**_ | converts seconds to std::chrono::duration
 _**absolute**_ | returns the absolute value of a units_t
-_**floor**_ | converts a units_t to another, rounding down
-_**ceiling**_ | converts a units_t to another, rounding up
-_**round**_ | converts a units_t to another, rounding to nearest, ties to even
-_**exponentiate**_ | computes the value of a units_t raised to a power
+_**floor**_ | converts a `units_t` to another, rounding down
+_**ceiling**_ | converts a `units_t` to another, rounding up
+_**round**_ | converts a `units_t` to another, rounding to nearest, ties to even
+_**exponentiate**_ | computes the value of a `units_t` raised to a power
 _**sine**_ | computes the sine of a radians
 _**cosine**_ | computes the cosine of a radians
 _**tangent**_ | computes the tangent of a radians
