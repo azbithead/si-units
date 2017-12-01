@@ -239,4 +239,9 @@ void si::run_units_tests()
     theValue %= m_t{ 2 };
     assert( theValue == m_t{ 1 } );
     }
+
+    // hash
+    {
+    assert( std::hash<m_t>{}(m_t{3}) == std::hash<m_t::value_t>{}(3) );
+    }
 }

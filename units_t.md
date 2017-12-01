@@ -100,6 +100,11 @@ Type | Definition
 `henries` | `units_t<VALUE, INTERVAL, inductance>`
 `lumens` | `units_t<VALUE, INTERVAL, luminous_flux>`
 
+## Helper classes
+Class | Description
+------|------------
+`std::hash<si::units_t>` | hash support for `units_t`
+
 ## Example
 ```c++
 #include <iostream>

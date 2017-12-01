@@ -998,3 +998,26 @@ template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
 using lumens = units_t<VALUE, INTERVAL, luminous_flux>;
 
 } // end of namespace si
+
+namespace std
+{
+
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY
+>
+struct hash<si::units_t<VALUE,INTERVAL,QUANTITY>>
+{
+    size_t
+    operator()
+    (
+        si::units_t<VALUE,INTERVAL,QUANTITY> aUnits
+    ) const
+    {
+        return hash<VALUE>{}(aUnits.value());
+    }
+};
+
+} // end of namespace std
