@@ -49,7 +49,7 @@ Function | Description
 `operator+`<br>`operator-`<br>`operator\*`<br>`operator/`<br>`operator%` | implements arithmetic operations with `units_t` as arguments
 `operator==`<br>`operator!=`<br>`operator<`<br>`operator<=`<br>`operator>`<br>`operator>=` | compares two `units_t``
 `units_cast` | converts a `units_t` to another with a different `interval_t`
-`duration\_cast` | converts `seconds` to `std::chrono::duration`
+`duration_cast` | converts `seconds` to `std::chrono::duration`
 `absolute` | returns the absolute value of a `units_t``
 `floor` | converts a `units_t` to another, rounding down
 `ceiling` | converts a `units_t` to another, rounding up
@@ -58,9 +58,9 @@ Function | Description
 `sine` | computes the sine of a `radians`
 `cosine` | computes the cosine of a `radians`
 `tangent` | computes the tangent of a `radians`
-`arc\_sine` | returns `radians` given a sine scalar
-`arc\_cosine` | returns `radians` given a cosine scalar
-`arc\_tangent` | returns `radians` given a tangent scalar
+`arc_sine` | returns `radians` given a sine scalar
+`arc_cosine` | returns `radians` given a cosine scalar
+`arc_tangent` | returns `radians` given a tangent scalar
 
 ## Helper types
 Type | Definition
