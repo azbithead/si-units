@@ -32,7 +32,7 @@ The following template metafunctions produce new `quantity_t` types by performin
 
 Operation | Description
 ----------|------------
-`multiply_quantity` |  Product of multiplying two `quantity_t` types
+`multiply_quantity` |  Product of multiplying `quantity_t` types
 `divide_quantity` |  Quotient of dividing two `quantity_t` types
 `reciprocal_quantity` |  Reciprocal of a `quantity_t` type
 `power_quantity` |  Raise a `quantity_t` to a power
