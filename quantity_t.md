@@ -34,9 +34,9 @@ Operation | Description
 ----------|------------
 `multiply_quantity` |  Product of multiplying two `quantity_t` types
 `divide_quantity` |  Quotient of dividing two `quantity_t` types
-`reciprocal_quantity` |  Reciprocal of an `quantity_t` type
-`power_quantity` |  Raise an `quantity_t` to a power
-`root_quantity` |  Take the root of an `quantity_t`
+`reciprocal_quantity` |  Reciprocal of a `quantity_t` type
+`power_quantity` |  Raise a `quantity_t` to a power
+`root_quantity` |  Take the root of a `quantity_t`
 
 ## Helper types
 Type | Definition
