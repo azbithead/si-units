@@ -95,3 +95,30 @@ Type | Definition
 `teslas` | `units_t<VALUE, INTERVAL, magnetic_flux_density>`
 `henries` | `units_t<VALUE, INTERVAL, inductance>`
 `lumens` | `units_t<VALUE, INTERVAL, luminous_flux>`
+
+## Example
+```c++
+#include <iostream>
+#include "units.hpp"
+#include "stream/stream-units.hpp"
+
+int main(int argc, const char * argv[])
+{
+    auto theLength = si::meters<std::milli>{50.0}; // 50 millimeters
+    auto theSpeed = si::meters<std::kilo>{55.0} / si::hours<>{1.0}; // 55 kilometers per hour
+    auto theTime = theLength / theSpeed;
+    auto theMsecs = si::seconds<std::milli>{theTime};
+
+    std::cout << theLength << "\n"
+              << theSpeed << "\n"
+              << theTime << "\n"
+              << theMsecs << "\n";
+}
+```
+Output:
+```
+50·10⁻³ m
+55·5/18 m/s
+0.909091·9/25·10⁻² s
+3.27273·10⁻³ s
+```
