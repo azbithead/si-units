@@ -36,3 +36,36 @@ _**divide_quantity**_ | Quotient of dividing two `si::quantity_t` types
 _**reciprocal_quantity**_ | Reciprocal of an `si::quantity_t` type
 _**power_quantity**_ | Raise an `si::quantity_t` to a power
 _**root_quantity**_ | Take the root of an `si::quantity_t`
+## Helper types
+Type | Definition
+-----|-----------
+_**none**_ | quantity_t<>
+_**mass**_ | quantity_t<1>
+_**length**_ | quantity_t<0,1>
+_**distance**_ | length
+_**time**_ | quantity_t<0,0,1>
+_**current**_ | quantity_t<0,0,0,1> // electric current
+_**temperature**_ | quantity_t<0,0,0,0,1>
+_**luminous_intensity**_ | quantity_t<0,0,0,0,0,1>
+_**substance**_ | quantity_t<0,0,0,0,0,0,1> // amount of substance
+_**angle**_ | quantity_t<0,0,0,0,0,0,0,1>
+_**solid_angle**_ | power_quantity<angle,2>
+_**frequency**_ | reciprocal_quantity<time>
+_**force**_ | divide_quantity<multiply_quantity<mass, length>, power_quantity<time,2>>
+_**weight**_ | force
+_**area**_ | power_quantity<length,2>
+_**pressure**_ | divide_quantity<force, area>
+_**stress**_ | pressure
+_**energy**_ | multiply_quantity<force, length>
+_**work**_ | energy
+_**power**_ | divide_quantity<energy, time>
+_**charge**_ | multiply_quantity<current, time>
+_**voltage**_ | divide_quantity<power, current>
+_**capacitance**_ | divide_quantity<charge, voltage>
+_**impedance**_ | divide_quantity<voltage, current>
+_**conductance**_ | reciprocal_quantity<impedance>
+_**magnetic_flux**_ | divide_quantity<energy, current>
+_**magnetic_flux_density**_ | divide_quantity<magnetic_flux, area>
+_**inductance**_ | divide_quantity<magnetic_flux, current>
+_**luminous_flux**_ | multiply_quantity<luminous_intensity, solid_angle>
+_**illuminance**_ | divide_quantity<luminous_intensity, area>
