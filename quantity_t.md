@@ -3,72 +3,74 @@ Defined in header "quantity.hpp"
 ```c++
 template
 <
-    std::intmax_t aMassExponent = 0,
-    std::intmax_t aLengthExponent = 0,
-    std::intmax_t aTimeExponent = 0,
-    std::intmax_t aCurrentExponent = 0,
-    std::intmax_t aTemperatureExponent = 0,
-    std::intmax_t aLuminousIntensityExponent = 0,
-    std::intmax_t aSubstanceExponent = 0,
-    std::intmax_t aAngleExponent = 0
+    std::intmax_t MassExponent = 0,
+    std::intmax_t LengthExponent = 0,
+    std::intmax_t TimeExponent = 0,
+    std::intmax_t CurrentExponent = 0,
+    std::intmax_t TemperatureExponent = 0,
+    std::intmax_t LuminousIntensityExponent = 0,
+    std::intmax_t SubstanceExponent = 0,
+    std::intmax_t AngleExponent = 0
 >
 struct quantity_t;
 ```
-The struct template `si::quantity_t` contains static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in `si::quantity_t` default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented.
+The struct template `quantity_t` contains static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in `quantity_t` default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented.
 ## Member objects
 Member | Definition
 ----------------------------------------|-----------------------------------------------------
-constexpr std::intmax_t _**mass_exp**_ [static] | aMassExponent
-constexpr std::intmax_t _**length_exp**_ [static] | aLengthExponent
-constexpr std::intmax_t _**time_exp**_ [static] | aTimeExponent
-constexpr std::intmax_t _**current_exp**_ [static] | aCurrentExponent
-constexpr std::intmax_t _**temperature_exp**_ [static] | aTemperatureExponent
-constexpr std::intmax_t _**luminous_intensity_exp**_ [static] | aLuminousIntensityExponent
-constexpr std::intmax_t _**substance_exp**_ [static] | aSubstanceExponent
-constexpr std::intmax_t _**angle_exp**_ [static] | aAngleExponent
+`static constexpr std::intmax_t mass_exp` | `MassExponent`
+`static constexpr std::intmax_t length_exp` | `LengthExponent`
+`static constexpr std::intmax_t time_exp` | `TimeExponent`
+`static constexpr std::intmax_t current_exp` | `CurrentExponent`
+`static constexpr std::intmax_t temperature_exp` | `TemperatureExponent`
+`static constexpr std::intmax_t luminous_intensity_exp` | `LuminousIntensityExponent`
+`static constexpr std::intmax_t substance_exp` | `SubstanceExponent`
+`static constexpr std::intmax_t angle_exp` | `AngleExponent`
+
 ## Operations
-The following template metafunctions produce new `si::quantity_t` types by performing operations on existing `si::quantity_t` types.
+The following template metafunctions produce new `quantity_t` types by performing operations on existing `quantity_t` types.
 
 Operation | Description
 ----------|------------
-_**multiply_quantity**_ | Product of multiplying two `si::quantity_t` types
-_**divide_quantity**_ | Quotient of dividing two `si::quantity_t` types
-_**reciprocal_quantity**_ | Reciprocal of an `si::quantity_t` type
-_**power_quantity**_ | Raise an `si::quantity_t` to a power
-_**root_quantity**_ | Take the root of an `si::quantity_t`
+`multiply_quantity` |  Product of multiplying two `quantity_t` types
+`divide_quantity` |  Quotient of dividing two `quantity_t` types
+`reciprocal_quantity` |  Reciprocal of an `quantity_t` type
+`power_quantity` |  Raise an `quantity_t` to a power
+`root_quantity` |  Take the root of an `quantity_t`
+
 ## Helper types
 Type | Definition
 -----|-----------
-_**none**_ | quantity_t<>
-_**mass**_ | quantity_t<1>
-_**length**_ | quantity_t<0,1>
-_**distance**_ | length
-_**time**_ | quantity_t<0,0,1>
-_**current**_ | quantity_t<0,0,0,1> // electric current
-_**temperature**_ | quantity_t<0,0,0,0,1>
-_**luminous_intensity**_ | quantity_t<0,0,0,0,0,1>
-_**substance**_ | quantity_t<0,0,0,0,0,0,1> // amount of substance
-_**angle**_ | quantity_t<0,0,0,0,0,0,0,1>
-_**solid_angle**_ | power_quantity<angle,2>
-_**frequency**_ | reciprocal_quantity\<time>
-_**force**_ | divide_quantity<multiply_quantity<mass, length>, power_quantity<time,2>>
-_**weight**_ | force
-_**area**_ | power_quantity<length,2>
-_**pressure**_ | divide_quantity<force, area>
-_**stress**_ | pressure
-_**energy**_ | multiply_quantity<force, length>
-_**work**_ | energy
-_**power**_ | divide_quantity<energy, time>
-_**charge**_ | multiply_quantity<current, time>
-_**voltage**_ | divide_quantity<power, current>
-_**capacitance**_ | divide_quantity<charge, voltage>
-_**impedance**_ | divide_quantity<voltage, current>
-_**conductance**_ | reciprocal_quantity\<impedance>
-_**magnetic_flux**_ | divide_quantity<energy, current>
-_**magnetic_flux_density**_ | divide_quantity<magnetic_flux, area>
-_**inductance**_ | divide_quantity<magnetic_flux, current>
-_**luminous_flux**_ | multiply_quantity<luminous_intensity, solid_angle>
-_**illuminance**_ | divide_quantity<luminous_intensity, area>
+`none` | `quantity_t<>`
+`mass` | `quantity_t<1>`
+`length` | `quantity_t<0,1>`
+`distance` | `length`
+`time` | `quantity_t<0,0,1>`
+`current` | `quantity_t<0,0,0,1> // electric current`
+`temperature` | `quantity_t<0,0,0,0,1>`
+`luminous_intensity` | `quantity_t<0,0,0,0,0,1>`
+`substance` | `quantity_t<0,0,0,0,0,0,1> // amount of substance`
+`angle` | `quantity_t<0,0,0,0,0,0,0,1>`
+`solid_angle` | `power_quantity<angle,2>`
+`frequency` | `reciprocal_quantity<time>`
+`force` | `divide_quantity<multiply_quantity<mass, length>, power_quantity<time,2>>`
+`weight` | `force`
+`area` | `power_quantity<length,2>`
+`pressure` | `divide_quantity<force, area>`
+`stress` | `pressure`
+`energy` | `multiply_quantity<force, length>`
+`work` | `energy`
+`power` | `divide_quantity<energy, time>`
+`charge` | `multiply_quantity<current, time>`
+`voltage` | `divide_quantity<power, current>`
+`capacitance` | `divide_quantity<charge, voltage>`
+`impedance` | `divide_quantity<voltage, current>`
+`conductance` | `reciprocal_quantity<impedance>`
+`magnetic_flux` | `divide_quantity<energy, current>`
+`magnetic_flux_density` | `divide_quantity<magnetic_flux, area>`
+`inductance` | `divide_quantity<magnetic_flux, current>`
+`luminous_flux` | `multiply_quantity<luminous_intensity, solid_angle>`
+`illuminance` | `divide_quantity<luminous_intensity, area>`
 
 ## Non-member functions
 Function | Description
