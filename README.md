@@ -38,6 +38,8 @@ using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity
 
 ## si::units_t
 
+[si::units_t](units_t.md)
+
 `si::units_t` (see si/units.hpp) is a class template that takes three template parameters:
 
 * QUANTITY: an `si::quantity_t`
