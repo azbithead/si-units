@@ -2,19 +2,19 @@
 
 The si-units C++ library provides type-safe calculations involving physical quantities that are measured in the units of the [International System of Units](https://en.wikipedia.org/wiki/International_System_of_Units).
 
-si-units is a header-only library of template classes and functions that automatically convert quantities to the correct units when performing mathematical or relational operations. The library contains two classes/structs: `si::quantity_t` and [`si::units_t`](units_t.md).
+si-units is a header-only library of template classes and functions that automatically convert quantities to the correct units when performing mathematical or relational operations. The library contains two classes/structs: [`si::quantity_t`](quantity_t.md) and [`si::units_t`](units_t.md).
 
 ## si::quantity_t
 
-`si::quantity_t` (see si/quantity.hpp) is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in `si::quantity_t` default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by `si::quantity_t`.
+[`si::quantity_t`](quantity_t.md) (see si/quantity.hpp) is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in [`si::quantity_t`](quantity_t.md) default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by [`si::quantity_t`](quantity_t.md).
 
-The `si::quantity_t` examples provided below are intended to help the reader understand how the `si::quantity_t` type works. However, it is unlikely that clients of this library will need to write code that defines `si::quantity_t` types since those types are automatically created as needed when code performs mathematical or relational operations using [`si::units_t`](units_t.md).
+The [`si::quantity_t`](quantity_t.md) examples provided below are intended to help the reader understand how the [`si::quantity_t`](quantity_t.md) type works. However, it is unlikely that clients of this library will need to write code that defines [`si::quantity_t`](quantity_t.md) types since those types are automatically created as needed when code performs mathematical or relational operations using [`si::units_t`](units_t.md).
 
-The library defines type aliases based on `si::quantity_t` for all quantities related to base SI units and most derived SI units.
+The library defines type aliases based on [`si::quantity_t`](quantity_t.md) for all quantities related to base SI units and most derived SI units.
 
 ### Example 1
 
-The time exponent in `si::quantity_t` is provided in the third template parameter. So, a quantity of time in `si::quantity_t` looks like this:
+The time exponent in [`si::quantity_t`](quantity_t.md) is provided in the third template parameter. So, a quantity of time in [`si::quantity_t`](quantity_t.md) looks like this:
 
 ```c++
 using time = si::quantity_t<0, 0, 1>;
@@ -22,7 +22,7 @@ using time = si::quantity_t<0, 0, 1>;
 
 ### Example 2
 
-The length or distance exponent is `si::quantity_t` is provided in the second template parameter. So, a quantity of length in `si::quantity_t` looks like this:
+The length or distance exponent is [`si::quantity_t`](quantity_t.md) is provided in the second template parameter. So, a quantity of length in [`si::quantity_t`](quantity_t.md) looks like this:
 
 ```c++
 using length = si::quantity_t<0, 1>;
@@ -30,7 +30,7 @@ using length = si::quantity_t<0, 1>;
 
 ### Example 3
 
-Speed is defined as length or distance divided by time. Expressed as `si::quantity_t` that would be:
+Speed is defined as length or distance divided by time. Expressed as [`si::quantity_t`](quantity_t.md) that would be:
 
 ```c++
 using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity_t<0, 1, -1>
@@ -42,7 +42,7 @@ using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity
 
 [`si::units_t`](units_t.md) is a class template that takes three template parameters:
 
-* QUANTITY: an `si::quantity_t`
+* QUANTITY: an [`si::quantity_t`](quantity_t.md)
 * VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic\<VALUE\> == true
 * INTERVAL: std::ratio representing the amount of QUANTITY per VALUE in these units
 
@@ -61,7 +61,7 @@ using kilograms = si::units_t<VALUE, INTERVAL, mass>;
 
 ### Example 1
 
-An [`si::units_t`](units_t.md) of 50 millimeters has value = 50, interval = 1/1000 and `si::quantity_t` with length exponent = 1.
+An [`si::units_t`](units_t.md) of 50 millimeters has value = 50, interval = 1/1000 and [`si::quantity_t`](quantity_t.md) with length exponent = 1.
 
 An [`si::units_t`](units_t.md) can be thought of as the product of multiplying all of its components. In this example that would be 50 * (1/1000) * (length^1). If we perform that math on a calculator, we see that 50 millimeters is equal to 0.05 meters, expressed in SI base units.
 
@@ -81,7 +81,7 @@ theLength.value() == 50.0
 
 ### Example 2
 
-An [`si::units_t`](units_t.md) of 55 kilometers/hour has value = 55, interval = 1000/3600 and `si::quantity_t` with length exponent = 1 and time exponent = -1.
+An [`si::units_t`](units_t.md) of 55 kilometers/hour has value = 55, interval = 1000/3600 and [`si::quantity_t`](quantity_t.md) with length exponent = 1 and time exponent = -1.
 
 Let’s break that down. The value component should be self evident. The interval component has a numerator of 1000. That represents the kilo part of kilometers. The interval denominator equals the number of seconds in one hour or 3600. The 3600 is in the denominator because “hour” is in the denominator of the desired units. The length exponent is 1 as noted in example 1. The time exponent is -1, again because “hour” is in the denominator of the desired units.
 
@@ -138,7 +138,7 @@ theMsecs.value == 3.2727272727272725
 ```
 ## Conversion to String
 
-The library provides functions to convert `si::quantity_t` and [`si::units_t`](units_t.md) to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for [`si::units_t`](units_t.md) only output the INTERVAL and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an [`si::units_t`](units_t.md) object. When converting an `si::quantity_t`, an abbreviation for a derived SI unit will be output when possible.
+The library provides functions to convert [`si::quantity_t`](quantity_t.md) and [`si::units_t`](units_t.md) to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for [`si::units_t`](units_t.md) only output the INTERVAL and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an [`si::units_t`](units_t.md) object. When converting an [`si::quantity_t`](quantity_t.md), an abbreviation for a derived SI unit will be output when possible.
 
 ### Example
 
