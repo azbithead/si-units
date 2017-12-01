@@ -22,75 +22,76 @@ Member type | Definition
 `quantity_t` | `QUANTITY`
 `value_t` | `VALUE`
 `interval_t` | `typename INTERVAL::type`
+
 ## Member objects
 Member | Description
 ----------------------------------------|-----------------------------------------------------
-constexpr interval\_t _**interval**_ \[static] | equal to INTERVAL{}
-constexpr quantity\_t _**quantity**_ \[static] | equal to QUANTITY{}
+`static constexpr interval_t interval` | equal to `INTERVAL{}`
+`static constexpr quantity_t quantity` | equal to `QUANTITY{}`
 
 ## Member functions
 Function | Description
 ---------|------------
-_**(constructor)**_ | constructs new `units_t`
-_**operator=**_ | assigns the contents
-_**value**_ | returns the value of intervals
-_**operator+<br>operator-**_ | implements unary plus and unary minus
-_**operator++<br>operator++(int)<br>operator--<br>operator--(int)**_ | increments or decrements value
-_**operator+=<br>operator-=<br>operator\*=<br>operator/=<br>operator%=**_ | implements compound assignment between two `units_t`
-_**zero [static]**_ | returns the special `units_t` value zero
-_**min [static]**_ | returns the special `units_t` value min
-_**max [static]**_ | returns the special `units_t` value max
+(constructor) | constructs new `units_t`
+`operator=` | assigns the contents
+`value` | returns the number of intervals
+`operator+<br>operator-` | implements unary plus and unary minus
+`operator++<br>operator++(int)<br>operator--<br>operator--(int)` | increments or decrements value
+`operator+=<br>operator-=<br>operator\*=<br>operator/=<br>operator%=` | implements compound assignment between two `units_t`
+`zero` \[static] | returns the special `units_t` value zero
+`min` \[static] | returns the special `units_t` value min
+`max` \[static] | returns the special `units_t` value max
 
 ## Non-member functions
 Function | Description
 ---------|------------
-_**std::common\_type\<si::units\_t\>**_ | specializes the std::common_type trait
-_**operator+<br>operator-<br>operator\*<br>operator/<br>operator%**_ | implements arithmetic operations with `units_t` as arguments
-_**operator==<br>operator!=<br>operator\<<br>operator\<=<br>operator\><br>operator\>=**_ | compares two units_t
-_**units\_cast**_ | converts a `units_t` to another with a different interval_t
-_**duration\_cast**_ | converts seconds to std::chrono::duration
-_**absolute**_ | returns the absolute value of a units_t
-_**floor**_ | converts a `units_t` to another, rounding down
-_**ceiling**_ | converts a `units_t` to another, rounding up
-_**round**_ | converts a `units_t` to another, rounding to nearest, ties to even
-_**exponentiate**_ | computes the value of a `units_t` raised to a power
-_**sine**_ | computes the sine of a radians
-_**cosine**_ | computes the cosine of a radians
-_**tangent**_ | computes the tangent of a radians
-_**arc\_sine**_ | returns radians given a sine scalar
-_**arc\_cosine**_ | returns radians given a cosine scalar
-_**arc\_tangent**_ | returns radians given a tangent scalar
+`std::common_type<si::units_t>` | specializes the `std::common_type` trait
+`operator+<br>operator-<br>operator\*<br>operator/<br>operator%` | implements arithmetic operations with `units_t` as arguments
+`operator==<br>operator!=<br>operator<<br>operator<=<br>operator><br>operator>=` | compares two `units_t``
+`units_cast` | converts a `units_t` to another with a different `interval_t`
+`duration\_cast` | converts `seconds` to `std::chrono::duration`
+`absolute` | returns the absolute value of a `units_t``
+`floor` | converts a `units_t` to another, rounding down
+`ceiling` | converts a `units_t` to another, rounding up
+`round` | converts a `units_t` to another, rounding to nearest, ties to even
+`exponentiate` | computes the value of a `units_t` raised to a power
+`sine` | computes the sine of a `radians`
+`cosine` | computes the cosine of a `radians`
+`tangent` | computes the tangent of a `radians`
+`arc\_sine` | returns `radians` given a sine scalar
+`arc\_cosine` | returns `radians` given a cosine scalar
+`arc\_tangent` | returns `radians` given a tangent scalar
 
 ## Helper types
 Type | Definition
 ---------|------------
-_**scalar**_ | units\_t\<VALUE, INTERVAL, none\>
-_**meters**_ | units\_t\<VALUE, INTERVAL, length\>
-_**kilograms**_ | units\_t\<VALUE, INTERVAL, mass\>
-_**seconds**_ | units\_t\<VALUE, INTERVAL, time\>
-_**minutes**_ | seconds\<std::ratio\<60\>, VALUE\>
-_**hours**_ | seconds\<std::ratio\<60*60\>, VALUE\>
-_**days**_ | seconds\<std::ratio\<24*60*60\>, VALUE\>
-_**milliseconds**_ | seconds\<std::milli, VALUE\>
-_**microseconds**_ | seconds\<std::micro, VALUE\>
-_**nanoseconds**_ | seconds\<std::nano, VALUE\>
-_**amperes**_ | units\_t\<VALUE, INTERVAL, current\>
-_**kelvins**_ | units\_t\<VALUE, INTERVAL, temperature\>
-_**candelas**_ | units\_t\<VALUE, INTERVAL, luminous\_intensity\>
-_**radians**_ | units\_t\<VALUE, INTERVAL, angle\>
-_**steradians**_ | units\_t\<VALUE, INTERVAL, solid\_angle\>
-_**hertz**_ | units\_t\<VALUE, INTERVAL, frequency\>
-_**newtons**_ | units\_t\<VALUE, INTERVAL, force\>
-_**coulombs**_ | units\_t\<VALUE, INTERVAL, charge\>
-_**lux**_ | units\_t\<VALUE, INTERVAL, illuminance\>
-_**pascals**_ | units\_t\<VALUE, INTERVAL, pressure\>
-_**joules**_ | units\_t\<VALUE, INTERVAL, energy\>
-_**watts**_ | units\_t\<VALUE, INTERVAL, power\>
-_**volts**_ | units\_t\<VALUE, INTERVAL, voltage\>
-_**farads**_ | units\_t\<VALUE, INTERVAL, capacitance\>
-_**ohms**_ | units\_t\<VALUE, INTERVAL, impedance\>
-_**siemens**_ | units\_t\<VALUE, INTERVAL, conductance\>
-_**webers**_ | units\_t\<VALUE, INTERVAL, magnetic\_flux\>
-_**teslas**_ | units\_t\<VALUE, INTERVAL, magnetic\_flux\_density\>
-_**henries**_ | units\_t\<VALUE, INTERVAL, inductance\>
-_**lumens**_ | units\_t\<VALUE, INTERVAL, luminous\_flux\>
+`scalar` | `units_t<VALUE, INTERVAL, none>`
+`meters` | `units_t<VALUE, INTERVAL, length>`
+`kilograms` | `units_t<VALUE, INTERVAL, mass>`
+`seconds` | `units_t<VALUE, INTERVAL, time>`
+`minutes` | `seconds<std::ratio<60>, VALUE>`
+`hours` | `seconds<std::ratio<60*60>, VALUE>`
+`days` | `seconds<std::ratio<24*60*60>, VALUE>`
+`milliseconds` | `seconds<std::milli, VALUE>`
+`microseconds` | `seconds<std::micro, VALUE>`
+`nanoseconds` | `seconds<std::nano, VALUE>`
+`amperes` | `units_t<VALUE, INTERVAL, current>`
+`kelvins` | `units_t<VALUE, INTERVAL, temperature>`
+`candelas` | `units_t<VALUE, INTERVAL, luminous_intensity>`
+`radians` | `units_t<VALUE, INTERVAL, angle>`
+`steradians` | `units_t<VALUE, INTERVAL, solid_angle>`
+`hertz` | `units_t<VALUE, INTERVAL, frequency>`
+`newtons` | `units_t<VALUE, INTERVAL, force>`
+`coulombs` | `units_t<VALUE, INTERVAL, charge>`
+`lux` | `units_t<VALUE, INTERVAL, illuminance>`
+`pascals` | `units_t<VALUE, INTERVAL, pressure>`
+`joules` | `units_t<VALUE, INTERVAL, energy>`
+`watts` | `units_t<VALUE, INTERVAL, power>`
+`volts` | `units_t<VALUE, INTERVAL, voltage>`
+`farads` | `units_t<VALUE, INTERVAL, capacitance>`
+`ohms` | `units_t<VALUE, INTERVAL, impedance>`
+`siemens` | `units_t<VALUE, INTERVAL, conductance>`
+`webers` | `units_t<VALUE, INTERVAL, magnetic_flux>`
+`teslas` | `units_t<VALUE, INTERVAL, magnetic_flux_density>`
+`henries` | `units_t<VALUE, INTERVAL, inductance>`
+`lumens` | `units_t<VALUE, INTERVAL, luminous_flux>`
