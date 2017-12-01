@@ -65,28 +65,37 @@ struct is_quantity_impl
 template <typename aType>
 constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<aType>::type>::value;
 
-template< typename aLeft, typename aRight >
-struct multiply_quantity_impl
+template< typename... >
+struct multiply_quantity_impl;
+
+template< typename First, typename... Rest >
+struct multiply_quantity_impl< First, Rest... >
 {
+    using previous = multiply_quantity_impl<Rest...>;
+
     using type = quantity_t
     <
-        aLeft::mass_exp + aRight::mass_exp,
-        aLeft::length_exp + aRight::length_exp,
-        aLeft::time_exp + aRight::time_exp,
-        aLeft::current_exp + aRight::current_exp,
-        aLeft::temperature_exp + aRight::temperature_exp,
-        aLeft::luminous_intensity_exp + aRight::luminous_intensity_exp,
-        aLeft::substance_exp + aRight::substance_exp,
-        aLeft::angle_exp + aRight::angle_exp
+        First::mass_exp + previous::type::mass_exp,
+        First::length_exp + previous::type::length_exp,
+        First::time_exp + previous::type::time_exp,
+        First::current_exp + previous::type::current_exp,
+        First::temperature_exp + previous::type::temperature_exp,
+        First::luminous_intensity_exp + previous::type::luminous_intensity_exp,
+        First::substance_exp + previous::type::substance_exp,
+        First::angle_exp + previous::type::angle_exp
     >;
 };
 
+template<>
+struct multiply_quantity_impl<>
+{
+    using type = quantity_t<>;
+};
+
 //------------------------------------------------------------------------------
-/// the si::quantity_t type that is the product of aLeft and aRight
-/// @tparam aLeft an si::quantity_t type to be multiplied
-/// @tparam aRight an si::quantity_t type to be multiplied
-template< typename aLeft, typename aRight >
-using multiply_quantity = typename multiply_quantity_impl< aLeft, aRight >::type;
+/// the si::quantity_t type that is the product of a list of quantity_t's
+template< typename... Quantities >
+using multiply_quantity = typename multiply_quantity_impl< Quantities... >::type;
 
 template< typename Quantity, typename aPower >
 struct exponentiate_quantity_impl
@@ -109,13 +118,13 @@ struct exponentiate_quantity_impl
 /// @tparam aQuantity an si::quantity_t type
 /// @tparam aPower the power to which aQuantity is raised
 template< typename aQuantity, std::intmax_t aPower >
-using power_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<aPower,1>>::type;
+using power_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<aPower>>::type;
 
 //------------------------------------------------------------------------------
 /// the si::quantity_t type that is the reciprocal of aQuantity
 /// @tparam aQuantity an si::quantity_t type
 template< typename aQuantity >
-using reciprocal_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<-1,1>>::type;
+using reciprocal_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<-1>>::type;
 
 //------------------------------------------------------------------------------
 /// the si::quantity_t type that is the quotient of dividing aDividend by aDivisor
