@@ -19,14 +19,14 @@ The only data stored in a `units_t` is a value of type VALUE. If VALUE is floati
 ## Member types
 Member type | Definition
 ------------|-----------
-_**quantity_t**_ | QUANTITY
-_**value_t**_ | VALUE
-_**interval_t**_ | typename INTERVAL::type
+_**quantity\_t**_ | QUANTITY
+_**value\_t**_ | VALUE
+_**interval\_t**_ | typename INTERVAL::type
 ## Member objects
 Member | Description
 ----------------------------------------|-----------------------------------------------------
-constexpr interval_t _**interval**_ \[static] | equal to INTERVAL{}
-constexpr quantity_t _**quantity**_ \[static] | equal to QUANTITY{}
+constexpr interval\_t _**interval**_ \[static] | equal to INTERVAL{}
+constexpr quantity\_t _**quantity**_ \[static] | equal to QUANTITY{}
 
 ## Member functions
 Function | Description
@@ -62,3 +62,35 @@ _**arc\_cosine**_ | returns radians given a cosine scalar
 _**arc\_tangent**_ | returns radians given a tangent scalar
 
 ## Helper types
+Type | Definition
+---------|------------
+_**scalar**_ | units\_t\<VALUE, INTERVAL, none\>
+_**meters**_ | units\_t\<VALUE, INTERVAL, length\>
+_**kilograms**_ | units\_t\<VALUE, INTERVAL, mass\>
+_**seconds**_ | units\_t\<VALUE, INTERVAL, time\>
+_**minutes**_ | seconds\<std::ratio\<60\>, VALUE\>
+_**hours**_ | seconds\<std::ratio\<60*60\>, VALUE\>
+_**days**_ | seconds\<std::ratio\<24*60*60\>, VALUE\>
+_**milliseconds**_ | seconds\<std::milli, VALUE\>
+_**microseconds**_ | seconds\<std::micro, VALUE\>
+_**nanoseconds**_ | seconds\<std::nano, VALUE\>
+_**amperes**_ | units\_t\<VALUE, INTERVAL, current\>
+_**kelvins**_ | units\_t\<VALUE, INTERVAL, temperature\>
+_**candelas**_ | units\_t\<VALUE, INTERVAL, luminous\_intensity\>
+_**radians**_ | units\_t\<VALUE, INTERVAL, angle\>
+_**steradians**_ | units\_t\<VALUE, INTERVAL, solid\_angle\>
+_**hertz**_ | units\_t\<VALUE, INTERVAL, frequency\>
+_**newtons**_ | units\_t\<VALUE, INTERVAL, force\>
+_**coulombs**_ | units\_t\<VALUE, INTERVAL, charge\>
+_**lux**_ | units\_t\<VALUE, INTERVAL, illuminance\>
+_**pascals**_ | units\_t\<VALUE, INTERVAL, pressure\>
+_**joules**_ | units\_t\<VALUE, INTERVAL, energy\>
+_**watts**_ | units\_t\<VALUE, INTERVAL, power\>
+_**volts**_ | units\_t\<VALUE, INTERVAL, voltage\>
+_**farads**_ | units\_t\<VALUE, INTERVAL, capacitance\>
+_**ohms**_ | units\_t\<VALUE, INTERVAL, impedance\>
+_**siemens**_ | units\_t\<VALUE, INTERVAL, conductance\>
+_**webers**_ | units\_t\<VALUE, INTERVAL, magnetic\_flux\>
+_**teslas**_ | units\_t\<VALUE, INTERVAL, magnetic\_flux\_density\>
+_**henries**_ | units\_t\<VALUE, INTERVAL, inductance\>
+_**lumens**_ | units\_t\<VALUE, INTERVAL, luminous\_flux\>
