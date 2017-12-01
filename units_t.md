@@ -61,6 +61,10 @@ Function | Description
 `arc_sine` | returns `radians` given a sine scalar
 `arc_cosine` | returns `radians` given a cosine scalar
 `arc_tangent` | returns `radians` given a tangent scalar
+`basic_string_from` | returns `std::basic_string` containing representations of `interval` and `quantity`
+`string_from` | returns `std::string` containing representations of `interval` and `quantity`
+`wstring_from` | returns `std::wstring` containing representations of `interval` and `quantity`
+`operator <<` | outputs string representation to a `std::ostream`
 
 ## Helper types
 Type | Definition
