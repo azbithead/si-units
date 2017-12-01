@@ -69,3 +69,10 @@ _**magnetic_flux_density**_ | divide_quantity<magnetic_flux, area>
 _**inductance**_ | divide_quantity<magnetic_flux, current>
 _**luminous_flux**_ | multiply_quantity<luminous_intensity, solid_angle>
 _**illuminance**_ | divide_quantity<luminous_intensity, area>
+
+## Non-member functions
+Function | Description
+---------|------------
+`basic_string_from` | returns `std::basic_string` containing representation of a `quantity_t`
+`string_from` | returns `std::string` containing representation of a `quantity_t`
+`wstring_from` | returns `std::wstring` containing representation of a `quantity_t`
