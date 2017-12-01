@@ -75,6 +75,6 @@ Type | Definition
 ## Non-member functions
 Function | Description
 ---------|------------
-`basic_string_from` | returns `std::basic_string` containing representation of a `quantity_t`
-`string_from` | returns `std::string` containing representation of a `quantity_t`
-`wstring_from` | returns `std::wstring` containing representation of a `quantity_t`
+`basic_string_from` | returns [`std::basic_string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
+`string_from` | returns [`std::string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
+`wstring_from` | returns [`std::wstring`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
