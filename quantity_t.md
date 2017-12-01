@@ -14,7 +14,7 @@ template
 >
 struct quantity_t;
 ```
-The struct template `si::quantity_t` contain static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in `si::quantity_t` default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented.
+The struct template `si::quantity_t` contains static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in `si::quantity_t` default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented.
 ## Member objects
 Member | Definition
 ----------------------------------------|-----------------------------------------------------
@@ -26,7 +26,7 @@ constexpr std::intmax_t _**temperature_exp**_ [static] | aTemperatureExponent
 constexpr std::intmax_t _**luminous_intensity_exp**_ [static] | aLuminousIntensityExponent
 constexpr std::intmax_t _**substance_exp**_ [static] | aSubstanceExponent
 constexpr std::intmax_t _**angle_exp**_ [static] | aAngleExponent
-## Operations on si::quantity_t
+## Operations
 The following template metafunctions produce new `si::quantity_t` types by performing operations on existing `si::quantity_t` types.
 
 Operation | Description
