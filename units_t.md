@@ -35,9 +35,9 @@ Function | Description
 (constructor) | constructs new `units_t`
 `operator=` | assigns the contents
 `value` | returns the number of intervals
-`operator+<br>operator-` | implements unary plus and unary minus
-`operator++<br>operator++(int)<br>operator--<br>operator--(int)` | increments or decrements value
-`operator+=<br>operator-=<br>operator\*=<br>operator/=<br>operator%=` | implements compound assignment between two `units_t`
+`operator+`<br>`operator-` | implements unary plus and unary minus
+`operator++`<br>`operator++(int)`<br>`operator--`<br>`operator--(int)` | increments or decrements value
+`operator+=`<br>`operator-=`<br>`operator\*=`<br>`operator/=`<br>`operator%=` | implements compound assignment between two `units_t`
 `zero` \[static] | returns the special `units_t` value zero
 `min` \[static] | returns the special `units_t` value min
 `max` \[static] | returns the special `units_t` value max
@@ -46,8 +46,8 @@ Function | Description
 Function | Description
 ---------|------------
 `std::common_type<si::units_t>` | specializes the `std::common_type` trait
-`operator+<br>operator-<br>operator\*<br>operator/<br>operator%` | implements arithmetic operations with `units_t` as arguments
-`operator==<br>operator!=<br>operator<<br>operator<=<br>operator><br>operator>=` | compares two `units_t``
+`operator+`<br>`operator-`<br>`operator\*`<br>`operator/`<br>`operator%` | implements arithmetic operations with `units_t` as arguments
+`operator==`<br>`operator!=`<br>`operator<`<br>`operator<=`<br>`operator>`<br>`operator>=` | compares two `units_t``
 `units_cast` | converts a `units_t` to another with a different `interval_t`
 `duration\_cast` | converts `seconds` to `std::chrono::duration`
 `absolute` | returns the absolute value of a `units_t``
