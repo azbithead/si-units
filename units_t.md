@@ -107,7 +107,7 @@ int main(int argc, const char * argv[])
     auto theLength = si::meters<std::milli>{50.0}; // 50 millimeters
     auto theSpeed = si::meters<std::kilo>{55.0} / si::hours<>{1.0}; // 55 kilometers per hour
     auto theTime = theLength / theSpeed;
-    auto theMsecs = si::seconds<std::milli>{theTime};
+    auto theMsecs = si::milliseconds<>{theLength / theSpeed};
 
     std::cout << theLength << "\n"
               << theSpeed << "\n"
