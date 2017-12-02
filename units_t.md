@@ -103,6 +103,7 @@ Type | Definition
 ## Helper classes
 Class | Description
 ------|------------
+[`si::quantity_t`](quantity_t.md) | describes the SI quantities in a `units_t`
 `std::hash<si::units_t>` | hash support for `units_t`
 
 ## Example
