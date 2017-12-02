@@ -78,3 +78,29 @@ Function | Description
 `basic_string_from` | returns [`std::basic_string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
 `string_from` | returns [`std::string`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
 `wstring_from` | returns [`std::wstring`](http://en.cppreference.com/w/cpp/string/basic_string) containing representation of a `quantity_t`
+
+## Example
+```c++
+#include <iostream>
+#include "quantity.hpp"
+#include "string/string-quantity.hpp"
+
+int main(int argc, const char * argv[])
+{
+    using speed = si::divide_quantity<si::distance, si::time>;
+    std::cout << "speed is measured in " << si::string_from(speed{}) << "\n";
+
+    std::cout
+        << si::string_from(si::force{})
+        << " * "
+        << si::string_from(si::distance{})
+        << " = "
+        << si::string_from(si::multiply_quantity<si::force, si::length>{})
+        << "\n";
+}
+```
+Output:
+```
+speed is measured in m/s
+N * m = J
+```
