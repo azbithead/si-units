@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0856C4C91FB8D70300EFCB91 /* string-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0856C4C71FB8D70300EFCB91 /* string-test.cpp */; };
-		088AAE851FC5DFD70093E6CD /* math-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 088AAE841FC5DFD60093E6CD /* math-test.cpp */; };
 		08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A927791FB8CA3E00E4F37F /* test.cpp */; };
 		08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277D1FB8CA8400E4F37F /* units-test.cpp */; };
 		08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */; };
@@ -27,16 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0856C4C31FB8D44700EFCB91 /* ratio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ratio; path = ../si/ratio; sourceTree = "<group>"; };
-		0856C4C41FB8D44700EFCB91 /* string */ = {isa = PBXFileReference; lastKnownFileType = folder; name = string; path = ../si/string; sourceTree = "<group>"; };
 		0856C4C51FB8D44700EFCB91 /* units.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = units.hpp; path = ../si/units.hpp; sourceTree = "<group>"; };
 		0856C4C61FB8D44700EFCB91 /* quantity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = quantity.hpp; path = ../si/quantity.hpp; sourceTree = "<group>"; };
-		0856C4C71FB8D70300EFCB91 /* string-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "string-test.cpp"; sourceTree = "<group>"; };
-		0856C4C81FB8D70300EFCB91 /* string-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "string-test.hpp"; sourceTree = "<group>"; };
-		088AAE811FC47FFA0093E6CD /* stream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = stream; path = ../si/stream; sourceTree = "<group>"; };
-		088AAE821FC5DEBA0093E6CD /* math.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = ../si/math.hpp; sourceTree = "<group>"; };
-		088AAE831FC5DFD60093E6CD /* math-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "math-test.hpp"; sourceTree = "<group>"; };
-		088AAE841FC5DFD60093E6CD /* math-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "math-test.cpp"; sourceTree = "<group>"; };
+		08817E231FD4B0EC00EE558C /* exponent.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = exponent.hpp; path = ../si/exponent.hpp; sourceTree = "<group>"; };
+		08817E241FD5C47200EE558C /* ratio.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ratio.hpp; path = ../si/ratio.hpp; sourceTree = "<group>"; };
+		08817E251FD5C72A00EE558C /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = constants.hpp; path = ../si/constants.hpp; sourceTree = "<group>"; };
+		08817E261FD5C7B200EE558C /* string-from.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = "string-from.hpp"; path = "../si/string-from.hpp"; sourceTree = "<group>"; };
 		08A9276F1FB8C90000E4F37F /* si-unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "si-unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A927791FB8CA3E00E4F37F /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		08A9277B1FB8CA8400E4F37F /* units-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-test.hpp"; sourceTree = "<group>"; };
@@ -59,11 +53,11 @@
 		0856C4C21FB8D42E00EFCB91 /* si */ = {
 			isa = PBXGroup;
 			children = (
-				088AAE821FC5DEBA0093E6CD /* math.hpp */,
+				08817E251FD5C72A00EE558C /* constants.hpp */,
+				08817E231FD4B0EC00EE558C /* exponent.hpp */,
 				0856C4C61FB8D44700EFCB91 /* quantity.hpp */,
-				0856C4C31FB8D44700EFCB91 /* ratio */,
-				088AAE811FC47FFA0093E6CD /* stream */,
-				0856C4C41FB8D44700EFCB91 /* string */,
+				08817E241FD5C47200EE558C /* ratio.hpp */,
+				08817E261FD5C7B200EE558C /* string-from.hpp */,
 				0856C4C51FB8D44700EFCB91 /* units.hpp */,
 			);
 			name = si;
@@ -89,12 +83,8 @@
 		08A927711FB8C90000E4F37F /* si-unit-test */ = {
 			isa = PBXGroup;
 			children = (
-				088AAE841FC5DFD60093E6CD /* math-test.cpp */,
-				088AAE831FC5DFD60093E6CD /* math-test.hpp */,
 				08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */,
 				08A9277C1FB8CA8400E4F37F /* quantity-test.hpp */,
-				0856C4C71FB8D70300EFCB91 /* string-test.cpp */,
-				0856C4C81FB8D70300EFCB91 /* string-test.hpp */,
 				08A927791FB8CA3E00E4F37F /* test.cpp */,
 				08A9277D1FB8CA8400E4F37F /* units-test.cpp */,
 				08A9277B1FB8CA8400E4F37F /* units-test.hpp */,
@@ -159,11 +149,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0856C4C91FB8D70300EFCB91 /* string-test.cpp in Sources */,
 				08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */,
 				08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */,
 				08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */,
-				088AAE851FC5DFD70093E6CD /* math-test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,11 +4,11 @@
 #include <limits>
 #include <cmath>
 #include <chrono>
+#include <string>
+#include <ostream>
 
 #include "quantity.hpp"
-#include "ratio/is-ratio.hpp"
-#include "ratio/ratio-gcd.hpp"
-#include "ratio/ratio-sqrt.hpp"
+#include "ratio.hpp"
 
 namespace si
 {
@@ -37,7 +37,7 @@ struct std::common_type
     using type = si::units_t
     <
         std::common_type_t<VALUE1, VALUE2>,
-        si::ratio::ratio_gcd<INTERVAL1, INTERVAL2>,
+        si::ratio_gcd<INTERVAL1, INTERVAL2>,
         QUANTITY
     >;
 };
@@ -168,14 +168,14 @@ template <typename QUANTITY, typename VALUE, typename INTERVAL>
 struct is_units_impl<units_t<VALUE, INTERVAL, QUANTITY>> : std::true_type {};
 
 //------------------------------------------------------------------------------
-/// true if aType is an si::units_t, false otherwise
+/// true if aType is a units_t, false otherwise
 /// @tparam aType a type to be tested
 template <typename aType>
 constexpr bool is_units_t = is_units_impl<typename std::decay<aType>::type>::value;
 
 //------------------------------------------------------------------------------
-/// Convert an si::units_t to another si::units_t type.
-/// Both types must have the same si::quantity_t type.
+/// Convert a units_t to another units_t type.
+/// Both types must have the same quantity_t type.
 template <typename ToUnitsT, typename QUANTITY, typename VALUE, typename INTERVAL>
 inline
 constexpr
@@ -255,12 +255,12 @@ template< class From, class To >
 constexpr bool is_convertible_v = std::is_convertible<From, To>::value;
 
 //------------------------------------------------------------------------------
-/// Class si::units_t represents a numeric value with associated SI units.
+/// Class units_t represents a numeric value with associated SI units.
 template <typename VALUE, typename INTERVAL, typename QUANTITY>
 class units_t
 {
     static_assert(std::is_arithmetic<VALUE>::value, "VALUE must be an arithmetic type");
-    static_assert(ratio::is_ratio<INTERVAL>, "INTERVAL must be of type std::ratio");
+    static_assert(is_ratio<INTERVAL>, "INTERVAL must be of type std::ratio");
     static_assert(std::ratio_greater<INTERVAL, std::ratio<0>>::value, "INTERVAL must be positive");
     static_assert(is_quantity<QUANTITY>, "QUANTITY must be of type si::quantity_t" );
 
@@ -268,8 +268,8 @@ class units_t
     struct no_overflow
     {
     private:
-        static constexpr intmax_t num_gcd = ratio::gcd<_R1::num, _R2::num>;
-        static constexpr intmax_t den_gcd = ratio::gcd<_R1::den, _R2::den>;
+        static constexpr intmax_t num_gcd = gcd<_R1::num, _R2::num>;
+        static constexpr intmax_t den_gcd = gcd<_R1::den, _R2::den>;
         static constexpr intmax_t num1 = _R1::num / num_gcd;
         static constexpr intmax_t den1 = _R1::den / den_gcd;
         static constexpr intmax_t num2 = _R2::num / num_gcd;
@@ -395,6 +395,98 @@ private:
     value_t mValue;
 
 }; // end of class units_t
+
+//==============================================================================
+// Some useful units_t types
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using scalar = units_t<VALUE, INTERVAL, none>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using meters = units_t<VALUE, INTERVAL, length>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using kilograms = units_t<VALUE, INTERVAL, mass>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using seconds = units_t<VALUE, INTERVAL, time>;
+
+template< typename VALUE = double >
+using minutes = seconds<std::ratio<60>, VALUE>;
+
+template< typename VALUE = double >
+using hours = seconds<std::ratio<60*60>, VALUE>;
+
+template< typename VALUE = double >
+using days = seconds<std::ratio<24*60*60>, VALUE>;
+
+template< typename VALUE = double >
+using milliseconds = seconds<std::milli, VALUE>;
+
+template< typename VALUE = double >
+using microseconds = seconds<std::micro, VALUE>;
+
+template< typename VALUE = double >
+using nanoseconds = seconds<std::nano, VALUE>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using amperes = units_t<VALUE, INTERVAL, current>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using kelvins = units_t<VALUE, INTERVAL, temperature>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using candelas = units_t<VALUE, INTERVAL, luminous_intensity>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using radians = units_t<VALUE, INTERVAL, angle>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using steradians = units_t<VALUE, INTERVAL, solid_angle>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using hertz = units_t<VALUE, INTERVAL, frequency>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using newtons = units_t<VALUE, INTERVAL, force>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using coulombs = units_t<VALUE, INTERVAL, charge>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using lux = units_t<VALUE, INTERVAL, illuminance>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using pascals = units_t<VALUE, INTERVAL, pressure>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using joules = units_t<VALUE, INTERVAL, energy>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using watts = units_t<VALUE, INTERVAL, power>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using volts = units_t<VALUE, INTERVAL, voltage>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using farads = units_t<VALUE, INTERVAL, capacitance>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using ohms = units_t<VALUE, INTERVAL, impedance>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using siemens = units_t<VALUE, INTERVAL, conductance>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using webers = units_t<VALUE, INTERVAL, magnetic_flux>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using teslas = units_t<VALUE, INTERVAL, magnetic_flux_density>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using henries = units_t<VALUE, INTERVAL, inductance>;
+
+template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
+using lumens = units_t<VALUE, INTERVAL, luminous_flux>;
 
 template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_eq_impl
@@ -905,97 +997,405 @@ operator%
     return aLHS - (aRHS * (aLHS / aRHS));
 }
 
-//==============================================================================
-// Some useful si::units_t types
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using scalar = units_t<VALUE, INTERVAL, none>;
+//------------------------------------------------------------------------------
+// absolute value of a units_t
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY
+>
+inline
+constexpr
+units_t<VALUE, INTERVAL, QUANTITY>
+absolute
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
+)
+{
+    return units_t<VALUE, INTERVAL, QUANTITY>{std::abs(aUnits.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using meters = units_t<VALUE, INTERVAL, length>;
+//------------------------------------------------------------------------------
+// floor of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename = std::enable_if_t<is_units_t<RESULT>>
+>
+inline
+constexpr
+RESULT
+floor
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
+)
+{
+    auto theResult = units_cast<RESULT>(aUnits);
+    return RESULT{static_cast<typename RESULT::value_t>(std::floor(theResult.value()))};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using kilograms = units_t<VALUE, INTERVAL, mass>;
+//------------------------------------------------------------------------------
+// ceiling of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename = std::enable_if_t<is_units_t<RESULT>>
+>
+inline
+constexpr
+RESULT
+ceiling
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
+)
+{
+    auto theResult = units_cast<RESULT>(aUnits);
+    if( theResult < aUnits )
+    {
+        theResult += RESULT{static_cast<typename RESULT::value_t>(1)};
+    }
+    return RESULT{static_cast<typename RESULT::value_t>(std::ceil(theResult.value()))};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using seconds = units_t<VALUE, INTERVAL, time>;
+//------------------------------------------------------------------------------
+// round of a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename = std::enable_if_t
+    <
+        is_units_t<RESULT> &&
+        !std::is_floating_point<typename RESULT::value_t>::value
+    >
+>
+inline
+constexpr
+RESULT
+round
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
+)
+{
+    RESULT t0 = floor<RESULT>(aUnits);
+    RESULT t1 = t0 + RESULT{1};
+    auto diff0 = aUnits - t0;
+    auto diff1 = t1 - aUnits;
+    if (diff0 == diff1) {
+        if (t0.value() & 1)
+            return t1;
+        return t0;
+    } else if (diff0 < diff1) {
+        return t0;
+    }
+    return t1;
+}
 
-template< typename VALUE = double >
-using minutes = seconds<std::ratio<60>, VALUE>;
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename EPSILON
+>
+using sqrt_result_t = typename std::enable_if
+<
+    std::is_floating_point<VALUE>::value,
+    units_t
+    <
+        VALUE,
+        typename ratio_sqrt<INTERVAL, EPSILON>::type,
+        root_quantity<QUANTITY, 2>
+    >
+>::type;
 
-template< typename VALUE = double >
-using hours = seconds<std::ratio<60*60>, VALUE>;
+//------------------------------------------------------------------------------
+// square root of a units_t
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename EPSILON = std::ratio<1,10000000000000>
+>
+inline
+sqrt_result_t<VALUE, INTERVAL, QUANTITY, EPSILON>
+square_root
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aQuantity
+)
+{
+    using Result_t = sqrt_result_t<VALUE, INTERVAL, QUANTITY, EPSILON>;
+    return Result_t{std::sqrt(aQuantity.value())};
+}
 
-template< typename VALUE = double >
-using days = seconds<std::ratio<24*60*60>, VALUE>;
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+struct power_result_impl;
 
-template< typename VALUE = double >
-using milliseconds = seconds<std::milli, VALUE>;
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY
+>
+struct power_result_impl<VALUE, INTERVAL, QUANTITY, 0>
+{
+    using type = units_t<VALUE, std::ratio<1>, none>;
+};
 
-template< typename VALUE = double >
-using microseconds = seconds<std::micro, VALUE>;
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+struct power_result_impl
+{
+    using temp = typename power_result_impl<VALUE, INTERVAL, QUANTITY, EXPONENT-1>::type;
+    using type = units_t
+    <
+        VALUE,
+        std::ratio_multiply<INTERVAL, typename temp::interval_t>,
+        multiply_quantity<QUANTITY, typename temp::quantity_t>
+    >;
+};
 
-template< typename VALUE = double >
-using nanoseconds = seconds<std::nano, VALUE>;
+template
+<
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    std::intmax_t EXPONENT
+>
+using power_result_t = typename power_result_impl<VALUE, INTERVAL, QUANTITY, EXPONENT>::type;
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using amperes = units_t<VALUE, INTERVAL, current>;
+template< typename VALUE >
+constexpr
+inline
+VALUE
+value_pow
+(
+    VALUE aBase,
+    std::intmax_t aExponent
+)
+{
+    if( aExponent > 0 )
+    {
+        return aBase * value_pow(aBase, aExponent - 1);
+    }
+    else
+    {
+        return 1;
+    }
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using kelvins = units_t<VALUE, INTERVAL, temperature>;
+//------------------------------------------------------------------------------
+// raise units_t to a power
+template
+<
+    std::intmax_t EXPONENT,
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY
+>
+constexpr
+inline
+power_result_t<VALUE, INTERVAL, QUANTITY, EXPONENT>
+exponentiate
+(
+    const units_t<VALUE, INTERVAL, QUANTITY>& aQuantity
+)
+{
+    using Result_t = power_result_t<VALUE, INTERVAL, QUANTITY, EXPONENT>;
+    return Result_t{value_pow(aQuantity.value(), EXPONENT)};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using candelas = units_t<VALUE, INTERVAL, luminous_intensity>;
+//------------------------------------------------------------------------------
+// sine of radians
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+scalar<>
+sine
+(
+    radians<INTERVAL, VALUE> aRadians
+)
+{
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::sin(theBaseRadians.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using radians = units_t<VALUE, INTERVAL, angle>;
+//------------------------------------------------------------------------------
+// cosine of radians
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+scalar<>
+cosine
+(
+    radians<INTERVAL, VALUE> aRadians
+)
+{
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::cos(theBaseRadians.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using steradians = units_t<VALUE, INTERVAL, solid_angle>;
+//------------------------------------------------------------------------------
+// tangent of radians
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+scalar<>
+tangent
+(
+    radians<INTERVAL, VALUE> aRadians
+)
+{
+    const auto theBaseRadians = units_cast<radians<>>(aRadians);
+    return scalar<>{std::tan(theBaseRadians.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using hertz = units_t<VALUE, INTERVAL, frequency>;
+//------------------------------------------------------------------------------
+// arc sine of scalar
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+radians<>
+arc_sine
+(
+    scalar<INTERVAL, VALUE> aScalar
+)
+{
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::asin(theBaseScalar.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using newtons = units_t<VALUE, INTERVAL, force>;
+//------------------------------------------------------------------------------
+// arc cosine of scalar
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+radians<>
+arc_cosine
+(
+    scalar<INTERVAL, VALUE> aScalar
+)
+{
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::acos(theBaseScalar.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using coulombs = units_t<VALUE, INTERVAL, charge>;
+//------------------------------------------------------------------------------
+// arc tangent of scalar
+template
+<
+    typename VALUE,
+    typename INTERVAL
+>
+inline
+radians<>
+arc_tangent
+(
+    scalar<INTERVAL, VALUE> aScalar
+)
+{
+    const auto theBaseScalar = units_cast<scalar<>>(aScalar);
+    return radians<>{std::atan(theBaseScalar.value())};
+}
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using lux = units_t<VALUE, INTERVAL, illuminance>;
+STRING_CONST(space, " ");
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using pascals = units_t<VALUE, INTERVAL, pressure>;
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename IntervalT,
+    typename QuantityT
+>
+struct basic_string_from_impl<CharT, units_t<ValueT, IntervalT, QuantityT>>
+{
+    std::basic_string<CharT>
+    operator()
+    (
+        units_t<ValueT, IntervalT, QuantityT> aUnits
+    )
+    {
+        std::basic_string<CharT> theResult;
+        if( aUnits.interval.num != aUnits.interval.den )
+        {
+            theResult = basic_string_from_impl<CharT,IntervalT>{}(aUnits.interval);
+        }
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using joules = units_t<VALUE, INTERVAL, energy>;
+        const auto theQuantityString = basic_string_from_impl<CharT,QuantityT>{}(aUnits.quantity);
+        if( !theQuantityString.empty() )
+        {
+            if( !theResult.empty() )
+            {
+                theResult += space<CharT>;
+            }
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using watts = units_t<VALUE, INTERVAL, power>;
+            theResult += theQuantityString;
+        }
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using volts = units_t<VALUE, INTERVAL, voltage>;
+        return theResult;
+    }
+};
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using farads = units_t<VALUE, INTERVAL, capacitance>;
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename IntervalT,
+    typename QuantityT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    units_t<ValueT, IntervalT, QuantityT> aUnits
+)
+{
+    aStream << aUnits.value();
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using ohms = units_t<VALUE, INTERVAL, impedance>;
+    if( aUnits.interval.num != aUnits.interval.den )
+    {
+        aStream << multiply_operator<CharT>;
+    }
 
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using siemens = units_t<VALUE, INTERVAL, conductance>;
-
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using webers = units_t<VALUE, INTERVAL, magnetic_flux>;
-
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using teslas = units_t<VALUE, INTERVAL, magnetic_flux_density>;
-
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using henries = units_t<VALUE, INTERVAL, inductance>;
-
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using lumens = units_t<VALUE, INTERVAL, luminous_flux>;
+    return aStream << basic_string_from<CharT>(aUnits);
+}
 
 } // end of namespace si
 

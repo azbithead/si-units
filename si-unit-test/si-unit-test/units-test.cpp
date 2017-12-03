@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "units.hpp"
 #include "units-test.hpp"
 
@@ -25,14 +26,14 @@ static_assert( is_units_t< volatile m_t >, "" );
 static_assert( is_units_t< const volatile m_t >, "" );
 
 // gcd
-static_assert( si::ratio::gcd<12,9> == 3, "" );
-static_assert( si::ratio::gcd<7,5> == 1, "" );
+static_assert( si::gcd<12,9> == 3, "" );
+static_assert( si::gcd<7,5> == 1, "" );
 
 // lcm
-static_assert( si::ratio::lcm<4,6> == 12, "" );
+static_assert( si::lcm<4,6> == 12, "" );
 
 // ratio_gcd
-static_assert( is_same_v<si::ratio::ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
+static_assert( is_same_v<si::ratio_gcd<std::ratio<2,3>,std::ratio<1,4>>,std::ratio<1,12>>, "" );
 
 // units_cast
 static_assert( units_cast<mm_t>( mm_t{5} ).value() == 5, "" );
@@ -45,8 +46,8 @@ static_assert( units_cast<seconds<>>( std::chrono::milliseconds{500} ).value() =
 static_assert( duration_cast<std::chrono::milliseconds>( minutes<>{0.5} ).count() == 30000, "" );
 
 // is_ratio
-static_assert( !si::ratio::is_ratio<int>, "" );
-static_assert( si::ratio::is_ratio<std::ratio<1>>, "" );
+static_assert( !si::is_ratio<int>, "" );
+static_assert( si::is_ratio<std::ratio<1>>, "" );
 
 // ctor and value()
 static_assert( mm_t{}.value() == 0, "" );
@@ -166,17 +167,51 @@ static_assert( m_t::min().value() == std::numeric_limits<m_t::value_t>::min(), "
 // max()
 static_assert( m_t::max().value() == std::numeric_limits<m_t::value_t>::max(), "" );
 
-constexpr inline void assertf( bool aInvariant, int aLineNumber )
+inline
+void
+assertf
+(
+    bool aInvariant,
+    const char* aFilename,
+    int aLineNumber
+)
 {
     if( !aInvariant )
     {
-        std::cout << "assert failed on line " << aLineNumber << "\n";
+        std::cout
+            << "assert failed at "
+            << aFilename
+            << ":"
+            << aLineNumber
+            << "\n";
     }
 }
 
 } // end of anonymous namespace
 
-#define assert( exp ) assertf( exp, __LINE__ )
+#define assert( exp ) assertf( exp, __FILE__, __LINE__ )
+
+#define assert_str_eq( str1, str2 ) assertf( str1 == str2, __FILE__, __LINE__ )
+
+#define assert_abbrev( aT ) \
+{ \
+    { \
+        assertf(si::string_from(aT{}) == si::abbrev<char,aT>, __FILE__, __LINE__); \
+    } \
+    { \
+        assertf(si::wstring_from(aT{}) == si::abbrev<wchar_t,aT>, __FILE__, __LINE__); \
+    } \
+}
+
+#define assert_literal( aT, str ) \
+{ \
+    { \
+        assert_str_eq(si::string_from(aT{}), str); \
+    } \
+    { \
+        assert_str_eq(si::wstring_from(aT{}), L##str); \
+    } \
+}
 
 void si::run_units_tests()
 {
@@ -243,5 +278,159 @@ void si::run_units_tests()
     // hash
     {
     assert( std::hash<m_t>{}(m_t{3}) == std::hash<m_t::value_t>{}(3) );
+    }
+
+    assert_abbrev( mass );
+    assert_abbrev( length );
+    assert_abbrev( time );
+    assert_abbrev( current );
+    assert_abbrev( temperature );
+    assert_abbrev( luminous_intensity );
+    assert_abbrev( substance );
+    assert_abbrev( angle );
+    assert_abbrev( force );
+
+    assert_literal( none, "");
+    assert_literal( reciprocal_quantity<mass>, "1/kg");
+    {
+        using TestQuantity_t = power_quantity<mass,102>;
+        assert_literal( TestQuantity_t, "kg\u00B9\u2070\u00B2");
+    }
+    {
+        using TestQuantity_t = reciprocal_quantity<power_quantity<mass,2>>;
+        assert_literal( TestQuantity_t, "1/kg\u00B2");
+    }
+    {
+        using TestQuantity_t = divide_quantity<power_quantity<mass, 2>,power_quantity<time,4>>;
+        assert_literal( TestQuantity_t, "kg\u00B2/s\u2074");
+    }
+
+    assert_literal(std::ratio<1>, "");
+    assert_literal(std::kilo, "10\u00B3");
+    assert_literal(std::micro, "10\u207B\u2076");
+    {
+        using TestRatio_t = std::ratio<5,18>;
+        assert_literal(TestRatio_t, "5/18");
+    }
+
+    {
+        using theSuffixT = units_t<int,std::ratio<1>,none>;
+        assert_literal(theSuffixT, "");
+    }
+    {
+        using theSuffixT = units_t<int,std::milli,none>;
+        assert_literal(theSuffixT, "10\u207B\u00B3");
+    }
+    {
+        using theSuffixT = units_t<int,std::ratio<1>,mass>;
+        assert_literal(theSuffixT, "kg");
+    }
+    {
+        using theSuffixT = units_t<int,std::milli,luminous_intensity>;
+        assert_literal(theSuffixT, "10\u207B\u00B3 cd");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::ratio<1>,none>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::milli,none>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5·10\u207B\u00B3");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::milli,luminous_intensity>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5·10\u207B\u00B3 cd");
+    }
+
+    // absolute
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    assert( absolute(int_meters{-1}) == int_meters{1} );
+    assert( absolute(meters<>{-1.0}) == meters<>{1.0} );
+    }
+
+    // floor
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    using int_kilometers = meters<std::kilo,int>;
+    assert( floor<int_kilometers>(int_meters{1500}) == int_kilometers{1} );
+    assert( floor<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{1.0} );
+    }
+
+    // ceiling
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    using int_kilometers = meters<std::kilo,int>;
+    assert( ceiling<int_kilometers>(int_meters{1500}) == int_kilometers{2} );
+    assert( ceiling<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{2.0} );
+    }
+
+    // round
+    {
+    using int_kilometers = meters<std::kilo,int>;
+    assert( round<int_kilometers>(meters<>{1499.0}) == int_kilometers{1} );
+    assert( round<int_kilometers>(meters<>{1501.0}) == int_kilometers{2} );
+    assert( round<int_kilometers>(meters<>{1500.0}) == int_kilometers{2} );
+    assert( round<int_kilometers>(meters<>{2500.0}) == int_kilometers{2} );
+    }
+
+    // square_root
+    {
+    auto theValue = square_root(seconds<std::mega>{4.0});
+    auto theExpectedResult = seconds<std::kilo>{2.0};
+    assert( theValue == theExpectedResult );
+    }
+
+    // exponentiate floating point
+    {
+    auto theValue = seconds<>{3.0};
+    assert( exponentiate<2>(theValue) == (theValue * theValue) );
+    }
+
+    // exponentiate integer
+    {
+    auto theValue = seconds<std::ratio<1>,int>{2};
+    assert( exponentiate<3>(theValue) == (theValue * theValue * theValue) );
+    }
+
+    static constexpr auto theHalfPi = radians<>{3.14159 / 2.0};
+
+    // sin
+    {
+    assert( sine(theHalfPi) == scalar<>{std::sin(theHalfPi.value())} );
+    }
+
+    // cosine
+    {
+    assert( cosine(radians<>{}.zero()) == scalar<>{std::cos(0.0)} );
+    }
+
+    // tangent
+    {
+    assert( tangent(-theHalfPi) == scalar<>{std::tan(-theHalfPi.value())} );
+    }
+
+    // arc sine
+    {
+    assert( arc_sine(scalar<>{1.0}) == radians<>{std::asin(1.0)} );
+    }
+
+    // arc cosine
+    {
+    assert( arc_cosine(scalar<>{1.0}) == radians<>{std::acos(1.0)} );
+    }
+
+    // arc tangent
+    {
+    assert( arc_tangent(scalar<>{1.0}) == radians<>{std::atan(1.0)} );
     }
 }

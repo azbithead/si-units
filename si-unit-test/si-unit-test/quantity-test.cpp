@@ -1,4 +1,4 @@
-#include "units.hpp"
+#include "quantity.hpp"
 #include "quantity-test.hpp"
 
 // compile-time unit tests

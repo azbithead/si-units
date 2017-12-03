@@ -83,7 +83,6 @@ Function | Description
 ```c++
 #include <iostream>
 #include "quantity.hpp"
-#include "string/string-quantity.hpp"
 
 int main(int argc, const char * argv[])
 {

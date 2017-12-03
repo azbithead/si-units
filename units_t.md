@@ -110,7 +110,6 @@ Class | Description
 ```c++
 #include <iostream>
 #include "units.hpp"
-#include "stream/stream-units.hpp"
 
 int main(int argc, const char * argv[])
 {

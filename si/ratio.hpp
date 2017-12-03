@@ -1,10 +1,75 @@
 #pragma once
 #include <ratio>
+#include <type_traits>
+#include <string>
 
 namespace si
 {
-namespace ratio
+
+template <typename aType>
+struct is_ratio_impl : std::false_type{};
+
+template <std::intmax_t aNum, std::intmax_t aDen>
+struct is_ratio_impl<std::ratio<aNum, aDen>> : std::true_type{};
+
+//------------------------------------------------------------------------------
+/// true if aType is a std::ratio, false otherwise
+/// @tparam aType a type to be tested
+template <typename aType>
+constexpr bool is_ratio = is_ratio_impl<aType>::value;
+
+template <intmax_t aX, intmax_t aY>
+struct gcd_impl
 {
+    static constexpr intmax_t value = gcd_impl<aY, aX % aY>::value;
+};
+
+template <intmax_t aX>
+struct gcd_impl<aX, 0>
+{
+    static constexpr intmax_t value = aX;
+};
+
+template <>
+struct gcd_impl<0, 0>
+{
+    static constexpr intmax_t value = 1;
+};
+
+//------------------------------------------------------------------------------
+/// greatest common divisor (GCD)
+template <intmax_t aX, intmax_t aY>
+constexpr intmax_t gcd = gcd_impl<aX,aY>::value;
+
+template <intmax_t aX, intmax_t aY>
+struct lcm_impl
+{
+    static constexpr intmax_t value = aX / gcd<aX, aY> * aY;
+};
+
+//------------------------------------------------------------------------------
+/// least common multiple (LCM)
+template <intmax_t aX, intmax_t aY>
+constexpr intmax_t lcm = lcm_impl<aX,aY>::value;
+
+//------------------------------------------------------------------------------
+/// the std::ratio that is the greatest common divisor (GCD) of aRatioX and aRatioY
+/// @tparam aRatioX a std::ratio
+/// @tparam aRatioY a std::ratio
+template <typename aRatioX, typename aRatioY>
+using ratio_gcd = std::ratio
+<
+    gcd
+    <
+        aRatioX::num,
+        aRatioY::num
+    >,
+    lcm
+    <
+        aRatioX::den,
+        aRatioY::den
+    >
+>;
 
 using Zero = std::ratio<0>;
 using One = std::ratio<1>;
@@ -190,6 +255,133 @@ struct ratio_sqrt
 {
 };
 
-} // end of namespace ratio
-} // end of namespace si
+template< typename CharT >
+inline
+std::basic_string<CharT>
+basic_string_from_exponent
+(
+    std::intmax_t aExponent
+)
+{
+    std::basic_string<CharT> theResult;
+    std::basic_string<CharT> theSign;
 
+    if( aExponent < 0 )
+    {
+        theSign = superscript_minus<CharT>;
+        aExponent = -aExponent;
+    }
+
+    do
+    {
+        theResult = superscript_digit<CharT>[aExponent % 10] + theResult;
+        aExponent /= 10;
+    }
+    while( aExponent > 0 );
+
+    theResult = theSign + theResult;
+
+    return theResult;
+}
+
+struct scientific
+{
+    constexpr
+    scientific
+    (
+        std::intmax_t aValue
+    )
+    : mantissa{aValue}, exponent{0}
+    {
+        if( mantissa > 0 )
+        {
+            while( (mantissa % 10) == 0 )
+            {
+                mantissa /= 10;
+                ++exponent;
+            }
+        }
+    }
+
+    std::intmax_t mantissa;
+    std::intmax_t exponent;
+};
+
+template< typename CharT >
+struct basic_string_from_impl<CharT, scientific>
+{
+    std::basic_string<CharT>
+    operator()
+    (
+        scientific aScientific
+    )
+    {
+        std::basic_string<CharT> theResult = basic_string_from<CharT>(aScientific.mantissa);
+
+        if( aScientific.exponent )
+        {
+            theResult += multiply_operator<CharT> + basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(aScientific.exponent);
+        }
+
+        return theResult;
+    }
+};
+
+template
+<
+    typename CharT,
+    std::intmax_t Num,
+    std::intmax_t Den
+>
+struct basic_string_from_impl<CharT, std::ratio<Num,Den>>
+{
+    std::basic_string<CharT>
+    operator()
+    (
+        std::ratio<Num,Den> aRatio
+    )
+    {
+        std::basic_string<CharT> theResult;
+
+        if( aRatio.num != aRatio.den )
+        {
+            constexpr auto theNum = scientific{aRatio.num};
+            auto theDen = scientific{aRatio.den};
+            theDen.exponent = -theDen.exponent;
+
+            if( theNum.mantissa != theDen.mantissa )
+            {
+                theResult = basic_string_from<CharT>(theNum.mantissa);
+            }
+
+            if( theDen.mantissa != 1 )
+            {
+                theResult += divide_operator<CharT> + basic_string_from<CharT>(theDen.mantissa);
+            }
+
+            if( theNum.exponent != 0 )
+            {
+                if( !theResult.empty() )
+                {
+                    theResult += multiply_operator<CharT>;
+                }
+
+                theResult += basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theNum.exponent);
+            }
+
+            if( theDen.exponent != 0 )
+            {
+                if( !theResult.empty() )
+                {
+                    theResult += multiply_operator<CharT>;
+                }
+
+                theResult += basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theDen.exponent);
+            }
+        }
+
+        return theResult;
+    }
+};
+
+} // end of namespace si
