@@ -95,7 +95,7 @@ int main(int argc, const char * argv[])
         << " * "
         << si::string_from(si::distance{})
         << " = "
-        << si::string_from(si::multiply_quantity<si::force, si::length>{})
+        << si::string_from(si::multiply_quantity<si::force, si::distance>{})
         << "\n";
 }
 ```
