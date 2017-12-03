@@ -15,17 +15,17 @@ std::basic_ostream<CharT>&
 operator <<
 (
     std::basic_ostream<CharT>& aStream,
-    si::units_t<ValueT, IntervalT, QuantityT> aUnits
+    units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
     aStream << aUnits.value();
 
     if( aUnits.interval.num != aUnits.interval.den )
     {
-        aStream << si::multiply_operator<CharT> << si::basic_string_from<CharT>(aUnits.interval);
+        aStream << si::multiply_operator<CharT>;
     }
 
-    return aStream << si::space<CharT> << si::basic_string_from<CharT>(aUnits.quantity);
+    return aStream << si::basic_string_from<CharT>(aUnits);
 }
 
 } // end of namespace si

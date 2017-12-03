@@ -105,6 +105,20 @@ void si::run_string_tests()
     }
 
     {
+        static constexpr auto theTestUnits = units_t<int,std::ratio<1>,none>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert(theStream.str(), "5");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::milli,none>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert(theStream.str(), "5·10\u207B\u00B3");
+    }
+
+    {
         static constexpr auto theTestUnits = units_t<int,std::milli,luminous_intensity>{5};
         std::ostringstream theStream;
         theStream << theTestUnits;
