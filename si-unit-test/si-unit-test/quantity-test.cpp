@@ -1,3 +1,5 @@
+#include <iostream>
+#include "helpers.hpp"
 #include "quantity.hpp"
 #include "quantity-test.hpp"
 
@@ -35,7 +37,42 @@ static_assert( std::is_same<quantity_t<2,-1>, root_quantity<quantity_t<4,-2>,2>>
 
 } // end of anonymous namespace
 
+#define assert_abbrev( aT ) \
+{ \
+    { \
+        si::test::assertf(si::string_from(aT{}) == si::abbrev<char,aT>, __FILE__, __LINE__); \
+    } \
+    { \
+        si::test::assertf(si::wstring_from(aT{}) == si::abbrev<wchar_t,aT>, __FILE__, __LINE__); \
+    } \
+}
+
 void si::run_quantity_tests()
 {
-    // there are currently no run-time unit tests for units_t
+    using namespace si;
+
+    assert_abbrev( mass );
+    assert_abbrev( length );
+    assert_abbrev( time );
+    assert_abbrev( current );
+    assert_abbrev( temperature );
+    assert_abbrev( luminous_intensity );
+    assert_abbrev( substance );
+    assert_abbrev( angle );
+    assert_abbrev( force );
+
+    assert_literal( none, "");
+    assert_literal( reciprocal_quantity<mass>, "1/kg");
+    {
+        using TestQuantity_t = power_quantity<mass,102>;
+        assert_literal( TestQuantity_t, "kg\u00B9\u2070\u00B2");
+    }
+    {
+        using TestQuantity_t = reciprocal_quantity<power_quantity<mass,2>>;
+        assert_literal( TestQuantity_t, "1/kg\u00B2");
+    }
+    {
+        using TestQuantity_t = divide_quantity<power_quantity<mass, 2>,power_quantity<time,4>>;
+        assert_literal( TestQuantity_t, "kg\u00B2/s\u2074");
+    }
 }

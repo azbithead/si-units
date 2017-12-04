@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08817E291FD5D33700EE558C /* exponent-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08817E281FD5D33700EE558C /* exponent-test.cpp */; };
+		08817E2C1FD5D6BE00EE558C /* ratio-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08817E2B1FD5D6BE00EE558C /* ratio-test.cpp */; };
 		08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A927791FB8CA3E00E4F37F /* test.cpp */; };
 		08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277D1FB8CA8400E4F37F /* units-test.cpp */; };
 		08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */; };
@@ -31,6 +33,11 @@
 		08817E241FD5C47200EE558C /* ratio.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ratio.hpp; path = ../si/ratio.hpp; sourceTree = "<group>"; };
 		08817E251FD5C72A00EE558C /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = constants.hpp; path = ../si/constants.hpp; sourceTree = "<group>"; };
 		08817E261FD5C7B200EE558C /* string-from.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = "string-from.hpp"; path = "../si/string-from.hpp"; sourceTree = "<group>"; };
+		08817E271FD5D33700EE558C /* exponent-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "exponent-test.hpp"; sourceTree = "<group>"; };
+		08817E281FD5D33700EE558C /* exponent-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "exponent-test.cpp"; sourceTree = "<group>"; };
+		08817E2A1FD5D6BE00EE558C /* ratio-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "ratio-test.hpp"; sourceTree = "<group>"; };
+		08817E2B1FD5D6BE00EE558C /* ratio-test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ratio-test.cpp"; sourceTree = "<group>"; };
+		08817E2D1FD5E60700EE558C /* helpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = helpers.hpp; sourceTree = "<group>"; };
 		08A9276F1FB8C90000E4F37F /* si-unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "si-unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A927791FB8CA3E00E4F37F /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		08A9277B1FB8CA8400E4F37F /* units-test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "units-test.hpp"; sourceTree = "<group>"; };
@@ -83,11 +90,16 @@
 		08A927711FB8C90000E4F37F /* si-unit-test */ = {
 			isa = PBXGroup;
 			children = (
+				08817E281FD5D33700EE558C /* exponent-test.cpp */,
+				08817E271FD5D33700EE558C /* exponent-test.hpp */,
 				08A9277E1FB8CA8400E4F37F /* quantity-test.cpp */,
 				08A9277C1FB8CA8400E4F37F /* quantity-test.hpp */,
+				08817E2B1FD5D6BE00EE558C /* ratio-test.cpp */,
+				08817E2A1FD5D6BE00EE558C /* ratio-test.hpp */,
 				08A927791FB8CA3E00E4F37F /* test.cpp */,
 				08A9277D1FB8CA8400E4F37F /* units-test.cpp */,
 				08A9277B1FB8CA8400E4F37F /* units-test.hpp */,
+				08817E2D1FD5E60700EE558C /* helpers.hpp */,
 			);
 			path = "si-unit-test";
 			sourceTree = "<group>";
@@ -149,9 +161,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08817E291FD5D33700EE558C /* exponent-test.cpp in Sources */,
 				08A9277A1FB8CA3E00E4F37F /* test.cpp in Sources */,
 				08A9277F1FB8CA8400E4F37F /* units-test.cpp in Sources */,
 				08A927801FB8CA8400E4F37F /* quantity-test.cpp in Sources */,
+				08817E2C1FD5D6BE00EE558C /* ratio-test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

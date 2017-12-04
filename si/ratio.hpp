@@ -2,6 +2,9 @@
 #include <ratio>
 #include <type_traits>
 #include <string>
+#include "string-from.hpp"
+#include "exponent.hpp"
+#include "constants.hpp"
 
 namespace si
 {
