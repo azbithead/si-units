@@ -258,76 +258,48 @@ struct ratio_sqrt
 {
 };
 
-template< typename CharT >
-inline
-std::basic_string<CharT>
-basic_string_from_exponent
-(
-    std::intmax_t aExponent
-)
+template
+<
+    typename Ratio,
+    std::intmax_t Exp = 0,
+    bool NumMod = ((Ratio::num % 10) != 0),
+    bool DenMod = ((Ratio::den % 10) != 0)
+>
+struct sci_t;
+
+template
+<
+    typename Ratio,
+    std::intmax_t Exp
+>
+struct sci_t<Ratio, Exp, true, true>
 {
-    std::basic_string<CharT> theResult;
-    std::basic_string<CharT> theSign;
-
-    if( aExponent < 0 )
-    {
-        theSign = superscript_minus<CharT>;
-        aExponent = -aExponent;
-    }
-
-    do
-    {
-        theResult = superscript_digit<CharT>[aExponent % 10] + theResult;
-        aExponent /= 10;
-    }
-    while( aExponent > 0 );
-
-    theResult = theSign + theResult;
-
-    return theResult;
-}
-
-struct scientific
-{
-    constexpr
-    scientific
-    (
-        std::intmax_t aValue
-    )
-    : mantissa{aValue}, exponent{0}
-    {
-        if( mantissa > 0 )
-        {
-            while( (mantissa % 10) == 0 )
-            {
-                mantissa /= 10;
-                ++exponent;
-            }
-        }
-    }
-
-    std::intmax_t mantissa;
-    std::intmax_t exponent;
+    using ratio = Ratio;
+    using exponent = exponent_t<Exp>;
 };
 
-template< typename CharT >
-struct basic_string_from_impl<CharT, scientific>
+template
+<
+    typename Ratio,
+    std::intmax_t Exp
+>
+struct sci_t<Ratio, Exp, false, true>
 {
-    std::basic_string<CharT>
-    operator()
-    (
-        scientific aScientific
-    )
-    {
-        std::basic_string<CharT> theResult = basic_string_from<CharT>(aScientific.mantissa);
+    using temp = sci_t<std::ratio<Ratio::num / 10, Ratio::den>, Exp + 1>;
+    using ratio = std::ratio<temp::ratio::num,temp::ratio::den>;
+    using exponent = exponent_t<temp::exponent::value>;
+};
 
-        if( aScientific.exponent )
-        {
-            theResult += multiply_operator<CharT> + basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(aScientific.exponent);
-        }
-
-        return theResult;
-    }
+template
+<
+    typename Ratio,
+    std::intmax_t Exp
+>
+struct sci_t<Ratio, Exp, true, false>
+{
+    using temp = sci_t<std::ratio<Ratio::num, Ratio::den / 10>, Exp - 1>;
+    using ratio = std::ratio<temp::ratio::num,temp::ratio::den>;
+    using exponent = exponent_t<temp::exponent::value>;
 };
 
 template
@@ -346,41 +318,26 @@ struct basic_string_from_impl<CharT, std::ratio<Num,Den>>
     {
         std::basic_string<CharT> theResult;
 
-        if( aRatio.num != aRatio.den )
+        using sci = sci_t<decltype(aRatio)>;
+
+        if( sci::ratio::num != sci::ratio::den )
         {
-            constexpr auto theNum = scientific{aRatio.num};
-            auto theDen = scientific{aRatio.den};
-            theDen.exponent = -theDen.exponent;
+            theResult = basic_string_from<CharT>(sci::ratio::num);
+        }
 
-            if( theNum.mantissa != theDen.mantissa )
+        if( sci::ratio::den != 1 )
+        {
+            theResult += divide_operator<CharT> + basic_string_from<CharT>(sci::ratio::den);
+        }
+
+        if( sci::exponent::value != 0 )
+        {
+            if( !theResult.empty() )
             {
-                theResult = basic_string_from<CharT>(theNum.mantissa);
+                theResult += multiply_operator<CharT>;
             }
 
-            if( theDen.mantissa != 1 )
-            {
-                theResult += divide_operator<CharT> + basic_string_from<CharT>(theDen.mantissa);
-            }
-
-            if( theNum.exponent != 0 )
-            {
-                if( !theResult.empty() )
-                {
-                    theResult += multiply_operator<CharT>;
-                }
-
-                theResult += basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theNum.exponent);
-            }
-
-            if( theDen.exponent != 0 )
-            {
-                if( !theResult.empty() )
-                {
-                    theResult += multiply_operator<CharT>;
-                }
-
-                theResult += basic_string_from<CharT>(10) + basic_string_from_exponent<CharT>(theDen.exponent);
-            }
+            theResult += basic_string_from<CharT>(10) + basic_string_from<CharT>(typename sci::exponent{});
         }
 
         return theResult;
