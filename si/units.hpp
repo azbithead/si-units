@@ -200,7 +200,7 @@ inline
 constexpr
 typename std::enable_if
 <
-    is_units_t<ToUnitsT>,
+    is_units_t<ToUnitsT> && std::is_same<typename ToUnitsT::quantity_t,si::time>::value,
     ToUnitsT
 >::type
 units_cast
