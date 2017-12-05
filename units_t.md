@@ -54,6 +54,7 @@ Function | Description
 `floor` | converts a `units_t` to another, rounding down
 `ceiling` | converts a `units_t` to another, rounding up
 `round` | converts a `units_t` to another, rounding to nearest, ties to even
+`truncate` | converts a `units_t` to another, rounding toward zero
 `exponentiate` | computes the value of a `units_t` raised to a power
 `sine` | computes the sine of a `radians`
 `cosine` | computes the cosine of a `radians`

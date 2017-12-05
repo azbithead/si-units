@@ -1027,6 +1027,11 @@ floor
 )
 {
     auto theResult = units_cast<RESULT>(aUnits);
+    if( theResult > aUnits )
+    {
+        theResult -= RESULT{static_cast<typename RESULT::value_t>(1)};
+    }
+
     return RESULT{static_cast<typename RESULT::value_t>(std::floor(theResult.value()))};
 }
 
@@ -1090,6 +1095,28 @@ round
         return t0;
     }
     return t1;
+}
+
+//------------------------------------------------------------------------------
+// truncate a units_t
+template
+<
+    typename RESULT,
+    typename VALUE,
+    typename INTERVAL,
+    typename QUANTITY,
+    typename = std::enable_if_t<is_units_t<RESULT>>
+>
+inline
+constexpr
+RESULT
+truncate
+(
+    units_t<VALUE, INTERVAL, QUANTITY> aUnits
+)
+{
+    auto theResult = units_cast<RESULT>(aUnits);
+    return RESULT{static_cast<typename RESULT::value_t>(std::trunc(theResult.value()))};
 }
 
 template

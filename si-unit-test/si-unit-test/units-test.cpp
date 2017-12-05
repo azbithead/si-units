@@ -273,7 +273,9 @@ void si::run_units_tests()
     using int_meters = meters<std::ratio<1>,int>;
     using int_kilometers = meters<std::kilo,int>;
     assert( floor<int_kilometers>(int_meters{1500}) == int_kilometers{1} );
+    assert( floor<int_kilometers>(int_meters{-1500}) == int_kilometers{-2} );
     assert( floor<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{1.0} );
+    assert( floor<meters<std::kilo>>(meters<>{-1500.0}) == meters<std::kilo>{-2.0} );
     }
 
     // ceiling
@@ -281,7 +283,9 @@ void si::run_units_tests()
     using int_meters = meters<std::ratio<1>,int>;
     using int_kilometers = meters<std::kilo,int>;
     assert( ceiling<int_kilometers>(int_meters{1500}) == int_kilometers{2} );
+    assert( ceiling<int_kilometers>(int_meters{-1500}) == int_kilometers{-1} );
     assert( ceiling<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{2.0} );
+    assert( ceiling<meters<std::kilo>>(meters<>{-1500.0}) == meters<std::kilo>{-1.0} );
     }
 
     // round
@@ -291,6 +295,20 @@ void si::run_units_tests()
     assert( round<int_kilometers>(meters<>{1501.0}) == int_kilometers{2} );
     assert( round<int_kilometers>(meters<>{1500.0}) == int_kilometers{2} );
     assert( round<int_kilometers>(meters<>{2500.0}) == int_kilometers{2} );
+    assert( round<int_kilometers>(meters<>{-1499.0}) == int_kilometers{-1} );
+    assert( round<int_kilometers>(meters<>{-1501.0}) == int_kilometers{-2} );
+    assert( round<int_kilometers>(meters<>{-1500.0}) == int_kilometers{-2} );
+    assert( round<int_kilometers>(meters<>{-2500.0}) == int_kilometers{-2} );
+    }
+
+    // truncate
+    {
+    using int_meters = meters<std::ratio<1>,int>;
+    using int_kilometers = meters<std::kilo,int>;
+    assert( truncate<int_kilometers>(int_meters{1500}) == int_kilometers{1} );
+    assert( truncate<int_kilometers>(int_meters{-1500}) == int_kilometers{-1} );
+    assert( truncate<meters<std::kilo>>(meters<>{1500.0}) == meters<std::kilo>{1.0} );
+    assert( truncate<meters<std::kilo>>(meters<>{-1500.0}) == meters<std::kilo>{-1.0} );
     }
 
     // square_root
