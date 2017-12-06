@@ -19,6 +19,7 @@ Constructs a new `units_t` from one of several data sources.
 
 ## Parameters
 `aValue` - a unitless value
+
 `aUnits` - a `units_t` to copy from
 
 ## Example
