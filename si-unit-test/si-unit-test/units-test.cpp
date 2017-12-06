@@ -161,7 +161,7 @@ static_assert( 1_m == meters<>{1}, "" );
 static_assert( 1.0_kg == kilograms<>{1}, "" );
 static_assert( 1.0_s == seconds<>{1}, "" );
 static_assert( 1.0_min == minutes<>{1}, "" );
-static_assert( 1.0_hr == hours<>{1}, "" );
+static_assert( 1.0_h == hours<>{1}, "" );
 static_assert( 1.0_d == days<>{1}, "" );
 static_assert( 1.0_ms == milliseconds<>{1}, "" );
 static_assert( 1.0_us == microseconds<>{1}, "" );
