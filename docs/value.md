@@ -1,4 +1,4 @@
-# [si::units_t](../units_t.md)::value
+# [si::units_t](units_t.md)::value
 
 `constexpr value_t value() const;`
 
