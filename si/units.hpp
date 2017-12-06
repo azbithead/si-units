@@ -449,6 +449,9 @@ template< typename INTERVAL = One, typename VALUE = double >
 using candelas = units_t<VALUE, INTERVAL, luminous_intensity>;
 
 template< typename INTERVAL = One, typename VALUE = double >
+using moles = units_t<VALUE, INTERVAL, substance>;
+
+template< typename INTERVAL = One, typename VALUE = double >
 using radians = units_t<VALUE, INTERVAL, angle>;
 
 template< typename INTERVAL = One, typename VALUE = double >
@@ -1431,6 +1434,75 @@ operator <<
     return aStream;
 }
 
+namespace literals
+{
+
+#define literal( type, str ) \
+constexpr type<> operator "" _##str \
+( \
+    long double aValue \
+) \
+{ \
+    return type<>{aValue}; \
+} \
+ \
+constexpr type<si::One,long long> operator "" _##str \
+( \
+    unsigned long long aValue \
+) \
+{ \
+    return type<si::One,long long>{aValue}; \
+}
+
+#define time_literal( type, str ) \
+constexpr type<> operator "" _##str \
+( \
+    long double aValue \
+) \
+{ \
+    return type<>{aValue}; \
+} \
+ \
+constexpr type<long long> operator "" _##str \
+( \
+    unsigned long long aValue \
+) \
+{ \
+    return type<long long>{aValue}; \
+}
+
+literal(meters,m);
+literal(kilograms, kg);
+literal(seconds, s);
+time_literal(minutes, min);
+time_literal(hours, h);
+time_literal(days, d);
+time_literal(milliseconds, ms);
+time_literal(microseconds, us);
+time_literal(nanoseconds, ns);
+literal(amperes, A);
+literal(kelvins, K);
+literal(candelas, cd);
+literal(radians, rad);
+literal(moles, mol);
+literal(steradians, sr);
+literal(hertz, Hz);
+literal(newtons, N);
+literal(pascals, Pa);
+literal(joules, J);
+literal(watts, W);
+literal(coulombs, C);
+literal(volts, V);
+literal(farads, F);
+literal(ohms, O);
+literal(siemens, S);
+literal(webers, Wb);
+literal(teslas, T);
+literal(henries, H);
+literal(lumens, lm);
+literal(lux, lx);
+
+} // end of namespace literals
 } // end of namespace si
 
 namespace std

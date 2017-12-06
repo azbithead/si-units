@@ -107,6 +107,41 @@ Class | Description
 [`si::quantity_t`](quantity_t.md) | describes the SI quantities in a `units_t`
 `std::hash<si::units_t>` | hash support for `units_t`
 
+## Literals
+Defined in inline namespace `si::literals`.
+Function | Description
+---------|------------
+`operator""m` | A `units_t` literal representing meters
+`operator""kg` | A `units_t` literal representing kilograms
+`operator""s` | A `units_t` literal representing seconds
+`operator""min` | A `units_t` literal representing minutes
+`operator""h` | A `units_t` literal representing hours
+`operator""d` | A `units_t` literal representing days
+`operator""ms` | A `units_t` literal representing milliseconds
+`operator""us` | A `units_t` literal representing microseconds
+`operator""ns` | A `units_t` literal representing nanoseconds
+`operator""A` | A `units_t` literal representing amperes
+`operator""K` | A `units_t` literal representing kelvins
+`operator""cd` | A `units_t` literal representing candelas
+`operator""rad` | A `units_t` literal representing radians
+`operator""mol` | A `units_t` literal representing moles
+`operator""sr` | A `units_t` literal representing steradians
+`operator""Hz` | A `units_t` literal representing hertz
+`operator""N` | A `units_t` literal representing newtons
+`operator""Pa` | A `units_t` literal representing pascals
+`operator""J` | A `units_t` literal representing joules
+`operator""W` | A `units_t` literal representing watts
+`operator""C` | A `units_t` literal representing coulombs
+`operator""V` | A `units_t` literal representing volts
+`operator""F` | A `units_t` literal representing farads
+`operator""O` | A `units_t` literal representing ohms
+`operator""S` | A `units_t` literal representing siemens
+`operator""Wb` | A `units_t` literal representing webers
+`operator""T` | A `units_t` literal representing teslas
+`operator""H` | A `units_t` literal representing henries
+`operator""lm` | A `units_t` literal representing lumens
+`operator""lx` | A `units_t` literal representing lux
+
 ## Example
 ```c++
 #include <iostream>

@@ -154,6 +154,40 @@ static_assert( m_t::min().value() == std::numeric_limits<m_t::value_t>::min(), "
 // max()
 static_assert( m_t::max().value() == std::numeric_limits<m_t::value_t>::max(), "" );
 
+using namespace si::literals;
+
+static_assert( 1.0_m == meters<>{1}, "" );
+static_assert( 1_m == meters<>{1}, "" );
+static_assert( 1.0_kg == kilograms<>{1}, "" );
+static_assert( 1.0_s == seconds<>{1}, "" );
+static_assert( 1.0_min == minutes<>{1}, "" );
+static_assert( 1.0_hr == hours<>{1}, "" );
+static_assert( 1.0_d == days<>{1}, "" );
+static_assert( 1.0_ms == milliseconds<>{1}, "" );
+static_assert( 1.0_us == microseconds<>{1}, "" );
+static_assert( 1.0_ns == nanoseconds<>{1}, "" );
+static_assert( 1.0_A == amperes<>{1}, "" );
+static_assert( 1.0_K == kelvins<>{1}, "" );
+static_assert( 1.0_cd == candelas<>{1}, "" );
+static_assert( 1.0_rad == radians<>{1}, "" );
+static_assert( 1.0_mol == moles<>{1}, "" );
+static_assert( 1.0_sr == steradians<>{1}, "" );
+static_assert( 1.0_Hz == hertz<>{1}, "" );
+static_assert( 1.0_N == newtons<>{1}, "" );
+static_assert( 1.0_Pa == pascals<>{1}, "" );
+static_assert( 1.0_J == joules<>{1}, "" );
+static_assert( 1.0_W == watts<>{1}, "" );
+static_assert( 1.0_C == coulombs<>{1}, "" );
+static_assert( 1.0_V == volts<>{1}, "" );
+static_assert( 1.0_F == farads<>{1}, "" );
+static_assert( 1.0_O == ohms<>{1}, "" );
+static_assert( 1.0_S == siemens<>{1}, "" );
+static_assert( 1.0_Wb == webers<>{1}, "" );
+static_assert( 1.0_T == teslas<>{1}, "" );
+static_assert( 1.0_H == henries<>{1}, "" );
+static_assert( 1.0_lm == lumens<>{1}, "" );
+static_assert( 1.0_lx == lux<>{1}, "" );
+
 } // end of anonymous namespace
 
 void si::run_units_tests()
