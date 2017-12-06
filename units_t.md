@@ -32,7 +32,7 @@ Member | Description
 ## Member functions
 Function | Description
 ---------|------------
-(constructor) | constructs new `units_t`
+[(constructor)](units_t.docs/ctor.md) | constructs new `units_t`
 `operator=` | assigns the contents
 `value` | returns the number of intervals
 `operator+`<br>`operator-` | implements unary plus and unary minus
