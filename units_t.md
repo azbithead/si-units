@@ -109,6 +109,7 @@ Class | Description
 
 ## Literals
 Defined in inline namespace `si::literals`.
+
 Function | Description
 ---------|------------
 `operator""m` | A `units_t` literal representing meters
