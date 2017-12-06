@@ -248,6 +248,13 @@ void si::run_units_tests()
     }
 
     {
+        static constexpr auto theTestUnits = newtons<>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5 N");
+    }
+
+    {
         static constexpr auto theTestUnits = units_t<int,std::milli,none>{5};
         std::ostringstream theStream;
         theStream << theTestUnits;

@@ -1,4 +1,4 @@
-# [si::units_t](../units_t.md)::operator+()\[unary\], si::units_t::operator-()\[unary\]
+# [si::units_t](../units_t.md)::operator+\[unary\], si::units_t::operator-\[unary\]
 
 Function | Description
 ---------|----------

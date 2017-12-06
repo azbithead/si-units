@@ -384,16 +384,16 @@ public:
     // Arithmetic functions
     constexpr units_t operator+() const {return *this;}
     constexpr units_t operator-() const {return units_t{-mValue};}
-    units_t& operator++() {++mValue; return *this;}
-    units_t operator++(int) {return units_t{mValue++};}
-    units_t& operator--() {--mValue; return *this;}
-    units_t operator--(int) {return units_t{mValue--};}
-    units_t& operator+=(units_t rhs) {mValue += rhs.value(); return *this;}
-    units_t& operator-=(units_t rhs) {mValue -= rhs.value(); return *this;}
-    units_t& operator*=(value_t rhs) {mValue *= rhs; return *this;}
-    units_t& operator/=(value_t rhs) {mValue /= rhs; return *this;}
-    units_t& operator%=(value_t rhs) {mValue %= rhs; return *this;}
-    units_t& operator%=(units_t rhs) {mValue %= rhs.value(); return *this;}
+    constexpr units_t& operator++() {++mValue; return *this;}
+    constexpr units_t operator++(int) {return units_t{mValue++};}
+    constexpr units_t& operator--() {--mValue; return *this;}
+    constexpr units_t operator--(int) {return units_t{mValue--};}
+    constexpr units_t& operator+=(units_t rhs) {mValue += rhs.value(); return *this;}
+    constexpr units_t& operator-=(units_t rhs) {mValue -= rhs.value(); return *this;}
+    constexpr units_t& operator*=(value_t rhs) {mValue *= rhs; return *this;}
+    constexpr units_t& operator/=(value_t rhs) {mValue /= rhs; return *this;}
+    constexpr units_t& operator%=(value_t rhs) {mValue %= rhs; return *this;}
+    constexpr units_t& operator%=(units_t rhs) {mValue %= rhs.value(); return *this;}
 
     //--------------------------------------------------------------------------
     // Special values
@@ -1413,14 +1413,22 @@ operator <<
     units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
+    using Input_t = decltype(aUnits);
+
     aStream << aUnits.value();
 
     if( aUnits.interval.num != aUnits.interval.den )
     {
-        aStream << multiply_operator<CharT>;
+        aStream << multiply_operator<CharT> << basic_string_from<CharT>(IntervalT{});
     }
 
-    return aStream << basic_string_from<CharT>(aUnits);
+    const auto theQuantityStr = basic_string_from<CharT>(QuantityT{});
+    if( !theQuantityStr.empty() )
+    {
+        aStream << space<CharT> << theQuantityStr;
+    }
+
+    return aStream;
 }
 
 } // end of namespace si
