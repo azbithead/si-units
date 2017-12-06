@@ -23,4 +23,37 @@ Constructs a new `units_t` from one of several data sources.
 
 ## Example
 ```c++
+#include "units.hpp"
+
+int main()
+{
+    // 1.0 hour, compile-time constant
+    constexpr si::hours<> h{1};
+
+    // 3 kilonewtons
+    si::newtons<std::kilo,int> kn{3};
+
+    // 55.0 kilometers/hour
+    si::units_t<double, std::ratio<1000,3600>, si::divide_quantity<si::distance, si::time>> kph{55};
+    // Easier 55.0 kilometers/hour
+    constexpr auto kph2 = si::meters<std::kilo>{55} / h;
+
+    // error: This units_t allows whole intervals only
+//  si::kelvins<std::ratio<1>, int> k{3.5};
+
+    // 3.5 ticks of a 30Hz clock
+    si::seconds<std::ratio<1, 30>> hz30(3.5);
+
+    // 3.0 milliamps
+    si::amperes<std::milli> ma{3};
+
+    // 3000.0 microamps constructed from 3 milliamps
+    si::amperes<std::micro> ua = ma;
+
+    // error: 1/1000000 is not divisible by 1/1000
+//  si::amperes<std::milli,int> ma2 = ua;
+
+    // ok, 3.0 milliamps
+    si::amperes<std::milli> ma2 = ua;
+}
 ```
