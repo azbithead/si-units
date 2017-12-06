@@ -36,7 +36,7 @@ Function | Description
 `operator=` | assigns the contents, defaulted
 [`value`](units_t.docs/value.md) | returns the number of intervals
 [`operator+`<br>`operator-`](units_t.docs/unary_plus_minus.md) | implements unary plus and unary minus
-`operator++`<br>`operator++(int)`<br>`operator--`<br>`operator--(int)` | increments or decrements value
+[`operator++`<br>`operator++(int)`<br>`operator--`<br>`operator--(int)`](units_t.docs/inc_dec.md) | increments or decrements value
 `operator+=`<br>`operator-=`<br>`operator\*=`<br>`operator/=`<br>`operator%=` | implements compound assignment between two `units_t`
 `zero` \[static] | returns the special `units_t` value zero
 `min` \[static] | returns the special `units_t` value min
