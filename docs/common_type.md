@@ -1,6 +1,6 @@
 # std::common_type([si::units_t](units_t.md))
 
-`template<typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>`<br>`struct std::common_type<si::units_t<VALUE1, INTERVAL1, QUANTITY>, si::units_t<VALUE2, INTERVAL2, QUANTITY>>`<br>`{`<br>`    using type = si::units_t`<br>`    <`<br>`        std::common_type_t<VALUE1, VALUE2>,`<br>`        /*see note*/,`<br>`        QUANTITY`<br>`    >;`<br>`};`
+`template<typename QUANTITY, typename VALUE1, typename INTERVAL1, typename VALUE2, typename INTERVAL2>`<br>`struct std::common_type<si::units_t<VALUE1, INTERVAL1, QUANTITY>, si::units_t<VALUE2, INTERVAL2, QUANTITY>>`<br>`{`<br>`    using type = si::units_t<std::common_type_t<VALUE1, VALUE2>, /*see note*/, QUANTITY>;`<br>`};`
 
 Exposes the type named `type`, which is the common type of two `units_t`s.
 
