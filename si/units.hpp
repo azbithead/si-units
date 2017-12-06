@@ -338,9 +338,16 @@ public:
     units_t
     (
         VALUE2 aValue,
-        typename std::enable_if<std::is_arithmetic<VALUE2>::value>::type* = nullptr
+        typename std::enable_if
+        <
+            std::is_arithmetic<VALUE2>::value &&
+            (
+                std::is_floating_point<value_t>::value ||
+                !std::is_floating_point<VALUE2>::value
+            )
+        >::type* = nullptr
     )
-    : mValue{aValue}
+    : mValue{static_cast<value_t>(aValue)}
     {
     }
 
