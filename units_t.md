@@ -33,7 +33,7 @@ Member | Description
 Function | Description
 ---------|------------
 [(constructor)](units_t.docs/ctor.md) | constructs new `units_t`
-`operator=` | assigns the contents
+`operator=` | assigns the contents, defaulted
 `value` | returns the number of intervals
 `operator+`<br>`operator-` | implements unary plus and unary minus
 `operator++`<br>`operator++(int)`<br>`operator--`<br>`operator--(int)` | increments or decrements value
