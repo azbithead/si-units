@@ -275,10 +275,59 @@ void si::run_units_tests()
     }
 
     {
-        static constexpr auto theTestUnits = units_t<int,std::ratio<1>,none>{5};
+        static constexpr auto theTestUnits = si::units_t<double, std::kilo, si::distance>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5·10³ m");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::kilo, si::none>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5·10³");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::ratio<1>, si::distance>{5};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "5 m");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::ratio<1>, si::none>{5};
         std::ostringstream theStream;
         theStream << theTestUnits;
         assert_str_eq(theStream.str(), "5");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::kilo, si::distance>{1};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "10³ m");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::kilo, si::none>{1};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "10³");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::ratio<1>, si::distance>{1};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "1 m");
+    }
+
+    {
+        static constexpr auto theTestUnits = si::units_t<double, std::ratio<1>, si::none>{1};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "1");
     }
 
     {
@@ -293,6 +342,13 @@ void si::run_units_tests()
         std::ostringstream theStream;
         theStream << theTestUnits;
         assert_str_eq(theStream.str(), "5·10\u207B\u00B3");
+    }
+
+    {
+        static constexpr auto theTestUnits = units_t<int,std::mega,energy>{1};
+        std::ostringstream theStream;
+        theStream << theTestUnits;
+        assert_str_eq(theStream.str(), "10\u2076 J");
     }
 
     {

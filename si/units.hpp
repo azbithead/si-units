@@ -1416,22 +1416,67 @@ operator <<
     units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
-    using Input_t = decltype(aUnits);
-
-    aStream << aUnits.value();
-
-    if( aUnits.interval.num != aUnits.interval.den )
+    if( aUnits.value() != 1 )
     {
-        aStream << multiply_operator<CharT> << basic_string_from<CharT>(IntervalT{});
+        aStream << aUnits.value() << multiply_operator<CharT>;
     }
 
-    const auto theQuantityStr = basic_string_from<CharT>(QuantityT{});
-    if( !theQuantityStr.empty() )
+    return aStream << basic_string_from<CharT>(IntervalT{}) << space<CharT> << basic_string_from<CharT>(QuantityT{});
+}
+
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename IntervalT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    units_t<ValueT, IntervalT, none> aUnits
+)
+{
+    if( aUnits.value() != 1 )
     {
-        aStream << space<CharT> << theQuantityStr;
+        aStream << aUnits.value() << multiply_operator<CharT>;
     }
 
-    return aStream;
+    return aStream << basic_string_from<CharT>(IntervalT{});
+}
+
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename QuantityT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    units_t<ValueT, si::One, QuantityT> aUnits
+)
+{
+    return aStream << aUnits.value() << space<CharT> << basic_string_from<CharT>(QuantityT{});
+}
+
+template
+<
+    typename CharT,
+    typename ValueT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    units_t<ValueT, si::One, none> aUnits
+)
+{
+    return aStream << aUnits.value();
 }
 
 namespace literals
