@@ -13,8 +13,12 @@ using namespace si;
 template< typename T, typename U >
 constexpr bool is_same_v = std::is_same<T, U>::value;
 
-template< typename T, typename S, typename R, typename U >
-constexpr bool is_q = is_same_v< T, const si::units_t<S, R, U> >;
+template< typename U, typename V, typename I, typename Q >
+constexpr bool is_same_units = is_same_v
+<
+    std::remove_cv_t<U>,
+    units_t<V, I, Q>
+>;
 
 using mm_t = units_t<int, std::milli, distance>;
 using m_t = units_t<int, std::ratio<1>, distance>;
@@ -55,34 +59,82 @@ static_assert( +m_t{ 1 } == m_t{ 1 }, "" );
 // unary -
 static_assert( -m_t{ 1 } == m_t{ -1 }, "" );
 
-// operator == quantity
+// operator ==
 static_assert( m_t{ 1 } == m_t{ 1 }, "" );
 static_assert( m_t{ 1 } == mm_t{ 1000 }, "" );
 static_assert( !(m_t{ 1 } == mm_t{ 1 }), "" );
 
-// operator != quantity
+// operator !=
 static_assert( m_t{ 1 } != mm_t{ 1 }, "" );
 static_assert( !(m_t{ 1 } != m_t{ 1 }), "" );
 
-// operator < quantity
+// operator <
 static_assert( mm_t{ 999 } < m_t{ 1 }, "" );
 static_assert( m_t{ 1 } < m_t{ 2 }, "" );
 static_assert( !(m_t{ 1 } < m_t{ 1 }), "" );
 
-// operator > quantity
+// operator >
 static_assert( m_t{ 1 } > mm_t{ 999 }, "" );
 static_assert( m_t{ 2 } > m_t{ 1 }, "" );
 static_assert( !(m_t{ 1 } > m_t{ 1 }), "" );
 
-// operator <= quantity
+// operator <=
 static_assert( mm_t{ 999 } <= m_t{ 1 }, "" );
 static_assert( m_t{ 1 } <= m_t{ 1 }, "" );
 static_assert( !(m_t{ 2 } <= m_t{ 1 }), "" );
 
-// operator >= quantity
+// operator >=
 static_assert( m_t{ 1 } >= mm_t{ 999 }, "" );
 static_assert( m_t{ 2 } >= m_t{ 2 }, "" );
 static_assert( !(m_t{ 1 } >= m_t{ 2 }), "" );
+
+// multiply_units
+static_assert
+(
+    is_same_units
+    <
+        multiply_units<meters<>, seconds<>>,
+        double,
+        One,
+        multiply_quantity<length, si::time>
+    >, ""
+);
+
+// power_units
+static_assert
+(
+    is_same_units
+    <
+        power_units<meters<std::milli>, 2>,
+        double,
+        std::micro,
+        power_quantity<length, 2>
+    >, ""
+);
+
+// reciprocal_units
+static_assert
+(
+    is_same_units
+    <
+        reciprocal_units<meters<std::milli>>,
+        double,
+        std::kilo,
+        reciprocal_quantity<length>
+    >, ""
+);
+
+// divide_units
+static_assert
+(
+    is_same_units
+    <
+        divide_units<meters<>, seconds<>>,
+        double,
+        One,
+        divide_quantity<length, si::time>
+    >, ""
+);
 
 // add
 constexpr auto theResult1 = m_t{ 1 } + mm_t{ 1 };
@@ -97,7 +149,7 @@ static_assert( is_same_v<decltype( theResult2 ), const mm_t>, "" );
 // multiply by scalar
 constexpr auto theResult3 = m_t{ 1 } * 2.1;
 static_assert( theResult3.value() == 2.1, "" );
-static_assert( is_q<decltype( theResult3 ), double, std::ratio<1>, distance>, "" );
+static_assert( is_same_units<decltype( theResult3 ), double, std::ratio<1>, distance>, "" );
 
 constexpr auto theResult4 = 2 * m_t{ 1 };
 static_assert( theResult4.value() == 2, "" );
@@ -108,7 +160,7 @@ using s_t = units_t<int, std::ratio<1>, si::time>;
 constexpr auto theResult5 = m_t{ 2 } * s_t{ 3 };
 static_assert( theResult5.value() == 6, "" );
 using meterseconds_t = multiply_quantity<distance, si::time>;
-static_assert( is_q<decltype( theResult5 ), int, std::ratio<1>, meterseconds_t>, "" );
+static_assert( is_same_units<decltype( theResult5 ), int, std::ratio<1>, meterseconds_t>, "" );
 
 // divide by scalar
 constexpr auto theResult6 = m_t{ 2 } / 2;
@@ -117,7 +169,7 @@ static_assert( is_same_v<decltype( theResult6 ), const m_t>, "" );
 
 constexpr auto theResult7 = m_t{ 2 } / 2.0;
 static_assert( theResult7.value() == 1.0, "" );
-static_assert( is_q<decltype( theResult7 ), double, std::ratio<1>, distance>, "" );
+static_assert( is_same_units<decltype( theResult7 ), double, std::ratio<1>, distance>, "" );
 
 // divide, same units
 static_assert( ( m_t{ 2 } / mm_t{ 2 } ) == 1000, "" );
@@ -128,19 +180,19 @@ using hours_t = units_t<int,std::ratio<60*60>,si::time>;
 using mpers_t = divide_quantity<distance,si::time>;
 constexpr auto theResult8 = km_t{ 6 } / hours_t{ 2 };
 static_assert( theResult8.value() == 3, "" );
-static_assert( is_q<decltype( theResult8 ), int, std::ratio<5,18>, mpers_t>, "" );
+static_assert( is_same_units<decltype( theResult8 ), int, std::ratio<5,18>, mpers_t>, "" );
 
 // divide scalar by
 constexpr auto theResult9 = 1.0 / mm_t{2};
 static_assert( theResult9.value() == 0.5, "" );
-static_assert( is_q<decltype(theResult9), double, std::kilo, reciprocal_quantity<distance>>, "" );
+static_assert( is_same_units<decltype(theResult9), double, std::kilo, reciprocal_quantity<distance>>, "" );
 
 // modulo by scalar
 constexpr auto theResult10 = m_t{ 3 } % 2;
 static_assert( theResult10.value() == 1, "" );
 static_assert( is_same_v<decltype( theResult10 ), const m_t>, "" );
 
-// modulo by quantity
+// modulo by units
 constexpr auto theResult11 = m_t{ 5 } % s_t{ 2 };
 static_assert( theResult11.value() == 1, "" );
 static_assert( is_same_v<decltype( theResult10 ), const m_t>, "" );

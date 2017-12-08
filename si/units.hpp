@@ -407,6 +407,78 @@ private:
 
 }; // end of class units_t
 
+template< typename... >
+struct multiply_units_impl;
+
+template< typename First, typename... Rest >
+struct multiply_units_impl< First, Rest... >
+{
+    using previous = multiply_units_impl<Rest...>;
+
+    using type = units_t
+    <
+        std::common_type_t<typename First::value_t, typename previous::type::value_t>,
+        std::ratio_multiply<typename First::interval_t, typename previous::type::interval_t>,
+        multiply_quantity<typename First::quantity_t, typename previous::type::quantity_t>
+    >;
+};
+
+template< typename UnitsT >
+struct multiply_units_impl<UnitsT>
+{
+    using type = units_t
+    <
+        typename UnitsT::value_t,
+        typename UnitsT::interval_t,
+        typename UnitsT::quantity_t
+    >;
+};
+
+//------------------------------------------------------------------------------
+template< typename... UnitsT >
+using multiply_units = typename multiply_units_impl< UnitsT... >::type;
+
+//------------------------------------------------------------------------------
+template< typename Units1, typename Units2 >
+using divide_units = si::units_t
+<
+    std::common_type_t<typename Units1::value_t, typename Units2::value_t>,
+    std::ratio_divide<typename Units1::interval_t, typename Units2::interval_t>,
+    si::divide_quantity<typename Units1::quantity_t, typename Units2::quantity_t>
+>;
+
+template< typename RatioT, std::intmax_t Power >
+struct power_ratio_impl
+{
+    using previous = power_ratio_impl<RatioT, Power - 1>;
+    using type = std::ratio_multiply<RatioT, typename previous::type>;
+};
+
+template< typename RatioT >
+struct power_ratio_impl<RatioT, 0>
+{
+    using type = One;
+};
+
+template< typename UnitsT, std::intmax_t Power >
+struct power_units_impl
+{
+    using type = units_t
+    <
+        typename UnitsT::value_t,
+        typename power_ratio_impl<typename UnitsT::interval_t, Power>::type,
+        power_quantity<typename UnitsT::quantity_t, Power>
+    >;
+};
+
+//------------------------------------------------------------------------------
+template< typename UnitsT, std::intmax_t Power >
+using power_units = typename power_units_impl<UnitsT, Power>::type;
+
+//------------------------------------------------------------------------------
+template< typename UnitsT >
+using reciprocal_units = divide_units<units_t<typename UnitsT::value_t, One, none>, UnitsT>;
+
 //==============================================================================
 // Some useful units_t types
 template< typename INTERVAL = One, typename VALUE = double >

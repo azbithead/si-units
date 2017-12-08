@@ -67,6 +67,16 @@ Function | Description
 `wstring_from` | returns [`std::wstring`](http://en.cppreference.com/w/cpp/string/basic_string) containing representations of `interval` and `quantity`
 `operator <<` | outputs string representation to a `std::ostream`
 
+## Operations
+The following template metafunctions produce new `units_t` types by performing operations on `units_t` types.
+
+Operation | Description
+----------|------------
+`multiply_units` |  Product of multiplying `units_t` types
+`divide_units` |  Quotient of dividing two `units_t` types
+`reciprocal_units` |  Reciprocal of a `units_t` type
+`power_units` |  Raise a `units_t` to a power
+
 ## Helper types
 Type | Definition
 ---------|------------
