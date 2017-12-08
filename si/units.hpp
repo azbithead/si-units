@@ -1574,7 +1574,7 @@ constexpr type<si::One,long long> operator "" _##str \
     return type<si::One,long long>{aValue}; \
 }
 
-#define time_literal( type, str ) \
+#define literal2( type, str ) \
 constexpr type<> operator "" _##str \
 ( \
     long double aValue \
@@ -1593,13 +1593,14 @@ constexpr type<long long> operator "" _##str \
 
 literal(meters,m);
 literal(kilograms, kg);
+literal2(grams, g);
 literal(seconds, s);
-time_literal(minutes, min);
-time_literal(hours, h);
-time_literal(days, d);
-time_literal(milliseconds, ms);
-time_literal(microseconds, us);
-time_literal(nanoseconds, ns);
+literal2(minutes, min);
+literal2(hours, h);
+literal2(days, d);
+literal2(milliseconds, ms);
+literal2(microseconds, us);
+literal2(nanoseconds, ns);
 literal(amperes, A);
 literal(kelvins, K);
 literal(candelas, cd);

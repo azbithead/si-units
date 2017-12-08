@@ -125,6 +125,7 @@ Function | Description
 ---------|------------
 `operator""m` | A `units_t` literal representing meters
 `operator""kg` | A `units_t` literal representing kilograms
+`operator""g` | A `units_t` literal representing grams
 `operator""s` | A `units_t` literal representing seconds
 `operator""min` | A `units_t` literal representing minutes
 `operator""h` | A `units_t` literal representing hours

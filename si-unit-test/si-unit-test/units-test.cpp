@@ -211,6 +211,7 @@ using namespace si::literals;
 static_assert( 1.0_m == meters<>{1}, "" );
 static_assert( 1_m == meters<>{1}, "" );
 static_assert( 1.0_kg == kilograms<>{1}, "" );
+static_assert( 1.0_g == grams<>{1}, "" );
 static_assert( 1.0_s == seconds<>{1}, "" );
 static_assert( 1.0_min == minutes<>{1}, "" );
 static_assert( 1.0_h == hours<>{1}, "" );
