@@ -490,6 +490,9 @@ using meters = units_t<VALUE, INTERVAL, length>;
 template< typename INTERVAL = One, typename VALUE = double >
 using kilograms = units_t<VALUE, INTERVAL, mass>;
 
+template< typename VALUE = double >
+using grams = units_t<VALUE, std::milli, mass>;
+
 template< typename INTERVAL = One, typename VALUE = double >
 using seconds = units_t<VALUE, INTERVAL, time>;
 

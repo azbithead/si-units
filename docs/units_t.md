@@ -83,6 +83,7 @@ Type | Definition
 `scalar` | `units_t<VALUE, INTERVAL, none>`
 `meters` | `units_t<VALUE, INTERVAL, length>`
 `kilograms` | `units_t<VALUE, INTERVAL, mass>`
+`grams` | `units_t<VALUE, std::milli, mass>`
 `seconds` | `units_t<VALUE, INTERVAL, time>`
 `minutes` | `seconds<std::ratio<60>, VALUE>`
 `hours` | `seconds<std::ratio<60*60>, VALUE>`
