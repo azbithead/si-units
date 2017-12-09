@@ -377,6 +377,16 @@ public:
     }
 
     //--------------------------------------------------------------------------
+    constexpr
+    auto
+    scalar
+    (
+    )
+    {
+        return units_t<VALUE, INTERVAL, none>{mValue};
+    }
+
+    //--------------------------------------------------------------------------
     // Accessor function
     constexpr value_t value() const {return mValue;}
 
@@ -1476,6 +1486,47 @@ struct basic_string_from_impl<CharT, units_t<ValueT, IntervalT, QuantityT>>
     }
 };
 
+//------------------------------------------------------------------------------
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename IntervalT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    scalar<IntervalT, ValueT> aScalar
+)
+{
+    if( aScalar.value() != 1 )
+    {
+        aStream << aScalar.value() << multiply_operator<CharT>;
+    }
+
+    return aStream << basic_string_from<CharT>(IntervalT{});
+}
+
+//------------------------------------------------------------------------------
+template
+<
+    typename CharT,
+    typename ValueT
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    scalar<si::One, ValueT> aScalar
+)
+{
+    return aStream << aScalar.value();
+}
+
+//------------------------------------------------------------------------------
 template
 <
     typename CharT,
@@ -1491,67 +1542,7 @@ operator <<
     units_t<ValueT, IntervalT, QuantityT> aUnits
 )
 {
-    if( aUnits.value() != 1 )
-    {
-        aStream << aUnits.value() << multiply_operator<CharT>;
-    }
-
-    return aStream << basic_string_from<CharT>(IntervalT{}) << space<CharT> << basic_string_from<CharT>(QuantityT{});
-}
-
-template
-<
-    typename CharT,
-    typename ValueT,
-    typename IntervalT
->
-inline
-std::basic_ostream<CharT>&
-operator <<
-(
-    std::basic_ostream<CharT>& aStream,
-    units_t<ValueT, IntervalT, none> aUnits
-)
-{
-    if( aUnits.value() != 1 )
-    {
-        aStream << aUnits.value() << multiply_operator<CharT>;
-    }
-
-    return aStream << basic_string_from<CharT>(IntervalT{});
-}
-
-template
-<
-    typename CharT,
-    typename ValueT,
-    typename QuantityT
->
-inline
-std::basic_ostream<CharT>&
-operator <<
-(
-    std::basic_ostream<CharT>& aStream,
-    units_t<ValueT, si::One, QuantityT> aUnits
-)
-{
-    return aStream << aUnits.value() << space<CharT> << basic_string_from<CharT>(QuantityT{});
-}
-
-template
-<
-    typename CharT,
-    typename ValueT
->
-inline
-std::basic_ostream<CharT>&
-operator <<
-(
-    std::basic_ostream<CharT>& aStream,
-    units_t<ValueT, si::One, none> aUnits
-)
-{
-    return aStream << aUnits.value();
+    return aStream << aUnits.scalar() << space<CharT> << QuantityT{};
 }
 
 namespace literals

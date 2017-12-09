@@ -308,4 +308,27 @@ struct basic_string_from_impl<CharT, quantity_t<M,L,T,C,Temp,Lum,S,A>>
     }
 };
 
+template
+<
+    typename CharT,
+    std::intmax_t M,
+    std::intmax_t L,
+    std::intmax_t T,
+    std::intmax_t C,
+    std::intmax_t Te,
+    std::intmax_t Li,
+    std::intmax_t S,
+    std::intmax_t A
+>
+inline
+std::basic_ostream<CharT>&
+operator <<
+(
+    std::basic_ostream<CharT>& aStream,
+    quantity_t<M,L,T,C,Te,Li,S,A> aQuantity
+)
+{
+    return aStream << basic_string_from<CharT>(aQuantity);
+}
+
 } // end of namespace si
