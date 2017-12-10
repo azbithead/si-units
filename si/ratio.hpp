@@ -2,7 +2,6 @@
 #include <ratio>
 #include <type_traits>
 #include <string>
-#include "string-from.hpp"
 #include "exponent.hpp"
 #include "constants.hpp"
 
@@ -302,46 +301,76 @@ struct sci_t<Ratio, Exp, true, false>
     using exponent = exponent_t<temp::exponent::value>;
 };
 
+template<typename CharT>
+inline
+std::basic_string<CharT>
+basic_string_from
+(
+    long aInt
+);
+
+template<>
+inline
+std::string
+basic_string_from<char>
+(
+    long aInt
+)
+{
+    return std::to_string(aInt);
+}
+
+template<>
+inline
+std::wstring
+basic_string_from<wchar_t>
+    (
+    long aInt
+)
+{
+    return std::to_wstring(aInt);
+}
+
 template
 <
     typename CharT,
     std::intmax_t Num,
     std::intmax_t Den
 >
-struct basic_string_from_impl<CharT, std::ratio<Num,Den>>
+inline
+std::basic_string<CharT>
+basic_string_from
+(
+    std::ratio<Num,Den> aRatio
+)
 {
-    std::basic_string<CharT>
-    operator()
-    (
-        std::ratio<Num,Den> aRatio
-    )
+    std::basic_string<CharT> theResult;
+
+    using sci = sci_t<decltype(aRatio)>;
+
+    if( sci::ratio::num != sci::ratio::den )
     {
-        std::basic_string<CharT> theResult;
-
-        using sci = sci_t<decltype(aRatio)>;
-
-        if( sci::ratio::num != sci::ratio::den )
-        {
-            theResult = basic_string_from<CharT>(sci::ratio::num);
-        }
-
-        if( sci::ratio::den != 1 )
-        {
-            theResult += divide_operator<CharT> + basic_string_from<CharT>(sci::ratio::den);
-        }
-
-        if( sci::exponent::value != 0 )
-        {
-            if( !theResult.empty() )
-            {
-                theResult += multiply_operator<CharT>;
-            }
-
-            theResult += basic_string_from<CharT>(10) + basic_string_from<CharT>(typename sci::exponent{});
-        }
-
-        return theResult;
+        theResult = basic_string_from<CharT>(sci::ratio::num);
     }
-};
+
+    if( sci::ratio::den != 1 )
+    {
+        theResult += divide_operator<CharT> + basic_string_from<CharT>(sci::ratio::den);
+    }
+
+    if( sci::exponent::value != 0 )
+    {
+        if( !theResult.empty() )
+        {
+            theResult += multiply_operator<CharT>;
+        }
+
+        theResult += basic_string_from<CharT>(10) + basic_string_from<CharT>(typename sci::exponent{});
+    }
+
+    return theResult;
+}
 
 } // end of namespace si
+
+#include "string-from.hpp"

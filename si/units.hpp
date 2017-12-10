@@ -1457,34 +1457,32 @@ template
     typename IntervalT,
     typename QuantityT
 >
-struct basic_string_from_impl<CharT, units_t<ValueT, IntervalT, QuantityT>>
+inline
+std::basic_string<CharT>
+basic_string_from
+(
+    units_t<ValueT, IntervalT, QuantityT> aUnits
+)
 {
-    std::basic_string<CharT>
-    operator()
-    (
-        units_t<ValueT, IntervalT, QuantityT> aUnits
-    )
+    std::basic_string<CharT> theResult;
+    if( aUnits.interval.num != aUnits.interval.den )
     {
-        std::basic_string<CharT> theResult;
-        if( aUnits.interval.num != aUnits.interval.den )
-        {
-            theResult = basic_string_from_impl<CharT,IntervalT>{}(aUnits.interval);
-        }
-
-        const auto theQuantityString = basic_string_from_impl<CharT,QuantityT>{}(aUnits.quantity);
-        if( !theQuantityString.empty() )
-        {
-            if( !theResult.empty() )
-            {
-                theResult += space<CharT>;
-            }
-
-            theResult += theQuantityString;
-        }
-
-        return theResult;
+        theResult = basic_string_from<CharT>(aUnits.interval);
     }
-};
+
+    const auto theQuantityString = basic_string_from<CharT>(aUnits.quantity);
+    if( !theQuantityString.empty() )
+    {
+        if( !theResult.empty() )
+        {
+            theResult += space<CharT>;
+        }
+
+        theResult += theQuantityString;
+    }
+
+    return theResult;
+}
 
 //------------------------------------------------------------------------------
 template
@@ -1616,6 +1614,8 @@ literal(lux, lx);
 
 } // end of namespace literals
 } // end of namespace si
+
+#include "string-from.hpp"
 
 namespace std
 {

@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <ratio>
 #include <string>
-#include "string-from.hpp"
 
 namespace si
 {
@@ -133,42 +132,38 @@ template<> constexpr const char32_t* superscript_digit<char32_t>[digit_count] =
     U"\u2079"
 };
 
-template
-<
-    typename CharT,
-    std::intmax_t Exp
->
-struct basic_string_from_impl<CharT, exponent_t<Exp>>
+template<typename CharT, std::intmax_t Exp>
+inline
+std::basic_string<CharT>
+basic_string_from
+(
+    exponent_t<Exp> aExponent
+)
 {
-    std::basic_string<CharT>
-    operator()
-    (
-        exponent_t<Exp> aExponent
-    )
+    auto theExponent = aExponent.value;
+
+    std::basic_string<CharT> theSign;
+
+    if( theExponent < 0 )
     {
-        auto theExponent = aExponent.value;
-
-        std::basic_string<CharT> theSign;
-
-        if( theExponent < 0 )
-        {
-            theSign = superscript_minus<CharT>;
-            theExponent = -theExponent;
-        }
-
-        std::basic_string<CharT> theResult;
-
-        do
-        {
-            theResult = superscript_digit<CharT>[theExponent % 10] + theResult;
-            theExponent /= 10;
-        }
-        while( theExponent > 0 );
-
-        theResult = theSign + theResult;
-
-        return theResult;
+        theSign = superscript_minus<CharT>;
+        theExponent = -theExponent;
     }
-};
+
+    std::basic_string<CharT> theResult;
+
+    do
+    {
+        theResult = superscript_digit<CharT>[theExponent % 10] + theResult;
+        theExponent /= 10;
+    }
+    while( theExponent > 0 );
+
+    theResult = theSign + theResult;
+
+    return theResult;
+}
 
 } // end of namespace si
+
+#include "string-from.hpp"

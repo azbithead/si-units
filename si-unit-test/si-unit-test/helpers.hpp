@@ -36,9 +36,9 @@ assertf
 #define assert_literal( aT, str ) \
 { \
     { \
-        assert_str_eq(si::string_from(aT{}), str); \
+        assert_str_eq(si::basic_string_from<char>(aT{}), str); \
     } \
     { \
-        assert_str_eq(si::wstring_from(aT{}), L##str); \
+        assert_str_eq(si::basic_string_from<wchar_t>(aT{}), L##str); \
     } \
 }
