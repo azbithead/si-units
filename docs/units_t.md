@@ -4,30 +4,30 @@ Defined in header "units.hpp"
 ```c++
 template
 <
-	typename VALUE,
-	typename INTERVAL,
-	typename QUANTITY
+	typename ValueT,
+	typename IntervalT,
+	typename QuantityT
 >
 class units_t;
 ```
 Class template `si::units_t` represents a physical quantity measured in SI base units.
 
-It consists of a value of type `VALUE`, an interval of type `INTERVAL` and a quantity of type `QUANTITY`. [`std::is_arithmetic<VALUE>::value`](http://en.cppreference.com/w/cpp/types/is_arithmetic) must evaluate to `true`. The interval is a compile-time rational constant representing one unit of quantity. `INTERVAL` must be of type [`std::ratio`](http://en.cppreference.com/w/cpp/numeric/ratio/ratio). Finally, `QUANTITY` must be of type [`si::quantity_t`](quantity_t.md).
+It contains member data of type `ValueT` which must be an integer or floating point type, that is,  [`std::is_arithmetic<ValueT>::value`](http://en.cppreference.com/w/cpp/types/is_arithmetic) must evaluate to `true`.  `IntervalT` must be of type [`std::ratio`](http://en.cppreference.com/w/cpp/numeric/ratio/ratio) and represents one unit of quantity. Finally, `QuantityT` must be of type [`si::quantity_t`](quantity_t.md).
 	
-The only data stored in a `units_t` is a value of type `VALUE`. If `VALUE` is floating point, then the `units_t` can represent fractions of intervals. `QUANTITY` is included as part of the `units_t`'s type, and is only used when converting between different `units_t`.
+The only data stored in a `units_t` is a value of type `ValueT`. If `ValueT` is a floating point type, then the `units_t` can represent fractions of intervals. `QuantityT` and `IntervalT` are included as part of the `units_t`'s type, and are only used when converting between different `units_t`.
 
 ## Member types
 Member type | Definition
 ------------|-----------
-`quantity_t` | `QUANTITY`
-`value_t` | `VALUE`
-`interval_t` | `typename INTERVAL::type`
+`quantity_t` | `QuantityT`
+`value_t` | `ValueT`
+`interval_t` | `typename IntervalT::type`
 
 ## Member objects
 Member | Description
 ----------------------------------------|-----------------------------------------------------
-`static constexpr interval_t interval` | equal to `INTERVAL{}`
-`static constexpr quantity_t quantity` | equal to `QUANTITY{}`
+`static constexpr interval_t interval` | equal to `IntervalT{}`
+`static constexpr quantity_t quantity` | equal to `QuantityT{}`
 
 ## Member functions
 Function | Description
@@ -80,37 +80,37 @@ Operation | Description
 ## Helper types
 Type | Definition
 ---------|------------
-`scalar` | `units_t<VALUE, INTERVAL, none>`
-`meters` | `units_t<VALUE, INTERVAL, length>`
-`kilograms` | `units_t<VALUE, INTERVAL, mass>`
-`grams` | `units_t<VALUE, std::milli, mass>`
-`seconds` | `units_t<VALUE, INTERVAL, time>`
-`minutes` | `seconds<std::ratio<60>, VALUE>`
-`hours` | `seconds<std::ratio<60*60>, VALUE>`
-`days` | `seconds<std::ratio<24*60*60>, VALUE>`
-`milliseconds` | `seconds<std::milli, VALUE>`
-`microseconds` | `seconds<std::micro, VALUE>`
-`nanoseconds` | `seconds<std::nano, VALUE>`
-`amperes` | `units_t<VALUE, INTERVAL, current>`
-`kelvins` | `units_t<VALUE, INTERVAL, temperature>`
-`candelas` | `units_t<VALUE, INTERVAL, luminous_intensity>`
-`radians` | `units_t<VALUE, INTERVAL, angle>`
-`steradians` | `units_t<VALUE, INTERVAL, solid_angle>`
-`hertz` | `units_t<VALUE, INTERVAL, frequency>`
-`newtons` | `units_t<VALUE, INTERVAL, force>`
-`coulombs` | `units_t<VALUE, INTERVAL, charge>`
-`lux` | `units_t<VALUE, INTERVAL, illuminance>`
-`pascals` | `units_t<VALUE, INTERVAL, pressure>`
-`joules` | `units_t<VALUE, INTERVAL, energy>`
-`watts` | `units_t<VALUE, INTERVAL, power>`
-`volts` | `units_t<VALUE, INTERVAL, voltage>`
-`farads` | `units_t<VALUE, INTERVAL, capacitance>`
-`ohms` | `units_t<VALUE, INTERVAL, impedance>`
-`siemens` | `units_t<VALUE, INTERVAL, conductance>`
-`webers` | `units_t<VALUE, INTERVAL, magnetic_flux>`
-`teslas` | `units_t<VALUE, INTERVAL, magnetic_flux_density>`
-`henries` | `units_t<VALUE, INTERVAL, inductance>`
-`lumens` | `units_t<VALUE, INTERVAL, luminous_flux>`
+`scalar` | `units_t<ValueT, IntervalT, none>`
+`meters` | `units_t<ValueT, IntervalT, length>`
+`kilograms` | `units_t<ValueT, IntervalT, mass>`
+`grams` | `units_t<ValueT, std::milli, mass>`
+`seconds` | `units_t<ValueT, IntervalT, time>`
+`minutes` | `seconds<std::ratio<60>, ValueT>`
+`hours` | `seconds<std::ratio<60*60>, ValueT>`
+`days` | `seconds<std::ratio<24*60*60>, ValueT>`
+`milliseconds` | `seconds<std::milli, ValueT>`
+`microseconds` | `seconds<std::micro, ValueT>`
+`nanoseconds` | `seconds<std::nano, ValueT>`
+`amperes` | `units_t<ValueT, IntervalT, current>`
+`kelvins` | `units_t<ValueT, IntervalT, temperature>`
+`candelas` | `units_t<ValueT, IntervalT, luminous_intensity>`
+`radians` | `units_t<ValueT, IntervalT, angle>`
+`steradians` | `units_t<ValueT, IntervalT, solid_angle>`
+`hertz` | `units_t<ValueT, IntervalT, frequency>`
+`newtons` | `units_t<ValueT, IntervalT, force>`
+`coulombs` | `units_t<ValueT, IntervalT, charge>`
+`lux` | `units_t<ValueT, IntervalT, illuminance>`
+`pascals` | `units_t<ValueT, IntervalT, pressure>`
+`joules` | `units_t<ValueT, IntervalT, energy>`
+`watts` | `units_t<ValueT, IntervalT, power>`
+`volts` | `units_t<ValueT, IntervalT, voltage>`
+`farads` | `units_t<ValueT, IntervalT, capacitance>`
+`ohms` | `units_t<ValueT, IntervalT, impedance>`
+`siemens` | `units_t<ValueT, IntervalT, conductance>`
+`webers` | `units_t<ValueT, IntervalT, magnetic_flux>`
+`teslas` | `units_t<ValueT, IntervalT, magnetic_flux_density>`
+`henries` | `units_t<ValueT, IntervalT, inductance>`
+`lumens` | `units_t<ValueT, IntervalT, luminous_flux>`
 
 ## Helper classes
 Class | Description
