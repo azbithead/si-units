@@ -1046,42 +1046,29 @@ operator%
     return Result_t{Result_t{aUnits}.value() % static_cast<ResultValue_t>(aScalar)};
 }
 
-template
-<
-    typename ValueT1,
-    typename IntervalT1,
-    typename QuantityT1,
-    typename ValueT2,
-    typename IntervalT2
->
-using mod_result = units_t
-<
-    std::common_type_t<ValueT1, ValueT2>,
-    std::ratio_divide<IntervalT1, IntervalT2>,
-    QuantityT1
->;
-
 //------------------------------------------------------------------------------
 // modulo units_t by units_t
 template
 <
     typename ValueT1,
     typename IntervalT1,
-    typename QuantityT1,
     typename ValueT2,
     typename IntervalT2,
-    typename QuantityT2
+    typename QuantityT
 >
 inline
 constexpr
-mod_result<ValueT1, IntervalT1, QuantityT1, ValueT2, IntervalT2>
+auto
 operator%
 (
-    units_t<ValueT1, IntervalT1, QuantityT1> aLHS,
-    units_t<ValueT2, IntervalT2, QuantityT2> aRHS
+    units_t<ValueT1, IntervalT1, QuantityT> aLHS,
+    units_t<ValueT2, IntervalT2, QuantityT> aRHS
 )
 {
-    return aLHS - (aRHS * (aLHS / aRHS));
+    using Result_t = std::common_type_t<decltype(aLHS), decltype(aRHS)>;
+    using Value_t = typename Result_t::value_t;
+
+    return Result_t{Result_t{aLHS}.value() % Result_t{aRHS}.value()};
 }
 
 //------------------------------------------------------------------------------

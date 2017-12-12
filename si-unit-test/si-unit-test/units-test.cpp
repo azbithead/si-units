@@ -193,7 +193,7 @@ static_assert( theResult10.value() == 1, "" );
 static_assert( is_same_v<decltype( theResult10 ), const m_t>, "" );
 
 // modulo by units
-constexpr auto theResult11 = m_t{ 5 } % s_t{ 2 };
+constexpr auto theResult11 = m_t{ 5 } % m_t{ 2 };
 static_assert( theResult11.value() == 1, "" );
 static_assert( is_same_v<decltype( theResult10 ), const m_t>, "" );
 
