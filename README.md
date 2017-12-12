@@ -6,7 +6,7 @@ si-units is a header-only library of template classes and functions that automat
 
 ## si::quantity_t
 
-[`si::quantity_t`](quantity_t.md) (see si/quantity.hpp) is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in [`si::quantity_t`](quantity_t.md) default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by [`si::quantity_t`](quantity_t.md).
+[`si::quantity_t`](quantity_t.md) is a struct template containing static constant members that represent the integer exponents of each type of quantity associated with an SI base or derived unit. All the exponents in [`si::quantity_t`](quantity_t.md) default to 0. An exponent equal to 0 effectively causes that quantity to not exist in the units of the type. Likewise an exponent of 2 indicates the corresponding quantity is squared. For example, length squared is area. A negative exponent indicates the corresponding quantity exists in the denominator of the quantity being represented by [`si::quantity_t`](quantity_t.md).
 
 The [`si::quantity_t`](quantity_t.md) examples provided below are intended to help the reader understand how the [`si::quantity_t`](quantity_t.md) type works. However, it is unlikely that clients of this library will need to write code that defines [`si::quantity_t`](quantity_t.md) types since those types are automatically created as needed when code performs mathematical or relational operations using [`si::units_t`](units_t.md).
 
@@ -40,21 +40,21 @@ using speed = si::divide_quantity<si::length, si::time>; // same as si::quantity
 
 [`si::units_t`](units_t.md) is a class template that takes three template parameters:
 
-* QUANTITY: an [`si::quantity_t`](quantity_t.md)
-* VALUE: an arithmetic value, can be any C++ arithmetic type, i.e. std::is_arithmetic\<VALUE\> == true
-* INTERVAL: std::ratio representing the amount of QUANTITY per VALUE in these units
+* QuantityT: an [`si::quantity_t`](quantity_t.md)
+* ValueT: an arithmetic value, can be any C++ arithmetic type, i.e. `std::is_arithmetic<ValueT> == true`
+* IntervalT: `std::ratio` representing the amount of `QuantityT` per `ValueT` in these units
 
-[`si::units_t`](units_t.md) is a very lightweight class both in terms of memory usage and runtime performance. The memory usage of an [`si::units_t`](units_t.md) object is exactly equal to sizeof(VALUE). Only operations involving the VALUE component are done at runtime. All other operations are done at compile time.
+[`si::units_t`](units_t.md) is a very lightweight class both in terms of memory usage and runtime performance. The memory usage of an [`si::units_t`](units_t.md) object is exactly equal to `sizeof(ValueT)`. Only operations involving the `ValueT` component are done at runtime. All other operations are done at compile time.
 
-[`si::units_t`](units_t.md) is type safe. Operations on [`si::units_t`](units_t.md) objects will not compile successfully if they involve incompatible quantities or would result in silent loss of precision. For example, an attempt to compare an object with mass quantity to an object with time quantity will not compile. Likewise, addition and subtraction only compiles for objects with the same quantity type. However, multiplication and division is possible for objects with mixed quantity types, resulting in a new object with the appropriate quantity type.
+[`si::units_t`](units_t.md) is type safe. Operations on [`si::units_t`](units_t.md) objects will not compile successfully if they involve incompatible quantities or would result in silent loss of precision. For example, an attempt to compare an object with mass quantity to an object with time quantity will not compile. Likewise, addition and subtraction only compile for objects with the same quantity type. However, multiplication and division are possible for objects with mixed quantity types, resulting in a new object with the appropriate quantity type.
 
-Note that VALUE can be either an integral or floating point type. If an integral type is chosen, all mathematical and conversion operations will produce truncated results where appropriate just as they would in such operations on the raw VALUE type.
+Note that `ValueT` can be either an integral or floating point type. If an integral type is chosen, all mathematical and conversion operations will produce truncated results where appropriate just as they would in such operations on the raw `ValueT` type.
 
-The library defines type aliases for all of the SI base units and almost all SI derived units. These aliases are templates where VALUE defaults to double and INTERVAL defaults to std::ratio<1>. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the si namespace:
+The library defines type aliases for all of the SI base units and almost all SI derived units. These aliases are templates where `ValueT` defaults to `double` and `IntervalT` defaults to `std::ratio<1>`. For example, since the SI base unit for mass is the kilogram, the following type alias is provided in the `si` namespace:
 
 ```c++
-template< typename INTERVAL = std::ratio<1>, typename VALUE = double >
-using kilograms = si::units_t<VALUE, INTERVAL, mass>;
+template< typename IntervalT = std::ratio<1>, typename ValueT = double >
+using kilograms = si::units_t<ValueT, IntervalT, mass>;
 ```
 
 ### Example 1
@@ -115,7 +115,7 @@ theTime.value == 0.90909090909090906
 && theTime.quantity == si::time{} // == si::length{} / (si::length{} / si::time{})
 ```
 
-You may be thinking that the value 0.909 * 9/2500 seconds is not very useful. It is mathematically correct and could be used in subsequent calculations, if desired. However, if we want to display this result to a user, we would probably want a value that is easier to understand. Looking at the components of this result, we can see that it is much less than a second. So, perhaps converting it to milliseconds would be good. We can use the si::units_cast template function to do that:
+You may be thinking that the value 0.909 * 9/2500 seconds is not very useful. It is mathematically correct and could be used in subsequent calculations, if desired. However, if we want to display this result to a user, we would probably want a value that is easier to understand. Looking at the components of this result, we can see that it is much less than a second. So, perhaps converting it to milliseconds would be good. We can use the `si::units_cast` template function to do that:
 
 ```c++
 auto theMsecs = si::units_cast<si::seconds<std::milli>>(theTime);
@@ -136,7 +136,7 @@ theMsecs.value == 3.2727272727272725
 ```
 ## Conversion to String
 
-The library provides functions to convert [`si::quantity_t`](quantity_t.md) and [`si::units_t`](units_t.md) to strings. The functions are named "string_from" and "wstring_from" and return std::string and std::wstring respectively. Note that the string conversion functions for [`si::units_t`](units_t.md) only output the INTERVAL and QUANTITY components and not the VALUE component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling value() on an [`si::units_t`](units_t.md) object. When converting an [`si::quantity_t`](quantity_t.md), an abbreviation for a derived SI unit will be output when possible.
+The library provides functions to convert [`si::quantity_t`](quantity_t.md) and [`si::units_t`](units_t.md) to strings. The functions are named "string_from" and "wstring_from" and return `std::string` and `std::wstring` respectively. Note that the string conversion functions for [`si::units_t`](units_t.md) only output the `IntervalT` and `QuantityT` components and not the `ValueT` component. Clients should use string conversion functions provided by the standard C++ library to convert the result of calling `value()` on an [`si::units_t`](units_t.md) object. When converting an [`si::quantity_t`](quantity_t.md), an abbreviation for a derived SI unit will be output when possible.
 
 ### Example
 
@@ -159,7 +159,7 @@ Output:
 
 ## Streaming
 
-The library provides a function to stream [`si::units_t`](units_t.md) to any stream derived from std::ostream. Unlike string_from, this function does output the VALUE component.
+The library provides a function to stream [`si::units_t`](units_t.md) to any stream derived from `std::ostream`. Unlike `string_from`, this function does output the `ValueT` component.
 
 ### Example
 
