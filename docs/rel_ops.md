@@ -54,6 +54,7 @@ Compares two `units_t`s.
 
 ## Parameters
 aLHS - `units_t` on the left-hand side of the operator
+
 aRHS - `units_t` on the right-hand side of the operator
 
 ## Return value
