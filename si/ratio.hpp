@@ -73,72 +73,98 @@ using ratio_gcd = std::ratio
     >
 >;
 
-using Zero = std::ratio<0>;
-using One = std::ratio<1>;
+using r_zero = std::ratio<0>;
+using r_one = std::ratio<1>;
+
 template <typename R> using Square = std::ratio_multiply<R, R>;
 
 // Find the largest integer N such that Predicate<N>::value is true.
-template <template <intmax_t N> class Predicate, typename Enabled = void>
-struct BinarySearch
+template <template <std::intmax_t N> class Predicate, typename Enabled = void>
+struct binary_search
 {
-    template <intmax_t N>
-    struct SafeDouble_
+    template <std::intmax_t N>
+    struct safe_double_
     {
-        constexpr intmax_t static value = 2 * N;
+        constexpr std::intmax_t static value = 2 * N;
         static_assert(value > 0, "Overflows when computing 2 * N");
     };
 
-    template <intmax_t Lower, intmax_t Upper, typename Enabled1 = void>
-    struct DoubleSidedSearch_ : DoubleSidedSearch_<Lower, Lower+(Upper-Lower)/2>
+    template< std::intmax_t Lower, std::intmax_t Upper >
+    struct mid : std::integral_constant<std::intmax_t, Lower + (Upper - Lower) / 2>
     {
     };
 
-    template <intmax_t Lower, intmax_t Upper>
-    struct DoubleSidedSearch_<Lower, Upper, typename std::enable_if<Upper-Lower==1>::type> : std::integral_constant<intmax_t, Lower>
+    template <std::intmax_t Lower, std::intmax_t Upper, typename Enabled1 = void>
+    struct double_sided_search_ : double_sided_search_
+    <
+        Lower,
+        mid<Lower, Upper>::value
+    >
     {
     };
 
-    template <intmax_t Lower, intmax_t Upper>
-    struct DoubleSidedSearch_<Lower, Upper, typename std::enable_if<(Upper-Lower>1 && Predicate<Lower+(Upper-Lower)/2>::value)>::type>
-      : DoubleSidedSearch_<Lower+(Upper-Lower)/2, Upper>
+    template <std::intmax_t Lower, std::intmax_t Upper>
+    struct double_sided_search_
+    <
+        Lower,
+        Upper,
+        typename std::enable_if<Upper-Lower==1>::type
+    > : std::integral_constant<std::intmax_t, Lower>
     {
     };
 
-    template <intmax_t Lower, typename Enabled1 = void>
-    struct SingleSidedSearch_ : DoubleSidedSearch_<Lower, SafeDouble_<Lower>::value>
+    template <std::intmax_t Lower, std::intmax_t Upper>
+    struct double_sided_search_
+    <
+        Lower,
+        Upper,
+        typename std::enable_if<(Upper-Lower>1 && Predicate<mid<Lower, Upper>::value>::value)>::type
+    > : double_sided_search_<mid<Lower, Upper>::value, Upper>
     {
     };
 
-    template <intmax_t Lower>
-    struct SingleSidedSearch_<Lower, typename std::enable_if<Predicate<SafeDouble_<Lower>::value>::value>::type>
-      : SingleSidedSearch_<SafeDouble_<Lower>::value>
+    template <std::intmax_t Lower, typename Enabled1 = void>
+    struct single_sided_search_ : double_sided_search_<Lower, safe_double_<Lower>::value>
     {
     };
 
-    static constexpr intmax_t value = SingleSidedSearch_<1>::value;
+    template <std::intmax_t Lower>
+    struct single_sided_search_
+    <
+        Lower,
+        typename std::enable_if<Predicate<safe_double_<Lower>::value>::value>::type
+    > : single_sided_search_<safe_double_<Lower>::value>
+    {
+    };
+
+    static constexpr std::intmax_t value = single_sided_search_<1>::value;
 };
 
-template <template <intmax_t N> class Predicate>
-struct BinarySearch<Predicate, typename std::enable_if<!Predicate<1>::value>::type> : std::integral_constant<intmax_t, 0>
+template <template <std::intmax_t N> class Predicate>
+struct binary_search
+<
+    Predicate,
+    typename std::enable_if<!Predicate<1>::value>::type
+> : std::integral_constant<std::intmax_t, 0>
 {
 };
 
-// Find largest integer N such that N<=sqrt(R)
-template <typename R>
+// Find largest integer N such that N<=sqrt(RatioT)
+template <typename RatioT>
 struct Integer
 {
-    template <intmax_t N>
-    using Predicate_ = std::ratio_less_equal<std::ratio<N>, std::ratio_divide<R, std::ratio<N>>>;
+    template <std::intmax_t N>
+    using Predicate_ = std::ratio_less_equal<std::ratio<N>, std::ratio_divide<RatioT, std::ratio<N>>>;
 
-    static constexpr intmax_t value = BinarySearch<Predicate_>::value;
+    static constexpr std::intmax_t value = binary_search<Predicate_>::value;
 };
 
-template <typename R>
+template <typename RatioT>
 struct IsPerfectSquare
 {
-    static constexpr intmax_t DenSqrt_ = Integer<std::ratio<R::den>>::value;
-    static constexpr intmax_t NumSqrt_ = Integer<std::ratio<R::num>>::value;
-    static constexpr bool value = DenSqrt_ * DenSqrt_ == R::den && NumSqrt_ * NumSqrt_ == R::num;
+    static constexpr std::intmax_t DenSqrt_ = Integer<std::ratio<RatioT::den>>::value;
+    static constexpr std::intmax_t NumSqrt_ = Integer<std::ratio<RatioT::num>>::value;
+    static constexpr bool value = DenSqrt_ * DenSqrt_ == RatioT::den && NumSqrt_ * NumSqrt_ == RatioT::num;
     using Sqrt = std::ratio<NumSqrt_, DenSqrt_>;
 };
 
@@ -159,7 +185,7 @@ struct Reciprocal
     using Den_ = std::ratio_subtract<P_, Square<Q_>>;
     using A_ = std::ratio_divide<Q_, Den_>;
     using B_ = std::ratio_divide<P_, Square<Den_>>;
-    static constexpr intmax_t I_ = (A_::num + Integer<std::ratio_multiply<B_, Square<std::ratio<A_::den>>>>::value) / A_::den;
+    static constexpr std::intmax_t I_ = (A_::num + Integer<std::ratio_multiply<B_, Square<std::ratio<A_::den>>>>::value) / A_::den;
     using I = std::ratio<I_>;
     using Rem = Remainder<B_, std::ratio_subtract<I, A_>>;
 };
@@ -168,14 +194,14 @@ struct Reciprocal
 // f(x)=C1+1/(C2+1/(C3+1/(...+1/(Cn+x)))) = (U*x+V)/(W*x+1) and sqrt(R)=f(Rem).
 // The error |f(Rem)-V| = |(U-W*V)x/(W*x+1)| <= |U-W*V|*Rem <= |U-W*V|/I' where
 // I' is the integer part of reciprocal of Rem.
-template <typename aRatio, intmax_t N>
+template <typename aRatio, std::intmax_t N>
 struct continued_fraction
 {
     template <typename T>
     using Abs_ = typename std::conditional
     <
-        std::ratio_less<T, Zero>::value,
-        std::ratio_subtract<Zero, T>,
+        std::ratio_less<T, r_zero>::value,
+        std::ratio_subtract<r_zero, T>,
         T
     >::type;
 
@@ -186,26 +212,26 @@ struct continued_fraction
     using Den_ = std::ratio_add<typename Last_::W, I_>;
     using U = std::ratio_divide<typename Last_::V, Den_>;
     using V = std::ratio_divide<std::ratio_add<typename Last_::U, std::ratio_multiply<typename Last_::V, I_>>, Den_>;
-    using W = std::ratio_divide<One, Den_>;
+    using W = std::ratio_divide<r_one, Den_>;
     using Error = Abs_<std::ratio_divide<std::ratio_subtract<U, std::ratio_multiply<V, W>>, typename Reciprocal<Rem>::I>>;
 };
 
 template <typename aRatio>
 struct continued_fraction<aRatio, 1>
 {
-    using U = One;
+    using U = r_one;
     using V = std::ratio<Integer<aRatio>::value>;
-    using W = Zero;
+    using W = r_zero;
     using Rem = Remainder<aRatio, V>;
-    using Error = std::ratio_divide<One, typename Reciprocal<Rem>::I>;
+    using Error = std::ratio_divide<r_one, typename Reciprocal<Rem>::I>;
 };
 
-template <typename aRatio, typename aEpsilon, intmax_t N=1, typename Enabled = void>
+template <typename aRatio, typename aEpsilon, std::intmax_t N=1, typename Enabled = void>
 struct ratio_sqrt_impl : ratio_sqrt_impl<aRatio, aEpsilon, N+1>
 {
 };
 
-template <typename aRatio, typename aEpsilon, intmax_t N>
+template <typename aRatio, typename aEpsilon, std::intmax_t N>
 struct ratio_sqrt_impl
 <
     aRatio,
@@ -227,7 +253,7 @@ struct ratio_sqrt_impl
 template <typename aRatio, typename aEpsilon, typename isEnabled = void>
 struct ratio_sqrt
 {
-    static_assert(std::ratio_greater_equal<aRatio, Zero>::value, "R can't be negative");
+    static_assert(std::ratio_greater_equal<aRatio, r_zero>::value, "R can't be negative");
 };
 
 template <typename aRatio, typename aEpsilon>
@@ -237,7 +263,7 @@ struct ratio_sqrt
     aEpsilon,
     typename std::enable_if
     <
-        std::ratio_greater_equal<aRatio, Zero>::value && IsPerfectSquare<aRatio>::value
+        std::ratio_greater_equal<aRatio, r_zero>::value && IsPerfectSquare<aRatio>::value
     >::type
 >
 {
@@ -251,7 +277,7 @@ struct ratio_sqrt
     aEpsilon,
     typename std::enable_if
     <
-        std::ratio_greater_equal<aRatio, Zero>::value && !IsPerfectSquare<aRatio>::value
+        std::ratio_greater_equal<aRatio, r_zero>::value && !IsPerfectSquare<aRatio>::value
     >::type
 > : ratio_sqrt_impl<aRatio, aEpsilon>
 {

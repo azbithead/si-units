@@ -95,7 +95,7 @@ static_assert
     <
         multiply_units<meters<>, seconds<>>,
         double,
-        One,
+        r_one,
         multiply_quantity<length, si::time>
     >, ""
 );
@@ -131,7 +131,7 @@ static_assert
     <
         divide_units<meters<>, seconds<>>,
         double,
-        One,
+        r_one,
         divide_quantity<length, si::time>
     >, ""
 );

@@ -265,7 +265,7 @@ class units_t
 {
     static_assert(std::is_arithmetic<ValueT>::value, "ValueT must be an arithmetic type");
     static_assert(is_ratio<IntervalT>, "IntervalT must be of type std::ratio");
-    static_assert(std::ratio_greater<IntervalT, Zero>::value, "IntervalT must be positive");
+    static_assert(std::ratio_greater<IntervalT, r_zero>::value, "IntervalT must be positive");
     static_assert(is_quantity<QuantityT>, "QuantityT must be of type si::quantity_t" );
 
     template <typename _R1, typename _R2>
@@ -467,7 +467,7 @@ struct power_ratio_impl
 template< typename RatioT >
 struct power_ratio_impl<RatioT, 0>
 {
-    using type = One;
+    using type = r_one;
 };
 
 template< typename UnitsT, std::intmax_t Power >
@@ -487,23 +487,23 @@ using power_units = typename power_units_impl<UnitsT, Power>::type;
 
 //------------------------------------------------------------------------------
 template< typename UnitsT >
-using reciprocal_units = divide_units<units_t<typename UnitsT::value_t, One, none>, UnitsT>;
+using reciprocal_units = divide_units<units_t<typename UnitsT::value_t, r_one, none>, UnitsT>;
 
 //==============================================================================
 // Some useful units_t types
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using scalar = units_t<ValueT, IntervalT, none>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using meters = units_t<ValueT, IntervalT, length>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using kilograms = units_t<ValueT, IntervalT, mass>;
 
 template< typename ValueT = double >
 using grams = units_t<ValueT, std::milli, mass>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using seconds = units_t<ValueT, IntervalT, time>;
 
 template< typename ValueT = double >
@@ -524,67 +524,67 @@ using microseconds = seconds<std::micro, ValueT>;
 template< typename ValueT = double >
 using nanoseconds = seconds<std::nano, ValueT>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using amperes = units_t<ValueT, IntervalT, current>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using kelvins = units_t<ValueT, IntervalT, temperature>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using candelas = units_t<ValueT, IntervalT, luminous_intensity>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using moles = units_t<ValueT, IntervalT, substance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using radians = units_t<ValueT, IntervalT, angle>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using steradians = units_t<ValueT, IntervalT, solid_angle>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using hertz = units_t<ValueT, IntervalT, frequency>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using newtons = units_t<ValueT, IntervalT, force>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using coulombs = units_t<ValueT, IntervalT, charge>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using lux = units_t<ValueT, IntervalT, illuminance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using pascals = units_t<ValueT, IntervalT, pressure>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using joules = units_t<ValueT, IntervalT, energy>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using watts = units_t<ValueT, IntervalT, power>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using volts = units_t<ValueT, IntervalT, voltage>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using farads = units_t<ValueT, IntervalT, capacitance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using ohms = units_t<ValueT, IntervalT, impedance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using siemens = units_t<ValueT, IntervalT, conductance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using webers = units_t<ValueT, IntervalT, magnetic_flux>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using teslas = units_t<ValueT, IntervalT, magnetic_flux_density>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using henries = units_t<ValueT, IntervalT, inductance>;
 
-template< typename IntervalT = One, typename ValueT = double >
+template< typename IntervalT = r_one, typename ValueT = double >
 using lumens = units_t<ValueT, IntervalT, luminous_flux>;
 
 template <typename LhsUnitsT, typename RhsUnitsT>
@@ -812,7 +812,7 @@ operator *
     ValueT2 aScalar
 )
 {
-    return aUnits * scalar<One, ValueT2>{aScalar};
+    return aUnits * scalar<r_one, ValueT2>{aScalar};
 }
 
 //------------------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ operator /
 )
 {
     using ResultValue_t = std::common_type_t<ValueT1, ValueT2>;
-    return scalar<One, ResultValue_t>{aScalar} / aUnits;
+    return scalar<r_one, ResultValue_t>{aScalar} / aUnits;
 }
 
 //------------------------------------------------------------------------------
@@ -1256,7 +1256,7 @@ template
 >
 struct power_result_impl<ValueT, IntervalT, QuantityT, 0>
 {
-    using type = scalar<One, ValueT>;
+    using type = scalar<r_one, ValueT>;
 };
 
 template
@@ -1505,7 +1505,7 @@ std::basic_ostream<CharT>&
 operator <<
 (
     std::basic_ostream<CharT>& aStream,
-    scalar<si::One, ValueT> aScalar
+    scalar<si::r_one, ValueT> aScalar
 )
 {
     return aStream << aScalar.value();
@@ -1542,12 +1542,12 @@ constexpr type<> operator "" _##str \
     return type<>{aValue}; \
 } \
  \
-constexpr type<si::One,long long> operator "" _##str \
+constexpr type<si::r_one,long long> operator "" _##str \
 ( \
     unsigned long long aValue \
 ) \
 { \
-    return type<si::One,long long>{aValue}; \
+    return type<si::r_one,long long>{aValue}; \
 }
 
 #define literal2( type, str ) \
