@@ -65,7 +65,6 @@ struct is_quantity_impl
 
 //------------------------------------------------------------------------------
 /// true if aType is an quantity_t type, false otherwise
-/// @tparam aType the type to be tested
 template <typename aType>
 constexpr bool is_quantity = is_quantity_impl<typename std::remove_cv<aType>::type>::value;
 
@@ -119,28 +118,21 @@ struct exponentiate_quantity_impl
 
 //------------------------------------------------------------------------------
 /// the quantity_t type that is aQuantity raised to aPower
-/// @tparam aQuantity a quantity_t type
-/// @tparam aPower the power to which aQuantity is raised
 template< typename aQuantity, std::intmax_t aPower >
 using power_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<aPower>>::type;
 
 //------------------------------------------------------------------------------
 /// the quantity_t type that is the reciprocal of aQuantity
-/// @tparam aQuantity a quantity_t type
 template< typename aQuantity >
 using reciprocal_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<-1>>::type;
 
 //------------------------------------------------------------------------------
 /// the quantity_t type that is the quotient of dividing aDividend by aDivisor
-/// @tparam aDividend a quantity_t type
-/// @tparam aDivisor a quantity_t type
 template< typename aDividend, typename aDivisor >
 using divide_quantity = multiply_quantity< aDividend, reciprocal_quantity< aDivisor > >;
 
 //------------------------------------------------------------------------------
 /// the quantity_t type that is the root aRoot of aQuantity
-/// @tparam aQuantity a quantity_t type
-/// @tparam aRoot the root to be gotten
 template< typename aQuantity, std::intmax_t aRoot >
 using root_quantity = typename exponentiate_quantity_impl<aQuantity, std::ratio<1,aRoot>>::type;
 

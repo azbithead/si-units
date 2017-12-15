@@ -16,7 +16,6 @@ struct is_ratio_impl<std::ratio<aNum, aDen>> : std::true_type{};
 
 //------------------------------------------------------------------------------
 /// true if aType is a std::ratio, false otherwise
-/// @tparam aType a type to be tested
 template <typename aType>
 constexpr bool is_ratio = is_ratio_impl<aType>::value;
 
@@ -56,8 +55,6 @@ constexpr intmax_t lcm = lcm_impl<aX,aY>::value;
 
 //------------------------------------------------------------------------------
 /// the std::ratio that is the greatest common divisor (GCD) of aRatioX and aRatioY
-/// @tparam aRatioX a std::ratio
-/// @tparam aRatioY a std::ratio
 template <typename aRatioX, typename aRatioY>
 using ratio_gcd = std::ratio
 <
@@ -248,8 +245,6 @@ struct ratio_sqrt_impl
 
 //------------------------------------------------------------------------------
 /// the std::ratio that is the square root of aRatio
-/// @tparam aRatio a ratio to take the square root of
-/// @tparam aEpsilon a ratio expressing the greatest acceptable error
 template <typename aRatio, typename aEpsilon, typename isEnabled = void>
 struct ratio_sqrt
 {

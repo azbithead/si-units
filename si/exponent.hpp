@@ -42,28 +42,21 @@ struct exponentiate_exponent_impl
 
 //------------------------------------------------------------------------------
 /// the exponent_t type that is aExponent raised to aPower
-/// @tparam aExponent a exponent_t type
-/// @tparam aPower the power to which aExponent is raised
 template< typename aExponent, std::intmax_t aPower >
 using power_exponent = typename exponentiate_exponent_impl<aExponent, std::ratio<aPower>>::type;
 
 //------------------------------------------------------------------------------
 /// the exponent_t type that is the reciprocal of aExponent
-/// @tparam aExponent a exponent_t type
 template< typename aExponent >
 using reciprocal_exponent = typename exponentiate_exponent_impl<aExponent, std::ratio<-1>>::type;
 
 //------------------------------------------------------------------------------
 /// the exponent_t type that is the quotient of dividing aDividend by aDivisor
-/// @tparam aDividend a exponent_t type
-/// @tparam aDivisor a exponent_t type
 template< typename aDividend, typename aDivisor >
 using divide_exponent = multiply_exponent< aDividend, reciprocal_exponent< aDivisor > >;
 
 //------------------------------------------------------------------------------
 /// the exponent_t type that is the root aRoot of aExponent
-/// @tparam aExponent a exponent_t type
-/// @tparam aRoot the root to be gotten
 template< typename aExponent, std::intmax_t aRoot >
 using root_exponent = typename exponentiate_exponent_impl<aExponent, std::ratio<1,aRoot>>::type;
 

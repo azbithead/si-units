@@ -169,7 +169,6 @@ struct is_units_impl<units_t<ValueT, IntervalT, QuantityT>> : std::true_type {};
 
 //------------------------------------------------------------------------------
 /// true if aType is a units_t, false otherwise
-/// @tparam aType a type to be tested
 template <typename aType>
 constexpr bool is_units_t = is_units_impl<typename std::decay<aType>::type>::value;
 
