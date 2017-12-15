@@ -48,7 +48,7 @@ Function | Description
 [`std::common_type<si::units_t>`](common_type.md) | specializes the [`std::common_type`](http://en.cppreference.com/w/cpp/types/common_type) trait
 `operator+`<br>`operator-`<br>`operator*`<br>`operator/`<br>`operator%` | implements arithmetic operations with `units_t` as arguments
 [`operator==`<br>`operator!=`<br>`operator<`<br>`operator<=`<br>`operator>`<br>`operator>=`](rel_ops.md) | compares two `units_t``
-`units_cast` | converts a `units_t` to another with a different `interval_t`
+[`units_cast`](units_cast.md) | converts a `units_t` to another with a different `interval_t`
 `duration_cast` | converts `seconds` to [`std::chrono::duration`](http://en.cppreference.com/w/cpp/chrono/duration)
 `absolute` | returns the absolute value of a `units_t``
 `floor` | converts a `units_t` to another, rounding down
