@@ -818,88 +818,46 @@ operator *
 
 template
 <
-    typename UNITS,
-    typename ValueT,
-    bool = is_convertible_v
-    <
-        ValueT,
-        std::common_type_t<typename UNITS::value_t, ValueT>
-    >
->
-struct units_divide_helper
-{
-};
-
-template
-<
+    typename QuantityT1,
     typename ValueT1,
-    typename IntervalT,
-    typename QuantityT,
-    typename ValueT2
+    typename IntervalT1,
+    typename QuantityT2,
+    typename ValueT2,
+    typename IntervalT2
 >
-struct units_divide_helper
+using diff_quantity_results_t = units_t
 <
-    units_t<ValueT1, IntervalT, QuantityT>,
-    ValueT2,
-    true
->
-{
-    using type = units_t
-    <
-        std::common_type_t<ValueT1, ValueT2>,
-        IntervalT,
-        QuantityT
-    >;
-};
-
-template
-<
-    typename QuantityT,
-    typename ValueT,
-    bool = is_units_t<ValueT>
->
-struct units_divide_result_t
-{
-};
-
-template
-<
-    typename ValueT1,
-    typename IntervalT,
-    typename QuantityT,
-    typename ValueT2
->
-struct units_divide_result_t
-<
-    units_t<ValueT1, IntervalT, QuantityT>,
-    ValueT2,
-    false
->
-: units_divide_helper<units_t<ValueT1, IntervalT, QuantityT>, ValueT2>
-{
-};
+    std::common_type_t<ValueT1, ValueT2>,
+    std::ratio_divide<IntervalT1, IntervalT2>,
+    divide_quantity<QuantityT1, QuantityT2>
+>;
 
 //------------------------------------------------------------------------------
-// divide units_t by scalar
+// divide units_t by units_t, different quantity_t
 template
 <
+    typename QuantityT1,
     typename ValueT1,
-    typename IntervalT,
-    typename QuantityT,
-    typename ValueT2
+    typename IntervalT1,
+    typename QuantityT2,
+    typename ValueT2,
+    typename IntervalT2
 >
 inline
 constexpr
-typename units_divide_result_t<units_t<ValueT1, IntervalT, QuantityT>, ValueT2>::type
+typename std::enable_if
+<
+    !std::is_same<QuantityT1, QuantityT2>::value,
+    diff_quantity_results_t<QuantityT1, ValueT1, IntervalT1, QuantityT2, ValueT2, IntervalT2>
+>::type
 operator /
 (
-    units_t<ValueT1, IntervalT, QuantityT> aUnits,
-    ValueT2 aScalar
+    units_t<ValueT1, IntervalT1, QuantityT1> aLHS,
+    units_t<ValueT2, IntervalT2, QuantityT2> aRHS
 )
 {
-    using ResultValue_t = std::common_type_t<ValueT1, ValueT2>;
-    using Result_t = units_t<ResultValue_t, IntervalT, QuantityT>;
-    return Result_t{Result_t{aUnits}.value() / static_cast<ResultValue_t>(aScalar)};
+    using Result_t = diff_quantity_results_t<QuantityT1, ValueT1, IntervalT1, QuantityT2, ValueT2, IntervalT2>;
+    return Result_t{aLHS.value() / aRHS.value()};
 }
 
 //------------------------------------------------------------------------------
@@ -929,48 +887,26 @@ operator /
     return CommonUnits_t{aLHS}.value() / CommonUnits_t{aRHS}.value();
 }
 
-template
-<
-    typename ValueT1,
-    typename IntervalT1,
-    typename QuantityT1,
-    typename ValueT2,
-    typename IntervalT2,
-    typename QuantityT2
->
-using diff_units_result_t = units_t
-<
-    std::common_type_t<ValueT1, ValueT2>,
-    std::ratio_divide<IntervalT1, IntervalT2>,
-    divide_quantity<QuantityT1, QuantityT2>
->;
-
 //------------------------------------------------------------------------------
-// divide units_t by units_t, different quantity_t
+// divide units_t by scalar
 template
 <
-    typename QuantityT1,
     typename ValueT1,
-    typename IntervalT1,
-    typename QuantityT2,
-    typename ValueT2,
-    typename IntervalT2
+    typename IntervalT,
+    typename QuantityT,
+    typename ValueT2
 >
 inline
 constexpr
-typename std::enable_if
-<
-    !std::is_same<QuantityT1,QuantityT2>::value,
-    diff_units_result_t<ValueT1, IntervalT1, QuantityT1, ValueT2, IntervalT2, QuantityT2>
->::type
+auto
 operator /
 (
-    units_t<ValueT1, IntervalT1, QuantityT1> aLHS,
-    units_t<ValueT2, IntervalT2, QuantityT2> aRHS
+    units_t<ValueT1, IntervalT, QuantityT> aUnits,
+    ValueT2 aScalar
 )
 {
-    using Result_t = diff_units_result_t<ValueT1, IntervalT1, QuantityT1, ValueT2, IntervalT2, QuantityT2>;
-    return Result_t{aLHS.value() / aRHS.value()};
+    using ResultValue_t = std::common_type_t<ValueT1, ValueT2>;
+    return aUnits / scalar<r_one, ResultValue_t>{aScalar};
 }
 
 //------------------------------------------------------------------------------
@@ -1006,7 +942,7 @@ template
 >
 inline
 constexpr
-typename units_divide_result_t<units_t<ValueT1, IntervalT, QuantityT>, ValueT2>::type
+auto
 operator%
 (
     units_t<ValueT1, IntervalT, QuantityT> aUnits,
@@ -1038,8 +974,6 @@ operator%
 )
 {
     using Result_t = std::common_type_t<decltype(aLHS), decltype(aRHS)>;
-    using Value_t = typename Result_t::value_t;
-
     return Result_t{Result_t{aLHS}.value() % Result_t{aRHS}.value()};
 }
 
