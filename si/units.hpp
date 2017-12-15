@@ -791,21 +791,7 @@ operator *
 template <typename ValueT1, typename IntervalT, typename QuantityT, typename ValueT2>
 inline
 constexpr
-typename std::enable_if
-<
-    !is_units_t<ValueT2> &&
-    is_convertible_v
-    <
-        ValueT2,
-        std::common_type_t<ValueT1, ValueT2>
-    >,
-    units_t
-    <
-        std::common_type_t<ValueT1, ValueT2>,
-        IntervalT,
-        QuantityT
-    >
->::type
+auto
 operator *
 (
     units_t<ValueT1, IntervalT, QuantityT> aUnits,
@@ -820,21 +806,7 @@ operator *
 template <typename ValueT1, typename IntervalT, typename QuantityT, typename ValueT2>
 inline
 constexpr
-typename std::enable_if
-<
-    !is_units_t<ValueT2> &&
-    is_convertible_v
-    <
-        ValueT2,
-        std::common_type_t<ValueT1, ValueT2>
-    >,
-    units_t
-    <
-        std::common_type_t<ValueT1, ValueT2>,
-        IntervalT,
-        QuantityT
-    >
->::type
+auto
 operator *
 (
     ValueT2 aScalar,
