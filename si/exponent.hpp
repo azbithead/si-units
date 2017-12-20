@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <ratio>
 #include <string>
+#include "constants.hpp"
 
 namespace si
 {
@@ -59,13 +60,6 @@ using divide_exponent = multiply_exponent< aDividend, reciprocal_exponent< aDivi
 /// the exponent_t type that is the root aRoot of aExponent
 template< typename aExponent, std::intmax_t aRoot >
 using root_exponent = typename exponentiate_exponent_impl<aExponent, std::ratio<1,aRoot>>::type;
-
-#define STRING_CONST(aName, aString) \
-template< typename CharT > constexpr const CharT* aName = nullptr; \
-template<> constexpr const char* aName<char> = aString; \
-template<> constexpr const wchar_t* aName<wchar_t> = L##aString; \
-template<> constexpr const char16_t* aName<char16_t> = u##aString; \
-template<> constexpr const char32_t* aName<char32_t> = U##aString
 
 STRING_CONST(superscript_minus, "\u207B");
 
