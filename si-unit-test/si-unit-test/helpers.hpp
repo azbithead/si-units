@@ -29,9 +29,9 @@ assertf
 } // end of namespace test
 } // end of namespace si
 
-#define assert( exp ) si::test::assertf( exp, __FILE__, __LINE__ )
+#define si_assert( exp ) si::test::assertf( exp, __FILE__, __LINE__ )
 
-#define assert_str_eq( str1, str2 ) assert( str1 == str2 )
+#define assert_str_eq( str1, str2 ) si_assert( str1 == str2 )
 
 #define assert_literal( aT, str ) \
 { \
