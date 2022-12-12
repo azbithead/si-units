@@ -1497,7 +1497,7 @@ literal(watts, W);
 literal(coulombs, C);
 literal(volts, V);
 literal(farads, F);
-literal(ohms, O);
+literal(ohms, Ω);
 literal(siemens, S);
 literal(webers, Wb);
 literal(teslas, T);

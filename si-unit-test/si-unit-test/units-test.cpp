@@ -233,7 +233,7 @@ static_assert( 1.0_W == watts<>{1}, "" );
 static_assert( 1.0_C == coulombs<>{1}, "" );
 static_assert( 1.0_V == volts<>{1}, "" );
 static_assert( 1.0_F == farads<>{1}, "" );
-static_assert( 1.0_O == ohms<>{1}, "" );
+static_assert( 1.0_Ω == ohms<>{1}, "" );
 static_assert( 1.0_S == siemens<>{1}, "" );
 static_assert( 1.0_Wb == webers<>{1}, "" );
 static_assert( 1.0_T == teslas<>{1}, "" );
