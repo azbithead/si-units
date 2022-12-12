@@ -159,6 +159,7 @@ using area = power_quantity<length,2>;
 using pressure = divide_quantity<force, area>;
 using stress = pressure;
 using energy = multiply_quantity<force, length>;
+using torque = energy;
 using work = energy;
 using power = divide_quantity<energy, time>;
 using charge = multiply_quantity<current, time>;

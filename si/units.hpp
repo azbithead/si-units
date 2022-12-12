@@ -586,6 +586,9 @@ using henries = units_t<ValueT, IntervalT, inductance>;
 template< typename IntervalT = r_one, typename ValueT = double >
 using lumens = units_t<ValueT, IntervalT, luminous_flux>;
 
+template< typename IntervalT = r_one, typename ValueT = double >
+using newton_meters = units_t<ValueT, IntervalT, torque>;
+
 template <typename LhsUnitsT, typename RhsUnitsT>
 struct units_eq_impl
 {
