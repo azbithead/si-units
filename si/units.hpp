@@ -1173,6 +1173,7 @@ template
 >
 struct power_result_impl
 {
+    static_assert(EXPONENT >= 0, "si::exponentiate EXPONENT must be non-negative");
     using temp = typename power_result_impl<ValueT, IntervalT, QuantityT, EXPONENT-1>::type;
     using type = units_t
     <
