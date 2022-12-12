@@ -1439,6 +1439,34 @@ operator <<
     return aStream << aUnits.scalar() << space<CharT> << QuantityT{};
 }
 
+//------------------------------------------------------------------------------
+template
+<
+    typename CharT,
+    typename ValueT,
+    typename IntervalT,
+    typename QuantityT
+>
+inline
+std::basic_istream<CharT>&
+operator >>
+(
+    std::basic_istream<CharT>& aStream,
+    units_t<ValueT, IntervalT, QuantityT>& aUnits
+)
+{
+    if( aStream )
+    {
+        ValueT theValue;
+        aStream >> theValue;
+        if( aStream )
+        {
+            aUnits = units_t<ValueT, IntervalT, QuantityT>{theValue};
+        }
+    }
+    return aStream;
+}
+
 namespace literals
 {
 
