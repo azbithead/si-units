@@ -176,10 +176,10 @@ template< typename CharT, typename QuantityT >
 constexpr const CharT* abbrev = nullptr;
 
 #define ABBREV_CONST(qt, str) \
-template<> constexpr const char* abbrev<char,qt> = str; \
-template<> constexpr const wchar_t* abbrev<wchar_t,qt> = L##str; \
-template<> constexpr const char16_t* abbrev<char16_t,qt> = u##str; \
-template<> constexpr const char32_t* abbrev<char32_t,qt> = U##str
+template<> inline constexpr const char* abbrev<char,qt> = str; \
+template<> inline constexpr const wchar_t* abbrev<wchar_t,qt> = L##str; \
+template<> inline constexpr const char16_t* abbrev<char16_t,qt> = u##str; \
+template<> inline constexpr const char32_t* abbrev<char32_t,qt> = U##str
 
 ABBREV_CONST(none, "");
 ABBREV_CONST(mass, "kg");

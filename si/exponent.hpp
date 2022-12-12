@@ -66,7 +66,7 @@ STRING_CONST(superscript_minus, "\u207B");
 constexpr auto digit_count = 10;
 
 template< typename CharT > constexpr const CharT* superscript_digit[digit_count];
-template<> constexpr const char* superscript_digit<char>[digit_count] =
+template<> inline constexpr const char* superscript_digit<char>[digit_count] =
 {
     "\u2070",
     "\u00B9",
@@ -79,7 +79,7 @@ template<> constexpr const char* superscript_digit<char>[digit_count] =
     "\u2078",
     "\u2079"
 };
-template<> constexpr const wchar_t* superscript_digit<wchar_t>[digit_count] =
+template<> inline constexpr const wchar_t* superscript_digit<wchar_t>[digit_count] =
 {
     L"\u2070",
     L"\u00B9",
@@ -92,7 +92,7 @@ template<> constexpr const wchar_t* superscript_digit<wchar_t>[digit_count] =
     L"\u2078",
     L"\u2079"
 };
-template<> constexpr const char16_t* superscript_digit<char16_t>[digit_count] =
+template<> inline constexpr const char16_t* superscript_digit<char16_t>[digit_count] =
 {
     u"\u2070",
     u"\u00B9",
@@ -105,7 +105,7 @@ template<> constexpr const char16_t* superscript_digit<char16_t>[digit_count] =
     u"\u2078",
     u"\u2079"
 };
-template<> constexpr const char32_t* superscript_digit<char32_t>[digit_count] =
+template<> inline constexpr const char32_t* superscript_digit<char32_t>[digit_count] =
 {
     U"\u2070",
     U"\u00B9",
