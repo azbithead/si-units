@@ -1141,7 +1141,7 @@ square_root
 )
 {
     using Result_t = sqrt_result_t<ValueT, IntervalT, QuantityT, EPSILON>;
-    return Result_t{std::sqrt(aQuantity.value())};
+    return Result_t{std::pow(aQuantity.value(), 0.5)};
 }
 
 template
