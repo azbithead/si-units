@@ -111,6 +111,7 @@ Type | Definition
 `teslas` | `units_t<ValueT, IntervalT, magnetic_flux_density>`
 `henries` | `units_t<ValueT, IntervalT, inductance>`
 `lumens` | `units_t<ValueT, IntervalT, luminous_flux>`
+`newton_meters` | `units_t<ValueT, IntervalT, torque>`
 
 ## Helper classes
 Class | Description

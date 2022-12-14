@@ -59,6 +59,7 @@ Type | Definition
 `pressure` | `divide_quantity<force, area>`
 `stress` | `pressure`
 `energy` | `multiply_quantity<force, length>`
+`torque` | `energy`
 `work` | `energy`
 `power` | `divide_quantity<energy, time>`
 `charge` | `multiply_quantity<current, time>`
