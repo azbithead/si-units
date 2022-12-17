@@ -279,7 +279,7 @@ basic_string_from
     theDen = basic_string_from_exp<typename Recip_t::current>( abbrev<CharT,current>, std::move(theDen) );
     theDen = basic_string_from_exp<typename Recip_t::temperature>( abbrev<CharT,temperature>, std::move(theDen) );
     theDen = basic_string_from_exp<typename Recip_t::luminous_intensity>( abbrev<CharT,luminous_intensity>, std::move(theDen) );
-    theNum = basic_string_from_exp<typename Recip_t::substance>( abbrev<CharT,substance>, std::move(theNum) );
+    theDen = basic_string_from_exp<typename Recip_t::substance>( abbrev<CharT,substance>, std::move(theDen) );
     theDen = basic_string_from_exp<typename Recip_t::angle>( abbrev<CharT,angle>, std::move(theDen) );
 
     if( theDen.empty() )
