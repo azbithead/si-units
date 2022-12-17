@@ -6,6 +6,7 @@
 #include <chrono>
 #include <string>
 #include <ostream>
+#include <numbers>
 
 #include "quantity.hpp"
 #include "ratio.hpp"
@@ -1537,6 +1538,32 @@ literal(lumens, lm);
 literal(lux, lx);
 
 } // end of namespace literals
+
+// Some useful constants
+
+// Speed of light
+template< typename ValueT = double >
+inline constexpr auto c = meters<r_one, ValueT>{299792458} / seconds<r_one, ValueT>{1};
+
+// Planck constant
+template< typename ValueT = double >
+inline constexpr auto h = joules<r_one, ValueT>{6.62607015e-34} * seconds<r_one, ValueT>{1};
+
+// Reduced Planck constant
+template< typename ValueT = double >
+inline constexpr auto h_bar = h<ValueT> / (2 * std::numbers::pi_v<ValueT>);
+
+// Boltzmann constant
+template< typename ValueT = double >
+inline constexpr auto k = joules<r_one, ValueT>{1.380649e-23} / kelvins<r_one, ValueT>{1};
+
+// Elementary charge
+template< typename ValueT = double >
+inline constexpr auto e = coulombs<r_one, ValueT>{1.602176634e-19};
+
+// Avogadro constant
+template< typename ValueT = double >
+inline constexpr auto NA = 6.02214076e23 / moles<si::r_one, ValueT>{1};
 } // end of namespace si
 
 #include "string-from.hpp"
